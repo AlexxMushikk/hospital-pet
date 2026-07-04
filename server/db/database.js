@@ -8,8 +8,8 @@ const isNewDb = !fs.existsSync(dbPath)
 
 const db = new Database(dbPath)
 
-db.pragma('journal_mode = WAL')  // лучшая производительность при записи
-db.pragma('foreign_keys = ON')   // проверка внешних ключей
+db.pragma('journal_mode = WAL')
+db.pragma('foreign_keys = ON')
 
 if (isNewDb) {
     logger.info('New database — creating tables...')
@@ -18,8 +18,18 @@ if (isNewDb) {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
-            role TEXT DEFAULT 'patient',
-            last_view TEXT DEFAULT 'patient'
+            role TEXT NOT NULL DEFAULT 'patient'
+                CHECK (role IN ('patient', 'doctor', 'admin'))
+        );
+
+        CREATE TABLE IF NOT EXISTS specializations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS languages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS patients (
@@ -33,26 +43,35 @@ if (isNewDb) {
         CREATE TABLE IF NOT EXISTS doctors (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER UNIQUE,
-            specialization TEXT NOT NULL,
+            specialization_id INTEGER NOT NULL,
             career_start_date TEXT,
             education TEXT,
             bio TEXT,
             price INTEGER DEFAULT 200,
-            languages TEXT,
             image_url TEXT,
             work_start TEXT DEFAULT '08:00',
             work_end TEXT DEFAULT '18:00',
-            gender TEXT DEFAULT 'Not Specified',
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            gender TEXT DEFAULT 'Not Specified'
+                CHECK (gender IN ('Male', 'Female', 'Not Specified')),
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (specialization_id) REFERENCES specializations(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS doctor_languages (
+            doctor_id INTEGER NOT NULL,
+            language_id INTEGER NOT NULL,
+            PRIMARY KEY (doctor_id, language_id),
+            FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE,
+            FOREIGN KEY (language_id) REFERENCES languages(id)
         );
 
         CREATE TABLE IF NOT EXISTS appointments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             doctor_id INTEGER,
             patient_id INTEGER,
-            appointment_date TEXT NOT NULL,
-            appointment_time TEXT NOT NULL,
-            status TEXT DEFAULT 'Scheduled',
+            scheduled_at TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'Scheduled'
+                CHECK (status IN ('Scheduled', 'Completed', 'Cancelled')),
             symptoms TEXT,
             doctor_notes TEXT,
             FOREIGN KEY (doctor_id) REFERENCES doctors(id),

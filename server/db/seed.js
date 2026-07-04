@@ -6,16 +6,58 @@ function h(password) {
     return bcrypt.hashSync(password, SALT_ROUNDS)
 }
 
+// Дата YYYY-MM-DD со сдвигом в днях от сегодня (по локальному времени).
+function dateFromToday(offsetDays) {
+    const d = new Date()
+    d.setDate(d.getDate() + offsetDays)
+    const y   = d.getFullYear()
+    const m   = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
+}
+
+// Собирает scheduled_at в формате 'YYYY-MM-DD HH:MM:SS'.
+function scheduledAt(dateStr, timeStr) {
+    return `${dateStr} ${timeStr}:00`
+}
+
+// Детерминированный набор языков врача по индексу.
+function langsFor(i) {
+    const langs = ['English']
+    if (i % 2 === 0) langs.push('Polish')
+    if (i % 3 === 0) langs.push('Russian')
+    return langs
+}
+
 function seedDatabase(db) {
     logger.info('Seeding database')
 
     const seed = db.transaction(() => {
 
-        // Очищаем таблицы в правильном порядке — сначала зависимые
+        // Очищаем в правильном порядке — сначала зависимые
         db.prepare('DELETE FROM appointments').run()
+        db.prepare('DELETE FROM doctor_languages').run()
         db.prepare('DELETE FROM doctors').run()
         db.prepare('DELETE FROM patients').run()
+        db.prepare('DELETE FROM languages').run()
+        db.prepare('DELETE FROM specializations').run()
         db.prepare('DELETE FROM users').run()
+
+        // ── SPECIALIZATIONS ────────────────────────────────────────────
+        const specNames  = ['Cardiology', 'Neurology', 'Diagnostics', 'Surgery', 'Pediatrics', 'General Examination']
+        const insertSpec  = db.prepare(`INSERT INTO specializations (name) VALUES (?)`)
+        const specIds     = {}
+        for (const name of specNames) {
+            specIds[name] = insertSpec.run(name).lastInsertRowid
+        }
+
+        // ── LANGUAGES ──────────────────────────────────────────────────
+        const langNames  = ['English', 'Polish', 'Russian', 'German', 'French', 'Spanish']
+        const insertLang  = db.prepare(`INSERT INTO languages (name) VALUES (?)`)
+        const langIds     = {}
+        for (const name of langNames) {
+            langIds[name] = insertLang.run(name).lastInsertRowid
+        }
 
         // ── ADMIN ──────────────────────────────────────────────────────
         const adminUser = db.prepare(
@@ -58,20 +100,29 @@ function seedDatabase(db) {
 
         const insertUser    = db.prepare(`INSERT INTO users (email, password, role) VALUES (?, ?, 'doctor')`)
         const insertPatient = db.prepare(`INSERT INTO patients (user_id, full_name) VALUES (?, ?)`)
-        const insertDoctor  = db.prepare(`INSERT INTO doctors (user_id, specialization, career_start_date, price, gender) VALUES (?, ?, ?, ?, ?)`)
+        const insertDoctor  = db.prepare(`INSERT INTO doctors (user_id, specialization_id, career_start_date, price, gender) VALUES (?, ?, ?, ?, ?)`)
+        const insertDocLang = db.prepare(`INSERT INTO doctor_languages (doctor_id, language_id) VALUES (?, ?)`)
 
         const docIds = {}
+        let di = 0
         for (const d of doctorData) {
-            const user    = insertUser.run(d.email, h('doctor123'))
-            const patient = insertPatient.run(user.lastInsertRowid, d.name)
-            const doctor  = insertDoctor.run(
+            const user   = insertUser.run(d.email, h('doctor123'))
+            insertPatient.run(user.lastInsertRowid, d.name)
+
+            const price  = 150 + (di * 20) % 200
+            const doctor = insertDoctor.run(
                 user.lastInsertRowid,
-                d.spec,
+                specIds[d.spec],
                 d.start,
-                Math.floor(Math.random() * 200) + 150,
+                price,
                 d.gender
             )
             docIds[d.email] = doctor.lastInsertRowid
+
+            for (const lang of langsFor(di)) {
+                insertDocLang.run(doctor.lastInsertRowid, langIds[lang])
+            }
+            di++
         }
 
         // ── OTHER PATIENTS ─────────────────────────────────────────────
@@ -87,7 +138,7 @@ function seedDatabase(db) {
 
         const allPatientIds = [testPatientId]
         for (const name of names) {
-            const email   = name.toLowerCase().replace(' ', '.') + '@mail.com'
+            const email   = name.toLowerCase().replaceAll(' ', '.') + '@mail.com'
             const user    = insertOtherUser.run(email, h('pass123'))
             const patient = insertOtherPatient.run(user.lastInsertRowid, name)
             allPatientIds.push(patient.lastInsertRowid)
@@ -95,36 +146,46 @@ function seedDatabase(db) {
 
         // ── APPOINTMENTS ───────────────────────────────────────────────
         const insertApp = db.prepare(`
-            INSERT INTO appointments (doctor_id, patient_id, appointment_date, appointment_time, status)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO appointments (doctor_id, patient_id, scheduled_at, status)
+            VALUES (?, ?, ?, ?)
         `)
 
         const cuddyId   = docIds['cuddy@med.com']
         const allDocIds = Object.values(docIds)
 
-        // Записи к Dr. Cuddy на несколько дней
-        const targetDates = ['2026-01-04', '2026-01-05', '2026-01-06', '2026-01-07']
-        for (const date of targetDates) {
-            const slots = ['09:00', '10:30', '14:00', '15:30', '11:00', '16:00']
+        // Записи к Dr. Cuddy на ближайшие дни (Scheduled)
+        const slots = ['09:00', '10:30', '14:00', '15:30']
+        for (let dayOffset = 1; dayOffset <= 4; dayOffset++) {
+            const date = dateFromToday(dayOffset)
             for (let i = 0; i < 4; i++) {
-                const idx  = Math.floor(Math.random() * slots.length)
-                const time = slots.splice(idx, 1)[0]
-                insertApp.run(cuddyId, allPatientIds[i % 20], date, time, 'Scheduled')
+                insertApp.run(
+                    cuddyId,
+                    allPatientIds[i % allPatientIds.length],
+                    scheduledAt(date, slots[i]),
+                    'Scheduled'
+                )
             }
         }
 
-        // Записи тестового пациента с разными статусами
+        // Тестовый пациент — записи с разными статусами
+        // Completed/Cancelled — в прошлом, Scheduled — в будущем
         const statuses = ['Scheduled', 'Completed', 'Cancelled']
         for (let i = 0; i < 9; i++) {
             const status = statuses[Math.floor(i / 3)]
-            const year   = status === 'Completed' ? '2025' : '2026'
-            const date   = `${year}-12-${String(10 + i).padStart(2, '0')}`
-            insertApp.run(allDocIds[i % 15], testPatientId, date, '12:00', status)
+            const offset = status === 'Scheduled' ? (i + 1) : -(i + 1)
+            const date   = dateFromToday(offset)
+            insertApp.run(allDocIds[i % 15], testPatientId, scheduledAt(date, '12:00'), status)
         }
 
-        // Завершённые записи для статистики дохода
+        // Завершённые записи для статистики дохода (в прошлом)
         for (let i = 0; i < 20; i++) {
-            insertApp.run(allDocIds[i % 15], allPatientIds[i % 20], '2025-12-01', '08:00', 'Completed')
+            const date = dateFromToday(-(30 + i))
+            insertApp.run(
+                allDocIds[i % 15],
+                allPatientIds[i % allPatientIds.length],
+                scheduledAt(date, '08:00'),
+                'Completed'
+            )
         }
     })
 
