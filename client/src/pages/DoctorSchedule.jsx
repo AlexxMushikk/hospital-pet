@@ -1,0 +1,151 @@
+import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { getDoctorSlots } from '../api/index'
+import { statusLabel, statusClass } from '../utils/status'
+import { getTodayStr } from '../utils/date'
+
+const PAGE_SIZE = 4
+
+export default function DoctorSchedule() {
+    const navigate = useNavigate()
+    const { user } = useAuth()
+    const doctorId = user?.doctor_id
+
+    const [date,    setDate]    = useState(getTodayStr())
+    const [slots,   setSlots]   = useState([])
+    const [loading, setLoading] = useState(false)
+    const [page,    setPage]    = useState(0)
+
+    const total  = slots.length
+    const booked = slots.filter(s => s.status !== 'Free').length
+    const free   = total - booked
+
+    const fetchSlots = useCallback(async () => {
+        if (!doctorId) return
+        setLoading(true)
+        setPage(0)
+        try {
+            const res = await getDoctorSlots(doctorId, date)
+            setSlots(res.data.slots || [])
+        } catch {
+            setSlots([])
+        } finally {
+            setLoading(false)
+        }
+    }, [doctorId, date])
+
+    useEffect(() => { fetchSlots() }, [fetchSlots])
+
+    const totalPages = Math.ceil(slots.length / PAGE_SIZE)
+    const pageSlots  = slots.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+
+    return (
+        <main className="container">
+            <section className="page-title" style={{ textAlign: 'left' }}>
+                <h2 style={{ fontWeight: 800 }}>Расписание на день</h2>
+                <p>Управление записями пациентов</p>
+            </section>
+
+            <div className="dashboard-header">
+                <div className="stat-card">
+                    <h4>Всего слотов</h4>
+                    <div className="value">{total}</div>
+                </div>
+                <div className="stat-card active">
+                    <h4>Занято</h4>
+                    <div className="value" style={{ color: '#dc2626' }}>{booked}</div>
+                </div>
+                <div className="stat-card">
+                    <h4>Свободно</h4>
+                    <div className="value">{free}</div>
+                </div>
+            </div>
+
+            <div className="schedule-card">
+                <div className="schedule-controls">
+                    <div className="date-input-group">
+                        <label>🗓 День:</label>
+                        <input
+                            type="date"
+                            value={date}
+                            onChange={e => setDate(e.target.value)}
+                        />
+                        <button
+                            className="btn btn-outline btn-sm"
+                            style={{ marginLeft: '10px' }}
+                            onClick={() => setDate(getTodayStr())}
+                        >
+                            Сегодня
+                        </button>
+                    </div>
+                    <button className="btn btn-solid btn-sm" onClick={fetchSlots}>
+                        🔄 Обновить
+                    </button>
+                </div>
+
+                <ul className="slots-list">
+                    {loading && (
+                        <li className="slot-item empty">Загрузка расписания...</li>
+                    )}
+
+                    {!loading && pageSlots.length === 0 && (
+                        <li className="slot-item empty">
+                            <div className="slot-info">Нет слотов на этот день.</div>
+                        </li>
+                    )}
+
+                    {!loading && pageSlots.map(slot => (
+                        slot.status === 'Free' ? (
+                            <li key={slot.time} className="slot-item empty">
+                                <div className="slot-time">🕒 {slot.time}</div>
+                                <div className="slot-info">Свободно для записи</div>
+                            </li>
+                        ) : (
+                            <li key={slot.time} className="slot-item occupied">
+                                <div className="slot-time">🕒 {slot.time}</div>
+                                <div className="slot-info">
+                                    <strong style={{ fontSize: '18px' }}>
+                                        👤 {slot.patient_name || 'Пациент'}
+                                    </strong>
+                                    <span
+                                        className={statusClass(slot.status)}
+                                        style={{ margin: 0, padding: '2px 8px', fontSize: '10px' }}
+                                    >
+                                        {statusLabel(slot.status)}
+                                    </span>
+                                </div>
+                                <button
+                                    className="btn btn-solid btn-sm"
+                                    onClick={() => navigate(`/appointments/${slot.appointment_id}`)}
+                                >
+                                    Управление
+                                </button>
+                            </li>
+                        )
+                    ))}
+                </ul>
+
+                <div className="pagination-container">
+                    <button
+                        className="btn btn-outline btn-sm"
+                        onClick={() => setPage(p => p - 1)}
+                        disabled={page === 0}
+                    >
+                        ← Назад
+                    </button>
+                    <span style={{ fontWeight: 700, color: '#4b5563' }}>
+                        Страница {page + 1} из {totalPages || 1}
+                    </span>
+                    <button
+                        className="btn btn-outline btn-sm"
+                        onClick={() => setPage(p => p + 1)}
+                        disabled={page >= totalPages - 1 || totalPages === 0}
+                    >
+                        Вперёд →
+                    </button>
+                </div>
+            </div>
+        </main>
+    )
+}
