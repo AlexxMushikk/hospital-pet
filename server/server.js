@@ -54,6 +54,10 @@ app.use('/api/appointments', appointmentsRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/stats', statsRouter)
 
+app.use('/api', (req, res) => {
+    res.status(404).json({ error: 'Not found' })
+})
+
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
     const status = err.status || 500
@@ -67,7 +71,6 @@ app.use((err, req, res, next) => {
 })
 
 if (isNewDb) {
-    logger.info('Seeding database...')
     seedDatabase(db)
 }
 

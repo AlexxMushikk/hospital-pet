@@ -1,3 +1,4 @@
+const logger = require('../services/logger')
 const bcrypt = require('bcrypt')
 const SALT_ROUNDS = 10
 
@@ -6,7 +7,7 @@ function h(password) {
 }
 
 function seedDatabase(db) {
-    console.log('--- Seeding database ---')
+    logger.info('Seeding database')
 
     // db.transaction() — всё внутри выполняется как одна атомарная операция.
     // Если что-то упадёт — база откатится в исходное состояние.
@@ -134,7 +135,7 @@ function seedDatabase(db) {
 
     // Вызываем транзакцию — всё выполняется или ничего
     seed()
-    console.log('Seeding finished!')
+    logger.info('Seeding finished!')
 }
 
 module.exports = seedDatabase

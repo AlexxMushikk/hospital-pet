@@ -1,6 +1,7 @@
 const Database = require('better-sqlite3')
 const path     = require('path')
 const fs       = require('fs')
+const logger   = require('../services/logger')
 
 const dbPath = path.join(__dirname, 'hospital.db')
 const isNewDb = !fs.existsSync(dbPath)
@@ -12,7 +13,7 @@ db.pragma('journal_mode = WAL')  // лучшая производительно�
 db.pragma('foreign_keys = ON')   // проверка внешних ключей
 
 if (isNewDb) {
-    console.log('New database — creating tables...')
+    logger.info('New database — creating tables...')
     db.exec(`
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,7 +60,7 @@ if (isNewDb) {
             FOREIGN KEY (patient_id) REFERENCES patients(id)
         );
     `)
-    console.log('Tables created.')
+    logger.info('Tables created.')
 }
 
 // Три метода которые будем использовать везде:
