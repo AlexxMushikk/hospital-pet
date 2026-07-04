@@ -7,7 +7,7 @@ import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { Range, getTrackBackground } from 'react-range'
-import { DOCTORS_PER_PAGE } from '../constants'
+import { DOCTORS_PER_PAGE, SPECIALIZATIONS } from '../constants'
 
 function RadioOption({ name, value, label, filterKey, filters, onFilterChange }) {
     return (
@@ -273,13 +273,17 @@ export default function Doctors() {
                     <div className="sidebar-block">
                         <span className="filter-title">Специализация</span>
                         <div className="filter-radio-group">
-                            <RadioOption name="filterSpecialty" value=""                    label="Все специализации" filterKey="specialization" {...radioProps} />
-                            <RadioOption name="filterSpecialty" value="Cardiology"          label="Кардиология"        filterKey="specialization" {...radioProps} />
-                            <RadioOption name="filterSpecialty" value="Pediatrics"          label="Педиатрия"          filterKey="specialization" {...radioProps} />
-                            <RadioOption name="filterSpecialty" value="Surgery"             label="Хирургия"           filterKey="specialization" {...radioProps} />
-                            <RadioOption name="filterSpecialty" value="Neurology"           label="Неврология"         filterKey="specialization" {...radioProps} />
-                            <RadioOption name="filterSpecialty" value="Diagnostics"         label="Диагностика"        filterKey="specialization" {...radioProps} />
-                            <RadioOption name="filterSpecialty" value="General Examination" label="Общий осмотр"       filterKey="specialization" {...radioProps} />
+                            <RadioOption name="filterSpecialty" value="" label="Все специализации" filterKey="specialization" {...radioProps} />
+                            {SPECIALIZATIONS.map(spec => (
+                                <RadioOption
+                                    key={spec.value}
+                                    name="filterSpecialty"
+                                    value={spec.value}
+                                    label={spec.label}
+                                    filterKey="specialization"
+                                    {...radioProps}
+                                />
+                            ))}
                         </div>
                     </div>
 

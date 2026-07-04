@@ -3,20 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useModal } from '../../hooks/useModal'
 import Modal from '../../components/Modal'
 import api from '../../api/index'
-
-const SPECIALIZATIONS = [
-    'Cardiology', 'Diagnostics', 'General Examination',
-    'Neurology', 'Pediatrics', 'Surgery'
-]
-
-const SPEC_LABELS = {
-    'Cardiology':          'Кардиология',
-    'Diagnostics':         'Диагностика',
-    'General Examination': 'Общий осмотр',
-    'Neurology':           'Неврология',
-    'Pediatrics':          'Педиатрия',
-    'Surgery':             'Хирургия',
-}
+import { SPECIALIZATIONS } from '../../constants'
 
 export default function CreateDoctor() {
     const navigate = useNavigate()
@@ -176,7 +163,7 @@ export default function CreateDoctor() {
                             >
                                 <option value="">— Выберите специализацию —</option>
                                 {SPECIALIZATIONS.map(s => (
-                                    <option key={s} value={s}>{SPEC_LABELS[s]}</option>
+                                    <option key={s.value} value={s.value}>{s.label}</option>
                                 ))}
                             </select>
                         </div>

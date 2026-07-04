@@ -2,15 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getPublicStats } from '../api/index'
-
-const SPECIALIZATIONS = [
-    { icon: '🫀', name: 'Кардиология',   desc: 'Диагностика и лечение сердечно-сосудистых заболеваний',  value: 'Cardiology' },
-    { icon: '🧠', name: 'Неврология',    desc: 'Лечение заболеваний нервной системы',                    value: 'Neurology' },
-    { icon: '🔬', name: 'Диагностика',   desc: 'Комплексное обследование и постановка диагноза',         value: 'Diagnostics' },
-    { icon: '🏥', name: 'Хирургия',      desc: 'Плановые и экстренные хирургические вмешательства',      value: 'Surgery' },
-    { icon: '👶', name: 'Педиатрия',     desc: 'Медицинская помощь детям всех возрастов',                value: 'Pediatrics' },
-    { icon: '🩺', name: 'Общий осмотр',  desc: 'Профилактические осмотры и общая медицина',              value: 'General Examination' },
-]
+import { SPECIALIZATIONS } from '../constants'
 
 export default function Home() {
     const { user } = useAuth()
@@ -111,7 +103,7 @@ export default function Home() {
                             >
                                 <div className="feature-card" style={{ cursor: 'pointer', height: '100%' }}>
                                     <div style={{ fontSize: '48px', marginBottom: '15px' }}>{spec.icon}</div>
-                                    <h3>{spec.name}</h3>
+                                    <h3>{spec.label}</h3>
                                     <p style={{ color: '#6b7280', marginTop: '10px', fontSize: '14px', lineHeight: '1.6' }}>
                                         {spec.desc}
                                     </p>
