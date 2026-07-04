@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { Range, getTrackBackground } from 'react-range'
+import { DOCTORS_PER_PAGE } from '../constants'
 
 function RadioOption({ name, value, label, filterKey, filters, onFilterChange }) {
     return (
@@ -172,7 +173,7 @@ export default function Doctors() {
             try {
                 const params = {
                     page:  currentPage,
-                    limit: 6,
+                    limit: DOCTORS_PER_PAGE,
                     sort:  filters.sort,
                     ...(filters.name           && { name: filters.name }),
                     ...(filters.specialization && { specialization: filters.specialization }),
@@ -306,7 +307,7 @@ export default function Doctors() {
 
                     {loading && (
                         <div className="doctors-grid">
-                            {Array.from({ length: 6 }).map((_, i) => (
+                            {Array.from({ length: DOCTORS_PER_PAGE }).map((_, i) => (
                                 <div key={i} className="doctor-card">
                                     <div className="doctor-photo-box skeleton" />
                                     <div className="doctor-info" style={{ flex: 1 }}>

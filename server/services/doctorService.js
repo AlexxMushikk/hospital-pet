@@ -7,6 +7,8 @@ const { db } = require('../db/database')
 
 const { doctorQueryDto, updateDoctorDto, createDoctorDto } = require('../dto/doctorDto')
 
+const SLOT_STEP_MINUTES = 30
+
 function validate(dto, data) {
     const result = dto.safeParse(data)
     if (!result.success) {
@@ -98,7 +100,7 @@ function getSlots(doctorId, date, requester) {
             appointment_id: booked && privileged ? booked.appointment_id : null,
         })
         let [h, m] = current.split(':').map(Number)
-        m += 30
+        m += SLOT_STEP_MINUTES
         if (m >= 60) { h++; m = 0 }
         current = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
     }
