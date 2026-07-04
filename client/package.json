@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "axios": "^1.16.0",
-    "bcrypt": "^6.0.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-range": "^1.10.0",

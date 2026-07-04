@@ -117,7 +117,6 @@ export default function Doctors() {
     useEffect(() => {
         getDoctorPriceRange()
             .then(res => {
-                console.log('priceRange:', res.data)
                 setPriceRange(res.data)
             })
             .catch(err => console.error('priceRange error:', err))

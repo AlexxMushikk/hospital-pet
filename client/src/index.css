@@ -757,25 +757,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* =========================================
-   SECTION 12: DATEPICKER BRANDED STYLES
-   ========================================= */
-.custom-datepicker {
-    background: white !important;
-    border: 1px solid #ddd !important;
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    color: #dc2626;
-}
-
-.flatpickr-day.selected {
-    background: #dc2626 !important;
-    border-color: #dc2626 !important;
-}
-
-/* =========================================
-   SECTION 13: ADMINISTRATIVE DASHBOARD
+   SECTION 12: ADMINISTRATIVE DASHBOARD
    ========================================= */
 .admin-section { padding: 20px 0; }
 
@@ -840,7 +822,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .admin-table tr:hover { background-color: #fdf2f2; }
 
 /* =========================================
-   SECTION 14: FOOTER AND RESPONSIVE
+   SECTION 13: FOOTER AND RESPONSIVE
    ========================================= */
 .main-footer { padding: 30px 0; border-top: 1px solid #f3f4f6; text-align: center; color: #666; }
 
@@ -857,7 +839,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     .doctors-sidebar { width: 100%; position: static; }
 }
 /* =========================================
-   SECTION 15: PRICE RANGE SLIDER
+   SECTION 14: PRICE RANGE SLIDER
    ========================================= */
 .price-slider-labels {
     display: flex;
