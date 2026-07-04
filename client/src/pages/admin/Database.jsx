@@ -122,6 +122,7 @@ export default function AdminDatabase() {
     }
 
     const searchDisabled = table === 'appointments'
+    const colSpan = table === 'appointments' ? 5 : 4
 
     return (
         <main className="container admin-section">
@@ -170,10 +171,10 @@ export default function AdminDatabase() {
                         <thead>{renderHead()}</thead>
                         <tbody>
                         {loading && (
-                            <tr><td colSpan={5} style={{ textAlign: 'center' }}>Загрузка...</td></tr>
+                            <tr><td colSpan={colSpan} style={{ textAlign: 'center' }}>Загрузка...</td></tr>
                         )}
                         {!loading && data.length === 0 && (
-                            <tr><td colSpan={5} style={{ textAlign: 'center' }}>Записи не найдены</td></tr>
+                            <tr><td colSpan={colSpan} style={{ textAlign: 'center' }}>Записи не найдены</td></tr>
                         )}
                         {!loading && data.map(item => (
                             <tr key={item.id}>
