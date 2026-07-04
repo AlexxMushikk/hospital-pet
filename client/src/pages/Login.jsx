@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login as loginRequest } from '../api/index'
+import { VALIDATION } from '../constants'
 
 // Называем импорт 'loginRequest' чтобы не конфликтовать
 // с функцией 'login' из useAuth() — у них разные задачи:
@@ -26,7 +27,7 @@ export default function Login() {
         setError('')        // сбрасываем предыдущую ошибку при новой попытке
 
         // Клиентская валидация — та же что была в auth.js
-        if (!email.includes('@')) {
+        if (!VALIDATION.EMAIL_REGEX.test(email)) {
             setError('Введите корректный email')
             return
         }

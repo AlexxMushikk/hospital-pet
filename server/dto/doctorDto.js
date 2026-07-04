@@ -1,5 +1,7 @@
 const { z } = require('zod')
 
+const { emailField, passwordField, nameField, dateField, specializationField } = require('./fields')
+
 const doctorQueryDto = z.object({
     page:           z.coerce.number().int().min(1).default(1),
     limit:          z.coerce.number().int().min(1).max(20).default(6),
@@ -23,12 +25,12 @@ const updateDoctorDto = z.object({
 })
 
 const createDoctorDto = z.object({
-    email:             z.string().email('Введите корректный email'),
-    password:          z.string().min(4, 'Пароль минимум 4 символа'),
-    full_name:         z.string().min(2, 'Имя минимум 2 символа'),
-    specialization:    z.string().min(1, 'Укажите специализацию'),
+    email:             emailField,
+    password:          passwordField,
+    full_name:         nameField,
+    specialization:    specializationField,
     gender:            z.enum(['Male', 'Female', 'Not Specified']).default('Not Specified'),
-    career_start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Формат даты: YYYY-MM-DD'),
+    career_start_date: dateField,
     price:             z.coerce.number().int().min(0).default(200),
 })
 

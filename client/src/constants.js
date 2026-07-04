@@ -8,3 +8,9 @@ export const SPECIALIZATIONS = [
     { value: 'Pediatrics',          label: 'Педиатрия',    icon: '👶', desc: 'Медицинская помощь детям всех возрастов' },
     { value: 'General Examination', label: 'Общий осмотр', icon: '🩺', desc: 'Профилактические осмотры и общая медицина' },
 ]
+
+export const VALIDATION = {
+    PASSWORD_MIN: 4,
+    NAME_MIN: 2,
+    EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+}

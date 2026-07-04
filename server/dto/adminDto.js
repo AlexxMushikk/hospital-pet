@@ -1,26 +1,28 @@
 const { z } = require('zod')
 
+const { emailField, nameField, dateField, timeField, specializationField } = require('./fields')
+
 const paginationDto = z.object({
     page:  z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(50).default(10),
 })
 
 const updateDoctorByAdminDto = z.object({
-    specialization:    z.string().min(1).optional(),
+    specialization:    specializationField.optional(),
 
-    career_start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    career_start_date: dateField.optional(),
     education:         z.string().optional(),
     bio:               z.string().max(1000).optional(),
     price:             z.coerce.number().int().min(0).optional(),
     languages:         z.string().optional(),
     image_url:         z.string().optional(),
-    work_start:        z.string().regex(/^\d{2}:\d{2}$/).optional(),
-    work_end:          z.string().regex(/^\d{2}:\d{2}$/).optional(),
+    work_start:        timeField.optional(),
+    work_end:          timeField.optional(),
     gender:            z.enum(['Male', 'Female', 'Not Specified']).optional(),
 
-    full_name:         z.string().min(2).optional(),
+    full_name:         nameField.optional(),
     phone:             z.string().optional(),
-    email:             z.string().email().optional(),
+    email:             emailField.optional(),
 }).refine(
     data => Object.keys(data).length > 0,
     { message: 'Укажите хотя бы одно поле для обновления' }
@@ -35,17 +37,17 @@ const updateDoctorByAdminDto = z.object({
 )
 
 const updatePatientByAdminDto = z.object({
-    full_name: z.string().min(2).optional(),
+    full_name: nameField.optional(),
     phone:     z.string().optional(),
-    email:     z.string().email().optional(),
+    email:     emailField.optional(),
 }).refine(
     data => Object.keys(data).length > 0,
     { message: 'Укажите хотя бы одно поле для обновления' }
 )
 
 const updateAppointmentByAdminDto = z.object({
-    appointment_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-    appointment_time: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+    appointment_date: dateField.optional(),
+    appointment_time: timeField.optional(),
     status:           z.enum(['Scheduled', 'Completed', 'Cancelled']).optional(),
     symptoms:         z.string().max(250).optional(),
     doctor_notes:     z.string().optional(),

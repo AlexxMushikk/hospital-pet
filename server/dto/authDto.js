@@ -1,14 +1,16 @@
 const { z } = require('zod')
 
+const { emailField, passwordField, nameField } = require('./fields')
+
 const loginDto = z.object({
-    email:    z.string().email('Введите корректный email'),
-    password: z.string().min(4, 'Пароль минимум 4 символа'),
+    email:    emailField,
+    password: passwordField,
 })
 
 const registerDto = z.object({
-    email:     z.string().email('Введите корректный email'),
-    password:  z.string().min(4, 'Пароль минимум 4 символа'),
-    full_name: z.string().min(2, 'Имя минимум 2 символа'),
+    email:     emailField,
+    password:  passwordField,
+    full_name: nameField,
 })
 
 const updateViewDto = z.object({

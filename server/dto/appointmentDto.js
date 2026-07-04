@@ -1,9 +1,11 @@
 const { z } = require('zod')
 
+const { dateField, timeField } = require('./fields')
+
 const createAppointmentDto = z.object({
     doctor_id:        z.number().int().positive(),
-    appointment_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Формат даты: YYYY-MM-DD'),
-    appointment_time: z.string().regex(/^\d{2}:\d{2}$/, 'Формат времени: HH:MM'),
+    appointment_date: dateField,
+    appointment_time: timeField,
     symptoms:         z.string().max(250).optional(),
 })
 

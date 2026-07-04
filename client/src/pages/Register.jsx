@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { register as registerRequest } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
+import { VALIDATION } from '../constants'
 
 export default function Register() {
     const navigate = useNavigate()
@@ -18,11 +19,11 @@ export default function Register() {
         e.preventDefault()
         setError('')
 
-        if (fullName.length < 2) {
+        if (fullName.length < VALIDATION.NAME_MIN) {
             setError('Имя должно содержать минимум 2 символа')
             return
         }
-        if (password.length < 4) {
+        if (password.length < VALIDATION.PASSWORD_MIN) {
             setError('Пароль должен содержать минимум 4 символа')
             return
         }
@@ -59,7 +60,7 @@ export default function Register() {
                             value={fullName}
                             onChange={e => setFullName(e.target.value)}
                             required
-                            minLength={2}
+                            minLength={VALIDATION.NAME_MIN}
                         />
                     </div>
 
@@ -82,7 +83,7 @@ export default function Register() {
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             required
-                            minLength={4}
+                            minLength={VALIDATION.PASSWORD_MIN}
                         />
                     </div>
 
