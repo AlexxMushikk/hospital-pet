@@ -81,8 +81,8 @@ export default function AdminStats() {
                                 <td colSpan={4} style={{ textAlign: 'center' }}>Нет данных</td>
                             </tr>
                         )}
-                        {activity.map((act, i) => (
-                            <tr key={i}>
+                        {activity.map((act) => (
+                            <tr key={act.id}>
                                 <td>{act.date || '---'}</td>
                                 <td>{act.patient_name || 'Неизвестен'}</td>
                                 <td>{act.doctor_name  || 'Неизвестен'}</td>

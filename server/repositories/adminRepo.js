@@ -13,7 +13,8 @@ const getStats = () =>
 
 const getRecentActivity = () =>
     db.prepare(`
-        SELECT a.appointment_date as date,
+        SELECT a.id,
+               a.appointment_date as date,
                p.full_name  as patient_name,
                pd.full_name as doctor_name,
                a.status
