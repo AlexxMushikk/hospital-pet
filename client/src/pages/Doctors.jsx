@@ -199,8 +199,6 @@ export default function Doctors() {
             }
         }
 
-        // void подавляет предупреждение "Promise ignored" —
-        // useEffect не может быть async, поэтому вызываем load() без await
         void load()
         return () => { cancelled = true }
     }, [searchParams, doctorId])

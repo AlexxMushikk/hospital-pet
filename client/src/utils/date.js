@@ -1,5 +1,3 @@
-// src/utils/date.js
-
 // Возвращает сегодняшнюю дату в формате YYYY-MM-DD с учётом таймзоны.
 // Без offset браузер может вернуть вчерашнюю дату в UTC.
 export const getTodayStr = () => {

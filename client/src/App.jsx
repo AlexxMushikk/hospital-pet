@@ -4,7 +4,7 @@ import { useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
-import ErrorBoundary from './components/ErrorBoundary'  // ← добавить
+import ErrorBoundary from './components/ErrorBoundary'
 
 // pages
 import Home             from './pages/Home'
@@ -70,7 +70,7 @@ function AppRoutes() {
 export default function App() {
     return (
         <BrowserRouter>
-            <ErrorBoundary>  {/* ← оборачиваем всё приложение */}
+            <ErrorBoundary>
                 <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                     <Navbar />
                     <main style={{ flex: 1 }}>

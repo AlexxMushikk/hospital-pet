@@ -9,9 +9,6 @@ function h(password) {
 function seedDatabase(db) {
     logger.info('Seeding database')
 
-    // db.transaction() — всё внутри выполняется как одна атомарная операция.
-    // Если что-то упадёт — база откатится в исходное состояние.
-    // В старом sqlite3 транзакций не было — данные могли частично записаться.
     const seed = db.transaction(() => {
 
         // Очищаем таблицы в правильном порядке — сначала зависимые
@@ -63,8 +60,6 @@ function seedDatabase(db) {
         const insertPatient = db.prepare(`INSERT INTO patients (user_id, full_name) VALUES (?, ?)`)
         const insertDoctor  = db.prepare(`INSERT INTO doctors (user_id, specialization, career_start_date, price, gender) VALUES (?, ?, ?, ?, ?)`)
 
-        // Подготовленные запросы (prepare) создаём ОДИН РАЗ — это эффективнее
-        // чем создавать новый запрос на каждую итерацию цикла
         const docIds = {}
         for (const d of doctorData) {
             const user    = insertUser.run(d.email, h('doctor123'))
@@ -133,7 +128,6 @@ function seedDatabase(db) {
         }
     })
 
-    // Вызываем транзакцию — всё выполняется или ничего
     seed()
     logger.info('Seeding finished!')
 }

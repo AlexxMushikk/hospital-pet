@@ -4,21 +4,14 @@ export default class ErrorBoundary extends Component {
 
     state = { hasError: false, error: null }
 
-    // Вызывается когда дочерний компонент бросает ошибку.
-    // Возвращает объект который мерджится в state —
-    // аналог setState но для фазы рендера.
     static getDerivedStateFromError(error) {
         return { hasError: true, error }
     }
 
-    // Вызывается после того как ошибка поймана.
-    // Здесь можно логировать в Sentry, LogRocket и т.д.
-    // info.componentStack — стек компонентов где произошла ошибка.
     componentDidCatch(error, info) {
         console.error('ErrorBoundary caught:', error, info.componentStack)
     }
 
-    // Сбрасываем состояние ошибки — пользователь может попробовать снова
     handleReset = () => {
         this.setState({ hasError: false, error: null })
     }
@@ -41,7 +34,6 @@ export default class ErrorBoundary extends Component {
                                 На главную
                             </button>
                         </div>
-                        {/* В dev-режиме показываем текст ошибки — в продакшене убирать */}
                         {import.meta.env.DEV && (
                             <pre style={{ marginTop: '20px', textAlign: 'left', fontSize: '11px', color: '#dc2626', background: '#fef2f2', padding: '10px', borderRadius: '6px', overflow: 'auto' }}>
                                 {this.state.error?.toString()}

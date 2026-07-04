@@ -11,7 +11,6 @@ export default function CreateDoctor() {
 
     const [saving, setSaving] = useState(false)
 
-    // Все поля формы в одном объекте — удобнее чем 7 отдельных useState
     const [form, setForm] = useState({
         full_name:         '',
         email:             '',
@@ -22,8 +21,6 @@ export default function CreateDoctor() {
         price:             200,
     })
 
-    // Единый обработчик для всех полей формы.
-    // [e.target.name] — вычисляемое имя свойства, берёт name атрибут инпута.
     const handleChange = (e) => {
         const { name, value } = e.target
         setForm(prev => ({ ...prev, [name]: value }))

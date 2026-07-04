@@ -6,7 +6,6 @@ const logger   = require('../services/logger')
 const dbPath = path.join(__dirname, 'hospital.db')
 const isNewDb = !fs.existsSync(dbPath)
 
-// better-sqlite3 — синхронный, открывается сразу без колбэка
 const db = new Database(dbPath)
 
 db.pragma('journal_mode = WAL')  // лучшая производительность при записи
@@ -62,10 +61,5 @@ if (isNewDb) {
     `)
     logger.info('Tables created.')
 }
-
-// Три метода которые будем использовать везде:
-// db.prepare(sql).get(params)    — один результат
-// db.prepare(sql).all(params)    — массив результатов
-// db.prepare(sql).run(params)    — INSERT/UPDATE/DELETE → { lastInsertRowid, changes }
 
 module.exports = { db, isNewDb }

@@ -1,6 +1,4 @@
 // Переиспользуемый пагинатор.
-// Принимает currentPage, totalPages, onPageChange — ничего лишнего.
-// Будет использоваться на Doctors, Admin Database и тд.
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
     if (totalPages <= 1) return null
