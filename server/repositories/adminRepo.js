@@ -14,7 +14,7 @@ const getStats = () =>
 const getRecentActivity = () =>
     db.prepare(`
         SELECT a.id,
-               a.appointment_date as date,
+               strftime('%Y-%m-%d', a.scheduled_at) as date,
                p.full_name  as patient_name,
                pd.full_name as doctor_name,
                a.status
@@ -29,10 +29,11 @@ const getDoctorList = ({ limit, offset, search }) => {
     const where = search ? `WHERE p.full_name LIKE ?` : ''
     const params = search ? [`%${search}%`] : []
     return db.prepare(`
-        SELECT d.id, d.specialization, d.price, p.full_name as name
+        SELECT d.id, s.name as specialization, d.price, p.full_name as name
         FROM doctors d
-        JOIN patients p ON d.user_id = p.user_id
-        ${where}
+                 JOIN patients p        ON d.user_id = p.user_id
+                 JOIN specializations s ON s.id = d.specialization_id
+            ${where}
         ORDER BY d.id
         LIMIT ? OFFSET ?
     `).all(...params, limit, offset)
@@ -44,8 +45,8 @@ const getDoctorCount = ({ search } = {}) => {
     return db.prepare(`
         SELECT COUNT(*) as total
         FROM doctors d
-        JOIN patients p ON d.user_id = p.user_id
-        ${where}
+                 JOIN patients p ON d.user_id = p.user_id
+            ${where}
     `).get(...params).total
 }
 
@@ -57,8 +58,8 @@ const getPatientList = ({ limit, offset, search }) => {
     return db.prepare(`
         SELECT p.id, p.full_name, u.email
         FROM patients p
-        JOIN users u ON p.user_id = u.id
-        ${where}
+                 JOIN users u ON p.user_id = u.id
+            ${where}
         ORDER BY p.id
         LIMIT ? OFFSET ?
     `).all(...params, limit, offset)
@@ -72,17 +73,23 @@ const getPatientCount = ({ search } = {}) => {
     return db.prepare(`
         SELECT COUNT(*) as total
         FROM patients p
-        JOIN users u ON p.user_id = u.id
-        ${where}
+                 JOIN users u ON p.user_id = u.id
+            ${where}
     `).get(...params).total
 }
 
 const getDoctorRecord = (id) =>
     db.prepare(`
-        SELECT d.*, p.full_name as name, u.email, p.phone, u.role
+        SELECT d.*, s.name as specialization,
+               p.full_name as name, u.email, p.phone, u.role,
+               (SELECT GROUP_CONCAT(l.name, ', ')
+                FROM doctor_languages dl
+                         JOIN languages l ON l.id = dl.language_id
+                WHERE dl.doctor_id = d.id) as languages
         FROM doctors d
-                 LEFT JOIN patients p ON d.user_id = p.user_id
-                 LEFT JOIN users u    ON d.user_id = u.id
+                 LEFT JOIN patients p        ON d.user_id = p.user_id
+                 LEFT JOIN users u           ON d.user_id = u.id
+                 LEFT JOIN specializations s ON s.id = d.specialization_id
         WHERE d.id = ?
     `).get(id)
 
@@ -96,7 +103,10 @@ const getPatientRecord = (id) =>
 
 const getAppointmentRecord = (id) =>
     db.prepare(`
-        SELECT a.id, a.doctor_id, a.appointment_date, a.appointment_time, a.status,
+        SELECT a.id, a.doctor_id,
+               strftime('%Y-%m-%d', a.scheduled_at) as appointment_date,
+               strftime('%H:%M',    a.scheduled_at) as appointment_time,
+               a.status,
                p.full_name  as patient_name,
                pd.full_name as doctor_name
         FROM appointments a

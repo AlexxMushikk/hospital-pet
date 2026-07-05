@@ -13,8 +13,4 @@ const registerDto = z.object({
     full_name: nameField,
 })
 
-const updateViewDto = z.object({
-    last_view: z.enum(['patient', 'doctor']),
-})
-
-module.exports = { loginDto, registerDto, updateViewDto }
+module.exports = { loginDto, registerDto }

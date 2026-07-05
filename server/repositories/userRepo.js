@@ -2,7 +2,7 @@ const { db } = require('../db/database')
 
 const findByEmail = (email) =>
     db.prepare(`
-        SELECT u.id, u.email, u.role, u.password, u.last_view,
+        SELECT u.id, u.email, u.role, u.password,
                p.full_name, p.id as patient_id, d.id as doctor_id
         FROM users u
                  LEFT JOIN patients p ON u.id = p.user_id
@@ -15,9 +15,6 @@ const create = (email, hashedPassword, role = 'patient') =>
         `INSERT INTO users (email, password, role) VALUES (?, ?, ?)`
     ).run(email, hashedPassword, role).lastInsertRowid
 
-const updateView = (userId, view) =>
-    db.prepare(`UPDATE users SET last_view = ? WHERE id = ?`).run(view, userId)
-
 const findById = (id) =>
     db.prepare(`
         SELECT u.id, u.email, u.role,
@@ -28,4 +25,4 @@ const findById = (id) =>
         WHERE u.id = ?
     `).get(id)
 
-module.exports = { findByEmail, findById, create, updateView }
+module.exports = { findByEmail, findById, create }

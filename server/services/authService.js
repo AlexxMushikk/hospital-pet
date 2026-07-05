@@ -1,7 +1,7 @@
-const bcrypt    = require('bcrypt')
-const userRepo  = require('../repositories/userRepo')
+const bcrypt      = require('bcrypt')
+const userRepo    = require('../repositories/userRepo')
 const patientRepo = require('../repositories/patientRepo')
-const { loginDto, registerDto, updateViewDto } = require('../dto/authDto')
+const { loginDto, registerDto } = require('../dto/authDto')
 const { db } = require('../db/database')
 const logger = require('./logger')
 
@@ -57,9 +57,4 @@ async function register(body) {
     createAll()
 }
 
-function updateView(userId, body) {
-    const { last_view } = validate(updateViewDto, body)
-    userRepo.updateView(userId, last_view)
-}
-
-module.exports = { login, register, updateView }
+module.exports = { login, register }
