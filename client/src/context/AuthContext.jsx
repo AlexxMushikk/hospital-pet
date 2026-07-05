@@ -1,7 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState } from 'react'
 import axios from 'axios'
-import { updateView as updateViewRequest } from '../api/index'
 
 export const AuthContext = createContext(null)
 
@@ -12,6 +11,9 @@ export function AuthProvider({ children }) {
         return stored ? JSON.parse(stored) : null
     })
     const [token, setToken] = useState(null)
+
+    // Вид врача (doctor / patient) — состояние конкретного устройства, живёт в localStorage.
+    const [view, setView] = useState(() => localStorage.getItem('hospital_view') || 'doctor')
 
     const login = (userData, accessToken) => {
         localStorage.setItem('hospital_user', JSON.stringify(userData))
@@ -30,26 +32,12 @@ export function AuthProvider({ children }) {
         setToken(null)
     }
 
-    const switchView = async (view) => {
-        if (!user) return
-        if (user.last_view === view) return   // уже в этом режиме — ничего не делаем
-
-        const previous = user.last_view
-        const optimistic = { ...user, last_view: view }
-
-        // Optimistic: обновляем UI сразу
-        localStorage.setItem('hospital_user', JSON.stringify(optimistic))
-        setUser(optimistic)
-
-        try {
-            await updateViewRequest({ last_view: view })
-        } catch {
-            // Откатываемся при ошибке
-            const reverted = { ...user, last_view: previous }
-            localStorage.setItem('hospital_user', JSON.stringify(reverted))
-            setUser(reverted)
-            throw new Error('Не удалось переключить режим')
-        }
+    const switchView = (next, navigate) => {
+        if (next !== 'patient' && next !== 'doctor') return
+        localStorage.setItem('hospital_view', next)
+        setView(next)
+        // Переадресация на стартовую страницу выбранного вида.
+        if (navigate) navigate(next === 'doctor' ? '/doctor/schedule' : '/')
     }
 
     const updateToken = (newToken) => {
@@ -57,7 +45,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout, switchView, updateToken }}>
+        <AuthContext.Provider value={{ user, token, view, login, logout, switchView, updateToken }}>
             {children}
         </AuthContext.Provider>
     )

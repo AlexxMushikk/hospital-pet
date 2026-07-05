@@ -10,7 +10,7 @@ import { formatDateTime } from '../utils/date'
 export default function AppointmentDetails() {
     const { id }   = useParams()
     const navigate = useNavigate()
-    const { user } = useAuth()
+    const { user, view } = useAuth()
     const { modal, showModal, closeModal } = useModal()
 
     const [app,          setApp]          = useState(null)
@@ -103,7 +103,7 @@ export default function AppointmentDetails() {
         }
     }
 
-    const isDocView = user?.role === 'doctor' && user?.last_view === 'doctor'
+    const isDocView = user?.role === 'doctor' && view === 'doctor'
 
     if (loading) {
         return (

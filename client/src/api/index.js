@@ -83,7 +83,6 @@ api.interceptors.response.use(
 
 export const login    = (data) => api.post('/login', data)
 export const register = (data) => api.post('/register', data)
-export const updateView = (data) => api.patch('/users/view', data)
 export const getPublicStats = () => api.get('/stats/public')
 
 export const getDoctors     = (params)     => api.get('/doctors', { params })

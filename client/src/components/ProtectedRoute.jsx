@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function ProtectedRoute({ children, role }) {
-    const { user } = useAuth()
+    const { user, view } = useAuth()
     const location = useLocation()
 
     if (!user) return <Navigate to="/login" replace />
@@ -11,13 +11,20 @@ export default function ProtectedRoute({ children, role }) {
 
     if (user.role === 'doctor') {
         const path = location.pathname
-        if (user.last_view === 'patient' && path.startsWith('/doctor')) {
+
+        if (view === 'patient' && path.startsWith('/doctor')) {
             return <Navigate to="/doctors" replace />
         }
-        if (user.last_view === 'doctor' && (
-            path.startsWith('/appointments') || path.startsWith('/booking')
-        )) {
-            return <Navigate to="/doctor/schedule" replace />
+
+        if (view === 'doctor') {
+            const allowed =
+                path === '/doctor/schedule' ||
+                path === '/doctor/profile' ||
+                /^\/appointments\/[^/]+$/.test(path)
+
+            if (!allowed) {
+                return <Navigate to="/doctor/schedule" replace />
+            }
         }
     }
 

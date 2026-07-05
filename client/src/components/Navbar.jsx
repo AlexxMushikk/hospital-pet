@@ -1,21 +1,11 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useModal } from '../hooks/useModal'
-import Modal from './Modal'
 
 export default function Navbar() {
-    const { user, logout, switchView } = useAuth()
-    const { modal, showModal, closeModal } = useModal()
+    const { user, logout, switchView, view } = useAuth()
+    const navigate = useNavigate()
 
     const navClass = ({ isActive }) => isActive ? 'active' : undefined
-
-    const handleSwitchView = async (view) => {
-        try {
-            await switchView(view)
-        } catch (err) {
-            showModal('Ошибка', err.message || 'Не удалось переключить режим')
-        }
-    }
 
     return (
         <header>
@@ -36,14 +26,14 @@ export default function Navbar() {
                                 {user && <li><NavLink to="/appointments" className={navClass}>Мои визиты</NavLink></li>}
                             </>
                         )}
-                        {user?.role === 'doctor' && user.last_view === 'patient' && (
+                        {user?.role === 'doctor' && view === 'patient' && (
                             <>
                                 <li><NavLink to="/" end className={navClass}>Главная</NavLink></li>
                                 <li><NavLink to="/doctors" className={navClass}>Врачи</NavLink></li>
                                 <li><NavLink to="/appointments" className={navClass}>Мои визиты</NavLink></li>
                             </>
                         )}
-                        {user?.role === 'doctor' && user.last_view === 'doctor' && (
+                        {user?.role === 'doctor' && view === 'doctor' && (
                             <>
                                 <li><NavLink to="/doctor/schedule" className={navClass}>Расписание</NavLink></li>
                                 <li><NavLink to="/doctor/profile" className={navClass}>Настройки</NavLink></li>
@@ -63,14 +53,14 @@ export default function Navbar() {
                                 {user.role === 'doctor' && (
                                     <div className="view-switcher">
                                         <button
-                                            className={`view-btn ${user.last_view === 'patient' ? 'active' : ''}`}
-                                            onClick={() => handleSwitchView('patient')}
+                                            className={`view-btn ${view === 'patient' ? 'active' : ''}`}
+                                            onClick={() => switchView('patient', navigate)}
                                         >
                                             Пациент
                                         </button>
                                         <button
-                                            className={`view-btn ${user.last_view === 'doctor' ? 'active' : ''}`}
-                                            onClick={() => handleSwitchView('doctor')}
+                                            className={`view-btn ${view === 'doctor' ? 'active' : ''}`}
+                                            onClick={() => switchView('doctor', navigate)}
                                         >
                                             Врач
                                         </button>
@@ -91,16 +81,6 @@ export default function Navbar() {
 
                 </div>
             </nav>
-
-            <Modal
-                isOpen={modal.isOpen}
-                title={modal.title}
-                message={modal.message}
-                onConfirm={modal.onConfirm}
-                onClose={closeModal}
-                cancelLabel={modal.cancelLabel}
-                variant={modal.variant}
-            />
         </header>
     )
 }

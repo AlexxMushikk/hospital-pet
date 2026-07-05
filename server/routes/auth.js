@@ -2,7 +2,6 @@ const express      = require('express')
 const authService  = require('../services/authService')
 const jwtService   = require('../services/jwtService')
 const userRepo     = require('../repositories/userRepo')
-const verifyToken  = require('../middleware/verifyToken')
 
 const router = express.Router()
 
@@ -71,11 +70,6 @@ router.post('/refresh', (req, res) => {
 router.post('/logout', (req, res) => {
     res.clearCookie('refreshToken', COOKIE_OPTIONS)
     res.json({ message: 'Logged out' })
-})
-
-router.patch('/users/view', verifyToken(), (req, res) => {
-    authService.updateView(req.user.id, req.body)
-    res.json({ message: 'View updated' })
 })
 
 module.exports = router
