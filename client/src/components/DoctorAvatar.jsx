@@ -1,12 +1,26 @@
-export default function DoctorAvatar({ name, size = 28 }) {
+export default function DoctorAvatar({ name, imageUrl, size = 28 }) {
+    const borderRadius = Math.round(size / 3.5)
+
+    if (imageUrl) {
+        return (
+            <img
+                src={imageUrl}
+                alt={name || ''}
+                style={{
+                    width: '100%', height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: `${borderRadius}px`,
+                }}
+            />
+        )
+    }
+
     const initials = (name || '?')
         .split(' ')
         .slice(0, 2)
         .map(w => w[0] || '')
         .join('')
         .toUpperCase() || '?'
-
-    const borderRadius = Math.round(size / 3.5)
 
     return (
         <div style={{

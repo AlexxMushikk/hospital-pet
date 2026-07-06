@@ -61,11 +61,7 @@ export default function DoctorProfile() {
 
                 <aside className="profile-sidebar">
                     <div className="profile-photo">
-                        {doctor.image_url
-                            ? <img src={doctor.image_url} alt={doctor.name}
-                                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} />
-                            : <DoctorAvatar name={doctor.name} size={48} />
-                        }
+                        <DoctorAvatar name={doctor.name} imageUrl={doctor.image_url} size={48} />
                     </div>
 
                     <h2 style={{ margin: '15px 0 5px' }}>{doctor.name}</h2>

@@ -10,11 +10,7 @@ export default function DoctorCard({ doctor, onBookClick }) {
     return (
         <div className="doctor-card">
             <div className="doctor-photo-box">
-                {doctor.image_url
-                    ? <img src={doctor.image_url} alt={doctor.name}
-                           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
-                    : <DoctorAvatar name={doctor.name}/>
-                }
+                <DoctorAvatar name={doctor.name} imageUrl={doctor.image_url} />
             </div>
 
             <div className="doctor-info">
