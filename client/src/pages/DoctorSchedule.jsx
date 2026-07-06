@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { getDoctorSlots } from '../api/index'
 import { statusLabel, statusClass } from '../utils/status'
 import { getTodayStr } from '../utils/date'
+import Pagination from '../components/Pagination'
 
 const PAGE_SIZE = 4
 
@@ -126,25 +127,11 @@ export default function DoctorSchedule() {
                     ))}
                 </ul>
 
-                <div className="pagination-container">
-                    <button
-                        className="btn btn-outline btn-sm"
-                        onClick={() => setPage(p => p - 1)}
-                        disabled={page === 0}
-                    >
-                        ← Назад
-                    </button>
-                    <span style={{ fontWeight: 700, color: '#4b5563' }}>
-                        Страница {page + 1} из {totalPages || 1}
-                    </span>
-                    <button
-                        className="btn btn-outline btn-sm"
-                        onClick={() => setPage(p => p + 1)}
-                        disabled={page >= totalPages - 1 || totalPages === 0}
-                    >
-                        Вперёд →
-                    </button>
-                </div>
+                <Pagination
+                    currentPage={page + 1}
+                    totalPages={totalPages}
+                    onPageChange={p => setPage(p - 1)}
+                />
             </div>
         </main>
     )
