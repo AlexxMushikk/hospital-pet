@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login as loginRequest } from '../api/index'
 import { VALIDATION } from '../constants'
+import AuthForm, { AuthField } from '../components/AuthForm'
 
 export default function Login() {
     const navigate = useNavigate()
@@ -38,55 +39,30 @@ export default function Login() {
     }
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
-                <h2>Добро пожаловать</h2>
-                <p style={{ color: '#6b7280', marginBottom: '25px' }}>
-                    Введите данные для входа
-                </p>
-
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            placeholder="example@mail.com"
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Пароль</label>
-                        <input
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    {error && (
-                        <div className="error-message">{error}</div>
-                    )}
-
-                    <div className="form-actions">
-                        <button
-                            type="submit"
-                            className="btn btn-solid w-full"
-                            disabled={loading}
-                        >
-                            {loading ? 'Вход...' : 'Войти'}
-                        </button>
-                    </div>
-                </form>
-
-                <div style={{ textAlign: 'center', marginTop: '20px', color: '#6b7280' }}>
-                    <p>Нет аккаунта? <Link to="/register">Создать сейчас</Link></p>
-                </div>
-            </div>
-        </div>
+        <AuthForm
+            title="Добро пожаловать"
+            subtitle="Введите данные для входа"
+            error={error}
+            loading={loading}
+            submitLabel="Войти"
+            loadingLabel="Вход..."
+            onSubmit={handleSubmit}
+            footer={<p>Нет аккаунта? <Link to="/register">Создать сейчас</Link></p>}
+        >
+            <AuthField
+                label="Email"
+                type="email"
+                placeholder="example@mail.com"
+                value={email}
+                onChange={setEmail}
+            />
+            <AuthField
+                label="Пароль"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={setPassword}
+            />
+        </AuthForm>
     )
 }
