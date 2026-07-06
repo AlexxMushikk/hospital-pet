@@ -181,12 +181,11 @@ export default function Doctors() {
                     ...(filters.experience !== '0' && { minExperience: filters.experience }),
                     ...(filters.minPrice && { minPrice: filters.minPrice }),
                     ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
+                    ...(doctorId && { excludeDoctorId: doctorId }),
                 }
 
                 const response = await getDoctors(params)
                 let { doctors: list, totalPages: pages } = response.data
-
-                if (doctorId) list = list.filter(doc => doc.id !== doctorId)
 
                 if (!cancelled) {
                     setDoctors(list)

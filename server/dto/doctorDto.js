@@ -15,6 +15,8 @@ const doctorQueryDto = z.object({
 
     minPrice:       z.coerce.number().int().min(0).optional(),
     maxPrice:       z.coerce.number().int().min(0).optional(),
+
+    excludeDoctorId: z.coerce.number().int().positive().optional(),
 })
 
 const updateDoctorDto = z.object({

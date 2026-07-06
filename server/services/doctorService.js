@@ -36,11 +36,11 @@ function calculateExperience(startDate) {
 }
 
 function getDoctors(query) {
-    const { page, limit, specialization, gender, name, minExperience, sort, minPrice, maxPrice } = validate(doctorQueryDto, query)
+    const { page, limit, specialization, gender, name, minExperience, sort, minPrice, maxPrice, excludeDoctorId } = validate(doctorQueryDto, query)
     const offset = (page - 1) * limit
 
     const { doctors, total } = doctorRepo.findAll({
-        specialization, gender, name, minExperience, sort, minPrice, maxPrice, limit, offset,
+        specialization, gender, name, minExperience, sort, minPrice, maxPrice, excludeDoctorId, limit, offset,
     })
 
     return {
