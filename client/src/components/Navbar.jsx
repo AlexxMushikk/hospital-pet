@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 export default function Navbar() {
     const { user, logout, switchView, view } = useAuth()
     const navigate = useNavigate()
+    const effectiveRole = user?.role === 'doctor' && view === 'patient' ? 'patient' : user?.role
 
     const navClass = ({ isActive }) => isActive ? 'active' : undefined
 
@@ -19,27 +20,20 @@ export default function Navbar() {
                 <div className="container flex-nav">
 
                     <ul className="nav-links">
-                        {(!user || user.role === 'patient') && (
+                        {(!user || effectiveRole === 'patient') && (
                             <>
                                 <li><NavLink to="/" end className={navClass}>Главная</NavLink></li>
                                 <li><NavLink to="/doctors" className={navClass}>Врачи</NavLink></li>
                                 {user && <li><NavLink to="/appointments" className={navClass}>Мои визиты</NavLink></li>}
                             </>
                         )}
-                        {user?.role === 'doctor' && view === 'patient' && (
-                            <>
-                                <li><NavLink to="/" end className={navClass}>Главная</NavLink></li>
-                                <li><NavLink to="/doctors" className={navClass}>Врачи</NavLink></li>
-                                <li><NavLink to="/appointments" className={navClass}>Мои визиты</NavLink></li>
-                            </>
-                        )}
-                        {user?.role === 'doctor' && view === 'doctor' && (
+                        {effectiveRole === 'doctor' && (
                             <>
                                 <li><NavLink to="/doctor/schedule" className={navClass}>Расписание</NavLink></li>
                                 <li><NavLink to="/doctor/profile" className={navClass}>Настройки</NavLink></li>
                             </>
                         )}
-                        {user?.role === 'admin' && (
+                        {effectiveRole === 'admin' && (
                             <>
                                 <li><NavLink to="/admin/stats" className={navClass}>Статистика</NavLink></li>
                                 <li><NavLink to="/admin/database" className={navClass}>База данных</NavLink></li>
