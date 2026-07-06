@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 
 import Navbar from './components/Navbar'
@@ -25,45 +25,66 @@ import AdminDatabase    from './pages/admin/Database'
 import AdminEditRecord  from './pages/admin/EditRecord'
 import CreateDoctor from './pages/admin/CreateDoctor'
 
+function DoctorViewGuard({ children }) {
+    const { user, view } = useAuth()
+    const location = useLocation()
+
+    if (user?.role === 'doctor' && view === 'doctor') {
+        const path = location.pathname
+        const allowed =
+            path === '/doctor/schedule' ||
+            path === '/doctor/profile' ||
+            /^\/appointments\/[^/]+$/.test(path)
+
+        if (!allowed) {
+            return <Navigate to="/doctor/schedule" replace />
+        }
+    }
+
+    return children
+}
+
 function AppRoutes() {
     const { user } = useAuth()
 
     return (
-        <Routes>
-            {/* Публичные маршруты */}
-            <Route path="/"          element={<Home />} />
-            <Route path="/doctors"   element={<Doctors />} />
-            <Route path="/doctors/:id" element={<DoctorProfile />} />
+        <DoctorViewGuard>
+            <Routes>
+                {/* Публичные маршруты */}
+                <Route path="/"          element={<Home />} />
+                <Route path="/doctors"   element={<Doctors />} />
+                <Route path="/doctors/:id" element={<DoctorProfile />} />
 
-            {/* Перенаправление залогиненных со страниц auth */}
-            <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
-            <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+                {/* Перенаправление залогиненных со страниц auth */}
+                <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
+                <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
 
-            {/* Защищённые — только для залогиненных (любая роль) */}
-            <Route path="/booking"      element={<ProtectedRoute><Booking /></ProtectedRoute>} />
-            <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
-            <Route path="/appointments/:id" element={<ProtectedRoute><AppointmentDetails /></ProtectedRoute>}/>
+                {/* Защищённые — только для залогиненных (любая роль) */}
+                <Route path="/booking"      element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+                <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
+                <Route path="/appointments/:id" element={<ProtectedRoute><AppointmentDetails /></ProtectedRoute>}/>
 
-            {/* Защищённые — только для врачей */}
-            <Route path="/doctor/schedule"
-                   element={<ProtectedRoute role="doctor"><DoctorSchedule /></ProtectedRoute>} />
-            <Route path="/doctor/profile"
-                   element={<ProtectedRoute role="doctor"><DoctorEditProfile /></ProtectedRoute>} />
+                {/* Защищённые — только для врачей */}
+                <Route path="/doctor/schedule"
+                       element={<ProtectedRoute role="doctor"><DoctorSchedule /></ProtectedRoute>} />
+                <Route path="/doctor/profile"
+                       element={<ProtectedRoute role="doctor"><DoctorEditProfile /></ProtectedRoute>} />
 
-            {/* Защищённые — только для admin */}
-            <Route path="/admin"          element={<Navigate to="/admin/stats" replace />} />
-            <Route path="/admin/stats"
-                   element={<ProtectedRoute role="admin"><AdminStats /></ProtectedRoute>} />
-            <Route path="/admin/database"
-                   element={<ProtectedRoute role="admin"><AdminDatabase /></ProtectedRoute>} />
-            <Route path="/admin/records/:table/:id"
-                   element={<ProtectedRoute role="admin"><AdminEditRecord /></ProtectedRoute>} />
-            <Route path="/admin/create-doctor"
-                   element={<ProtectedRoute role="admin"><CreateDoctor /></ProtectedRoute>} />
+                {/* Защищённые — только для admin */}
+                <Route path="/admin"          element={<Navigate to="/admin/stats" replace />} />
+                <Route path="/admin/stats"
+                       element={<ProtectedRoute role="admin"><AdminStats /></ProtectedRoute>} />
+                <Route path="/admin/database"
+                       element={<ProtectedRoute role="admin"><AdminDatabase /></ProtectedRoute>} />
+                <Route path="/admin/records/:table/:id"
+                       element={<ProtectedRoute role="admin"><AdminEditRecord /></ProtectedRoute>} />
+                <Route path="/admin/create-doctor"
+                       element={<ProtectedRoute role="admin"><CreateDoctor /></ProtectedRoute>} />
 
-            {/* 404 */}
-            <Route path="*" element={<NotFound />} />
-        </Routes>
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </DoctorViewGuard>
     )
 }
 

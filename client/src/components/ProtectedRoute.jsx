@@ -9,23 +9,8 @@ export default function ProtectedRoute({ children, role }) {
 
     if (role && user.role !== role) return <Navigate to="/" replace />
 
-    if (user.role === 'doctor') {
-        const path = location.pathname
-
-        if (view === 'patient' && path.startsWith('/doctor')) {
-            return <Navigate to="/doctors" replace />
-        }
-
-        if (view === 'doctor') {
-            const allowed =
-                path === '/doctor/schedule' ||
-                path === '/doctor/profile' ||
-                /^\/appointments\/[^/]+$/.test(path)
-
-            if (!allowed) {
-                return <Navigate to="/doctor/schedule" replace />
-            }
-        }
+    if (user.role === 'doctor' && view === 'patient' && location.pathname.startsWith('/doctor')) {
+        return <Navigate to="/doctors" replace />
     }
 
     return children
