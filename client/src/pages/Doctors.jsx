@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getDoctors, getDoctorPriceRange } from '../api/index'
@@ -8,6 +8,8 @@ import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { Range, getTrackBackground } from 'react-range'
 import { DOCTORS_PER_PAGE, SPECIALIZATIONS } from '../constants'
+
+const MIN_PRICE_GAP = 50
 
 function RadioOption({ name, value, label, filterKey, filters, onFilterChange }) {
     return (
@@ -25,14 +27,35 @@ function RadioOption({ name, value, label, filterKey, filters, onFilterChange })
     )
 }
 
+function readQuery(searchParams) {
+    return {
+        page: parseInt(searchParams.get('page') || '1', 10),
+        filters: {
+            name:           searchParams.get('name')           || '',
+            specialization: searchParams.get('specialization') || '',
+            gender:         searchParams.get('gender')         || '',
+            experience:     searchParams.get('experience')     || '0',
+            sort:           searchParams.get('sort')           || 'name_asc',
+            minPrice:       searchParams.get('minPrice')       || null,
+            maxPrice:       searchParams.get('maxPrice')       || null,
+        },
+    }
+}
+
 function PriceRangeSlider({ min = 0, max = 1000, currentMin, currentMax, onChange }) {
+
     const [values, setValues] = useState([currentMin, currentMax])
 
-    const prevMin = useRef(currentMin)
-    const prevMax = useRef(currentMax)
+    const gap = Math.min(MIN_PRICE_GAP, max - min)
 
-    if (prevMin.current !== currentMin) { prevMin.current = currentMin; setValues(v => [currentMin, v[1]]) }
-    if (prevMax.current !== currentMax) { prevMax.current = currentMax; setValues(v => [v[0], currentMax]) }
+    const clampGap = (next) => {
+        let [lo, hi] = next
+        if (hi - lo < gap) {
+            if (lo !== values[0]) lo = hi - gap
+            else                  hi = lo + gap
+        }
+        return [lo, hi]
+    }
 
     return (
         <div>
@@ -45,8 +68,8 @@ function PriceRangeSlider({ min = 0, max = 1000, currentMin, currentMax, onChang
                 min={min}
                 max={max}
                 values={values}
-                onChange={setValues}
-                onFinalChange={([newMin, newMax]) => onChange(newMin, newMax)}
+                onChange={next => setValues(clampGap(next))}
+                onFinalChange={next => { const [lo, hi] = clampGap(next); onChange(lo, hi) }}
                 renderTrack={({ props, children }) => (
                     <div
                         {...props}
@@ -97,16 +120,7 @@ export default function Doctors() {
     // Диапазон цен из БД — загружается один раз при mount
     const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 })
 
-    const filters = {
-        name:           searchParams.get('name')           || '',
-        specialization: searchParams.get('specialization') || '',
-        gender:         searchParams.get('gender')         || '',
-        experience:     searchParams.get('experience')     || '0',
-        sort:           searchParams.get('sort')           || 'name_asc',
-        minPrice:       searchParams.get('minPrice')       || null,
-        maxPrice:       searchParams.get('maxPrice')       || null,
-    }
-    const currentPage = parseInt(searchParams.get('page') || '1', 10)
+    const { page: currentPage, filters } = readQuery(searchParams)
 
     const [doctors,    setDoctors]    = useState([])
     const [totalPages, setTotalPages] = useState(1)
@@ -156,16 +170,7 @@ export default function Doctors() {
     useEffect(() => {
         let cancelled = false
 
-        const currentPage = parseInt(searchParams.get('page') || '1', 10)
-        const filters = {
-            name:           searchParams.get('name')           || '',
-            specialization: searchParams.get('specialization') || '',
-            gender:         searchParams.get('gender')         || '',
-            experience:     searchParams.get('experience')     || '0',
-            sort:           searchParams.get('sort')           || 'name_asc',
-            minPrice:       searchParams.get('minPrice'),
-            maxPrice:       searchParams.get('maxPrice'),
-        }
+        const { page: currentPage, filters } = readQuery(searchParams)
 
         const load = async () => {
             setLoading(true)
@@ -257,7 +262,7 @@ export default function Doctors() {
                         <div className="sidebar-block">
                             <span className="filter-title">Цена визита (PLN)</span>
                             <PriceRangeSlider
-                                key={`${filters.minPrice}-${filters.maxPrice}`}
+                                key={`${priceRange.min}-${priceRange.max}-${filters.minPrice}-${filters.maxPrice}`}
                                 min={priceRange.min}
                                 max={priceRange.max}
                                 currentMin={filters.minPrice ? parseInt(filters.minPrice, 10) : priceRange.min}
