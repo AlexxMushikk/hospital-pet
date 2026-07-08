@@ -5,6 +5,7 @@ import { getDoctorSlots, createAppointment, getDoctor } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { getTodayStr } from '../utils/date'
+import { SLOT_STEP_MINUTES } from '../constants'
 
 export default function Booking() {
     const navigate                         = useNavigate()
@@ -133,7 +134,7 @@ export default function Booking() {
 
                     <div style={{ marginTop: '20px' }}>
                         <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>
-                            2. Выберите время (слоты по 30 минут)
+                            2. Выберите время (слоты по {SLOT_STEP_MINUTES} минут)
                         </label>
 
                         {slotsLoading && (

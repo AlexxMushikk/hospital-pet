@@ -120,5 +120,5 @@ module.exports = {
     getStats, getRecentActivity,
     getDoctorList, getDoctorCount,
     getPatientList, getPatientCount,
-    getDoctorRecord, getPatientRecord, getAppointmentRecord
+    getDoctorRecord, getPatientRecord,
 }

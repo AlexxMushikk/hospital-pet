@@ -2,23 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAdminRecord, updateAdminRecord } from '../../../api/index'
 import RecordFormShell from './RecordFormShell'
+import { TIME_OPTIONS } from '../../../constants'
 
 const STATUSES = [
     { value: 'Scheduled', label: 'Запланирован' },
     { value: 'Completed', label: 'Завершён' },
     { value: 'Cancelled', label: 'Отменён' },
 ]
-
-// Все возможные значения времени (00:00, 00:30, ..., 23:30)
-const TIME_OPTIONS = (() => {
-    const out = []
-    for (let h = 0; h < 24; h++) {
-        for (const m of [0, 30]) {
-            out.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
-        }
-    }
-    return out
-})()
 
 export default function AppointmentRecordForm({ id }) {
     const navigate = useNavigate()

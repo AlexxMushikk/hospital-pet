@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAdminRecord, updateAdminRecord } from '../../../api/index'
 import RecordFormShell from './RecordFormShell'
+import { TIME_OPTIONS } from '../../../constants'
 
 const SPECIALIZATIONS = [
     'Cardiology', 'Neurology', 'Diagnostics',
@@ -13,16 +14,6 @@ const GENDERS = [
     { value: 'Female',        label: 'Женский' },
     { value: 'Not Specified', label: 'Не указан' },
 ]
-
-const TIME_OPTIONS = (() => {
-    const out = []
-    for (let h = 0; h < 24; h++) {
-        for (const m of [0, 30]) {
-            out.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
-        }
-    }
-    return out
-})()
 
 export default function DoctorRecordForm({ id }) {
     const navigate = useNavigate()

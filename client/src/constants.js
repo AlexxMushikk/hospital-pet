@@ -14,3 +14,15 @@ export const VALIDATION = {
     NAME_MIN: 2,
     EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 }
+
+export const SLOT_STEP_MINUTES = 30
+
+export const TIME_OPTIONS = (() => {
+    const out = []
+    for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += SLOT_STEP_MINUTES) {
+            out.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`)
+        }
+    }
+    return out
+})()
