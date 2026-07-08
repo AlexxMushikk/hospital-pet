@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { login as loginRequest } from '../api/index'
 import { VALIDATION } from '../constants'
 import AuthForm, { AuthField } from '../components/AuthForm'
+const LANDING = { doctor: '/doctor/schedule', admin: '/admin/stats' }
 
 export default function Login() {
     const navigate = useNavigate()
@@ -29,7 +30,7 @@ export default function Login() {
             const user = response.data.user
 
             login(user, response.data.accessToken)
-            navigate(user.role === 'doctor' ? '/doctor/schedule' : '/')
+            navigate(LANDING[user.role] || '/')
 
         } catch (err) {
             setError(err.response?.data?.error || 'Ошибка соединения с сервером')

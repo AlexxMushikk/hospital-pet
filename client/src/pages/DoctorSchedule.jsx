@@ -5,6 +5,7 @@ import { getDoctorSlots } from '../api/index'
 import { statusLabel, statusClass } from '../utils/status'
 import { getTodayStr } from '../utils/date'
 import Pagination from '../components/Pagination'
+import StatCard from '../components/StatCard'
 
 const PAGE_SIZE = 4
 
@@ -49,18 +50,9 @@ export default function DoctorSchedule() {
             </section>
 
             <div className="dashboard-header">
-                <div className="stat-card">
-                    <h4>Всего слотов</h4>
-                    <div className="value">{total}</div>
-                </div>
-                <div className="stat-card active">
-                    <h4>Занято</h4>
-                    <div className="value" style={{ color: '#dc2626' }}>{booked}</div>
-                </div>
-                <div className="stat-card">
-                    <h4>Свободно</h4>
-                    <div className="value">{free}</div>
-                </div>
+                <StatCard variant="compact" label="Всего слотов" value={total} />
+                <StatCard variant="compact" accent="active" label="Занято" value={booked} />
+                <StatCard variant="compact" label="Свободно" value={free} />
             </div>
 
             <div className="schedule-card">

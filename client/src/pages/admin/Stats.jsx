@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getAdminStats, getAdminRecentActivity } from '../../api/index'
 import { statusLabel, statusClass } from '../../utils/status'
+import StatCard from '../../components/StatCard'
 
 export default function AdminStats() {
     const [stats,    setStats]    = useState(null)
@@ -44,24 +45,15 @@ export default function AdminStats() {
             </section>
 
             <div className="stats-grid">
-                <div className="stat-box">
-                    <p className="stat-label">Всего записей</p>
-                    <p className="stat-value">{stats?.totalAppointments ?? 0}</p>
-                </div>
-                <div className="stat-box">
-                    <p className="stat-label">Активных врачей</p>
-                    <p className="stat-value">{stats?.activeDoctors ?? 0}</p>
-                </div>
-                <div className="stat-box">
-                    <p className="stat-label">Пациентов</p>
-                    <p className="stat-value">{stats?.totalPatients ?? 0}</p>
-                </div>
-                <div className="stat-box" style={{ borderTopColor: '#16a34a' }}>
-                    <p className="stat-label">Общий доход</p>
-                    <p className="stat-value">
-                        {new Intl.NumberFormat('pl-PL').format(stats?.totalRevenue || 0)} PLN
-                    </p>
-                </div>
+                <StatCard variant="large" label="Всего записей"   value={stats?.totalAppointments ?? 0} />
+                <StatCard variant="large" label="Активных врачей" value={stats?.activeDoctors ?? 0} />
+                <StatCard variant="large" label="Пациентов"       value={stats?.totalPatients ?? 0} />
+                <StatCard
+                    variant="large"
+                    accent="revenue"
+                    label="Общий доход"
+                    value={`${new Intl.NumberFormat('pl-PL').format(stats?.totalRevenue || 0)} PLN`}
+                />
             </div>
 
             <div className="info-section">
