@@ -30,7 +30,7 @@ const setLanguages = db.transaction((doctorId, languages) => {
 })
 
 const findAll = ({ specialization, gender, name, minExperience, minPrice, maxPrice, excludeDoctorId, sort, limit, offset }) => {
-    const conditions = []
+    const conditions = ['u.deleted_at IS NULL']
     const params     = []
 
     if (specialization) { conditions.push('s.name = ?');         params.push(specialization) }
@@ -51,6 +51,7 @@ const findAll = ({ specialization, gender, name, minExperience, minPrice, maxPri
     const baseSql = `
         FROM doctors d
         JOIN patients p        ON d.user_id = p.user_id
+        JOIN users u           ON d.user_id = u.id
         JOIN specializations s ON s.id = d.specialization_id
         ${where}`
 
@@ -75,8 +76,9 @@ const findById = (id) => {
         SELECT d.*, s.name as specialization, p.full_name as name
         FROM doctors d
                  JOIN patients p        ON d.user_id = p.user_id
+                 JOIN users u           ON d.user_id = u.id
                  JOIN specializations s ON s.id = d.specialization_id
-        WHERE d.id = ?
+        WHERE d.id = ? AND u.deleted_at IS NULL
     `).get(id)
     if (doctor) doctor.languages = getLanguagesStr(id)
     return doctor
@@ -129,7 +131,12 @@ const updateByAdmin = db.transaction((id, fields) => {
 })
 
 const getWorkHours = (id) =>
-    db.prepare(`SELECT work_start, work_end FROM doctors WHERE id = ?`).get(id)
+    db.prepare(`
+        SELECT d.work_start, d.work_end
+        FROM doctors d
+                 JOIN users u ON d.user_id = u.id
+        WHERE d.id = ? AND u.deleted_at IS NULL
+    `).get(id)
 
 const getPriceRange = () =>
     db.prepare(`SELECT MIN(price) as min, MAX(price) as max FROM doctors`).get()

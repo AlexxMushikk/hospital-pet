@@ -7,7 +7,7 @@ const findByEmail = (email) =>
         FROM users u
                  LEFT JOIN patients p ON u.id = p.user_id
                  LEFT JOIN doctors d ON u.id = d.user_id
-        WHERE u.email = ?
+        WHERE u.email = ? AND u.deleted_at IS NULL
     `).get(email)
 
 const create = (email, hashedPassword, role = 'patient') =>
@@ -22,7 +22,7 @@ const findById = (id) =>
         FROM users u
                  LEFT JOIN patients p ON u.id = p.user_id
                  LEFT JOIN doctors d ON u.id = d.user_id
-        WHERE u.id = ?
+        WHERE u.id = ? AND u.deleted_at IS NULL
     `).get(id)
 
 const remove = (id) =>
@@ -31,4 +31,7 @@ const remove = (id) =>
 const updateEmail = (id, email) =>
     db.prepare(`UPDATE users SET email = ? WHERE id = ?`).run(email, id)
 
-module.exports = { findByEmail, findById, create, remove, updateEmail }
+const softDelete = (id) =>
+    db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(id)
+
+module.exports = { findByEmail, findById, create, remove, updateEmail, softDelete }

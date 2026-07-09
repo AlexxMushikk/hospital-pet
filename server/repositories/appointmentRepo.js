@@ -63,6 +63,7 @@ const update = (id, fields) => {
     const setParts = keys.map(k => `${k} = ?`)
     const values   = keys.map(k => fields[k])
 
+    // Если меняются дата/время — пересобираем scheduled_at, добирая недостающую часть из текущего значения
     if (fields.appointment_date !== undefined || fields.appointment_time !== undefined) {
         const cur = db.prepare(`
             SELECT strftime('%Y-%m-%d', scheduled_at) as d, strftime('%H:%M', scheduled_at) as t
@@ -106,8 +107,17 @@ const countByDoctor = (doctorId) =>
 const countByPatient = (patientId) =>
     db.prepare(`SELECT COUNT(*) as total FROM appointments WHERE patient_id = ?`).get(patientId).total
 
+// Отменяет все запланированные визиты врача/пациента (при soft-delete).
+// Прошлые Completed/Cancelled не трогаем — это история.
+const cancelScheduledByDoctor = (doctorId) =>
+    db.prepare(`UPDATE appointments SET status = 'Cancelled' WHERE doctor_id = ? AND status = 'Scheduled'`).run(doctorId)
+
+const cancelScheduledByPatient = (patientId) =>
+    db.prepare(`UPDATE appointments SET status = 'Cancelled' WHERE patient_id = ? AND status = 'Scheduled'`).run(patientId)
+
 module.exports = {
     findByDoctor, findByPatient, findById, findConflict,
     create, update, remove, findAll, count,
     countByDoctor, countByPatient,
+    cancelScheduledByDoctor, cancelScheduledByPatient,
 }

@@ -4,8 +4,11 @@ const getStats = () =>
     db.prepare(`
         SELECT
                 (SELECT COUNT(*) FROM appointments) as totalApps,
-                (SELECT COUNT(*) FROM doctors) as totalDocs,
-                (SELECT COUNT(*) FROM users WHERE role = 'patient') as totalPats,
+                (SELECT COUNT(*) FROM doctors d
+                                          JOIN users u ON d.user_id = u.id
+                 WHERE u.deleted_at IS NULL) as totalDocs,
+                (SELECT COUNT(*) FROM users
+                 WHERE role = 'patient' AND deleted_at IS NULL) as totalPats,
                 (SELECT SUM(d.price) FROM appointments a
                                               JOIN doctors d ON a.doctor_id = d.id
                  WHERE a.status = 'Completed') as revenue
@@ -26,12 +29,15 @@ const getRecentActivity = () =>
     `).all()
 
 const getDoctorList = ({ limit, offset, search }) => {
-    const where = search ? `WHERE p.full_name LIKE ?` : ''
+    const where  = search
+        ? `WHERE u.deleted_at IS NULL AND p.full_name LIKE ?`
+        : `WHERE u.deleted_at IS NULL`
     const params = search ? [`%${search}%`] : []
     return db.prepare(`
         SELECT d.id, s.name as specialization, d.price, p.full_name as name
         FROM doctors d
                  JOIN patients p        ON d.user_id = p.user_id
+                 JOIN users u           ON d.user_id = u.id
                  JOIN specializations s ON s.id = d.specialization_id
             ${where}
         ORDER BY d.id
@@ -40,20 +46,23 @@ const getDoctorList = ({ limit, offset, search }) => {
 }
 
 const getDoctorCount = ({ search } = {}) => {
-    const where = search ? `WHERE p.full_name LIKE ?` : ''
+    const where  = search
+        ? `WHERE u.deleted_at IS NULL AND p.full_name LIKE ?`
+        : `WHERE u.deleted_at IS NULL`
     const params = search ? [`%${search}%`] : []
     return db.prepare(`
         SELECT COUNT(*) as total
         FROM doctors d
                  JOIN patients p ON d.user_id = p.user_id
+                 JOIN users u    ON d.user_id = u.id
             ${where}
     `).get(...params).total
 }
 
 const getPatientList = ({ limit, offset, search }) => {
     const where = search
-        ? `WHERE u.role = 'patient' AND (p.full_name LIKE ? OR u.email LIKE ?)`
-        : `WHERE u.role = 'patient'`
+        ? `WHERE u.role = 'patient' AND u.deleted_at IS NULL AND (p.full_name LIKE ? OR u.email LIKE ?)`
+        : `WHERE u.role = 'patient' AND u.deleted_at IS NULL`
     const params = search ? [`%${search}%`, `%${search}%`] : []
     return db.prepare(`
         SELECT p.id, p.full_name, u.email
@@ -67,8 +76,8 @@ const getPatientList = ({ limit, offset, search }) => {
 
 const getPatientCount = ({ search } = {}) => {
     const where = search
-        ? `WHERE u.role = 'patient' AND (p.full_name LIKE ? OR u.email LIKE ?)`
-        : `WHERE u.role = 'patient'`
+        ? `WHERE u.role = 'patient' AND u.deleted_at IS NULL AND (p.full_name LIKE ? OR u.email LIKE ?)`
+        : `WHERE u.role = 'patient' AND u.deleted_at IS NULL`
     const params = search ? [`%${search}%`, `%${search}%`] : []
     return db.prepare(`
         SELECT COUNT(*) as total

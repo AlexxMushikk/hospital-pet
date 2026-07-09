@@ -164,16 +164,6 @@ function deleteRecord(table, id) {
     assertTable(table)
 
     if (table === 'doctors') {
-        const appCount = appointmentRepo.countByDoctor(id)
-        if (appCount > 0) {
-            const err = new Error(
-                `Нельзя удалить врача — у него ${appCount} записей в истории. ` +
-                `Удалите или перенесите визиты сначала.`
-            )
-            err.status = 409
-            throw err
-        }
-
         const doctor = doctorRepo.findUserId(id)
         if (!doctor) {
             const err = new Error('Doctor not found')
@@ -182,37 +172,19 @@ function deleteRecord(table, id) {
         }
 
         const execute = db.transaction(() => {
-            doctorRepo.remove(id)
-            patientRepo.removeByUserId(doctor.user_id)
-            userRepo.remove(doctor.user_id)
+            appointmentRepo.cancelScheduledByDoctor(id)
+            userRepo.softDelete(doctor.user_id)
+            // TODO (Фича 2): refreshTokenRepo.revokeAllForUser(doctor.user_id)
         })
         execute()
         return
     }
 
     if (table === 'patients') {
-        const appCount = appointmentRepo.countByPatient(id)
-        if (appCount > 0) {
-            const err = new Error(
-                `Нельзя удалить пациента — у него ${appCount} записей в истории. ` +
-                `Удалите или перенесите визиты сначала.`
-            )
-            err.status = 409
-            throw err
-        }
-
         const patient = adminRepo.getPatientRecord(id)
         if (!patient) {
             const err = new Error('Patient not found')
             err.status = 404
-            throw err
-        }
-
-        if (doctorRepo.findByUserId(patient.user_id)) {
-            const err = new Error(
-                'Эта запись пациента связана с врачом. Удалите врача через раздел "Врачи".'
-            )
-            err.status = 409
             throw err
         }
 
@@ -223,8 +195,9 @@ function deleteRecord(table, id) {
         }
 
         const execute = db.transaction(() => {
-            patientRepo.remove(id)
-            userRepo.remove(patient.user_id)
+            appointmentRepo.cancelScheduledByPatient(id)
+            userRepo.softDelete(patient.user_id)
+            // TODO (Фича 2): refreshTokenRepo.revokeAllForUser(patient.user_id)
         })
         execute()
         return
