@@ -333,6 +333,23 @@ main.container {
     font-size: 15px;
 }
 
+.record-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+.record-form input,
+.record-form select,
+.record-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
 #symptoms { overflow-y: hidden; min-height: 100px; }
 
 .booking-summary {

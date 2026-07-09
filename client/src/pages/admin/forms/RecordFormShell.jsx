@@ -10,7 +10,7 @@ export default function RecordFormShell({ title, onSubmit, submitting, error, ch
             </section>
 
             <div className="auth-card" style={{ maxWidth: '600px', margin: '0 auto' }}>
-                <form onSubmit={onSubmit}>
+                <form className="record-form" onSubmit={onSubmit}>
                     {children}
 
                     {error && (
