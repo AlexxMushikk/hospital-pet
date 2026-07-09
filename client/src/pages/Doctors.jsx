@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { Range, getTrackBackground } from 'react-range'
+import { logger } from '../utils/logger'
 import { DOCTORS_PER_PAGE, SPECIALIZATIONS } from '../constants'
 
 const MIN_PRICE_GAP = 50
@@ -124,7 +125,7 @@ export default function Doctors() {
             .then(res => {
                 setPriceRange(res.data)
             })
-            .catch(err => console.error('priceRange error:', err))
+            .catch(err => logger.error('Doctors.priceRange', err))
     }, [])
 
     const handleFilterChange = (field, value) => {

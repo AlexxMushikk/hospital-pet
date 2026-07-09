@@ -1,4 +1,5 @@
 import { Component } from 'react'
+import { logger } from '../utils/logger'
 
 export default class ErrorBoundary extends Component {
 
@@ -9,7 +10,7 @@ export default class ErrorBoundary extends Component {
     }
 
     componentDidCatch(error, info) {
-        console.error('ErrorBoundary caught:', error, info.componentStack)
+        logger.error('ErrorBoundary', error, info.componentStack)
     }
 
     handleReset = () => {

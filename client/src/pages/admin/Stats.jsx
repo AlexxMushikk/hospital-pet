@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { getAdminStats, getAdminRecentActivity } from '../../api/index'
 import { statusLabel, statusClass } from '../../utils/status'
 import StatCard from '../../components/StatCard'
+import {logger} from "../../utils/logger.js";
 
 export default function AdminStats() {
     const [stats,    setStats]    = useState(null)
@@ -17,8 +18,8 @@ export default function AdminStats() {
                 ])
                 setStats(statsRes.data)
                 setActivity(activityRes.data)
-            } catch {
-                // молча — данные просто не отобразятся
+            } catch (err) {
+                logger.error('AdminStats.fetch', err)
             } finally {
                 setLoading(false)
             }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getPublicStats } from '../api/index'
+import { logger } from '../utils/logger'
 import { SPECIALIZATIONS } from '../constants'
 
 export default function Home() {
@@ -11,7 +12,7 @@ export default function Home() {
     useEffect(() => {
         getPublicStats()
             .then(res => setStats(res.data))
-            .catch(err => console.error('public stats failed:', err))
+            .catch(err => logger.error('Home.publicStats', err))
     }, [])
 
     return (

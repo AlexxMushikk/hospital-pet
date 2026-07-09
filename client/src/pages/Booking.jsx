@@ -5,6 +5,7 @@ import { getDoctorSlots, createAppointment, getDoctor } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { getTodayStr } from '../utils/date'
+import { logger } from '../utils/logger'
 import { SLOT_STEP_MINUTES } from '../constants'
 
 export default function Booking() {
@@ -33,7 +34,7 @@ export default function Booking() {
         if (!doctorId) return
         getDoctor(doctorId)
             .then(res => setDoctorPrice(res.data.price))
-            .catch(() => {})
+            .catch(err => logger.error('Booking.doctorPrice', err))
     }, [doctorId])
 
     useEffect(() => {
