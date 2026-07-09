@@ -1,3 +1,16 @@
+:root {
+    --color-primary:      #dc2626;
+    --color-primary-dark: #991b1b;
+    --color-primary-light:#fef2f2;
+
+    --color-bg:        #f3f4f6;
+    --color-bg-subtle: #f9fafb;
+    --color-border:    #e5e7eb;
+
+    --color-heading:        #111827;
+    --color-text-secondary: #4b5563;
+}
+
 /* =========================================
    SECTION 1: GLOBAL RESET AND TYPOGRAPHY
    ========================================= */
@@ -32,13 +45,13 @@ main.container {
     min-height: auto;
 }
 
-.bg-light { background-color: #f9fafb; }
+.bg-light { background-color: var(--color-bg-subtle); }
 
 /* =========================================
    SECTION 2: HEADER AND NAVIGATION BAR
    ========================================= */
 .main-header {
-    background-color: #dc2626;
+    background-color: var(--color-primary);
     color: white;
     padding: 20px 0;
     text-align: left;
@@ -51,7 +64,7 @@ main.container {
 
 .navbar {
     background-color: white;
-    border-bottom: 2px solid #f3f4f6;
+    border-bottom: 2px solid var(--color-bg);
     padding: 10px 0;
 }
 
@@ -69,14 +82,14 @@ main.container {
 
 .nav-links a {
     text-decoration: none;
-    color: #dc2626;
+    color: var(--color-primary);
     font-weight: 600;
     transition: 0.3s;
 }
 
 .nav-links a:hover,
 .nav-links a.active {
-    color: #991b1b;
+    color: var(--color-primary-dark);
 }
 
 .nav-links a.active {
@@ -90,7 +103,7 @@ main.container {
     left: 0;
     width: 100%;
     height: 2px;
-    background: #dc2626;
+    background: var(--color-primary);
 }
 
 .nav-actions {
@@ -116,19 +129,19 @@ main.container {
 
 .btn-outline {
     background: transparent;
-    border: 1px solid #dc2626;
-    color: #dc2626;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
 }
 
-.btn-outline:hover { background-color: #fef2f2; }
+.btn-outline:hover { background-color: var(--color-primary-light); }
 
 .btn-solid {
-    background-color: #dc2626;
-    border: 1px solid #dc2626;
+    background-color: var(--color-primary);
+    border: 1px solid var(--color-primary);
     color: white;
 }
 
-.btn-solid:hover { background-color: #991b1b; }
+.btn-solid:hover { background-color: var(--color-primary-dark); }
 
 .btn-lg { padding: 15px 30px; font-size: 16px; }
 .btn-sm { padding: 6px 14px; font-size: 14px; white-space: nowrap; }
@@ -152,8 +165,8 @@ main.container {
 }
 
 .status-scheduled { background: #dcfce7; color: #166534; }
-.status-cancelled  { background: #fee2e2; color: #991b1b; }
-.status-completed  { background: #f3f4f6; color: #4b5563; }
+.status-cancelled  { background: #fee2e2; color: var(--color-primary-dark); }
+.status-completed  { background: var(--color-bg); color: var(--color-text-secondary); }
 
 .language-dropdown { position: relative; display: inline-block; }
 
@@ -185,7 +198,7 @@ main.container {
     font-size: 14px;
 }
 
-.dropdown-content a:hover { background-color: #f3f4f6; }
+.dropdown-content a:hover { background-color: var(--color-bg); }
 .language-dropdown:hover .dropdown-content { display: block; }
 
 /* =========================================
@@ -193,7 +206,7 @@ main.container {
    ========================================= */
 .hero { padding: 80px 0; background: linear-gradient(to bottom, #ffffff, #fff5f5); }
 .hero-grid { display: flex; align-items: center; gap: 50px; }
-.hero-text h2 { font-size: 48px; line-height: 1.2; margin-bottom: 20px; color: #dc2626; }
+.hero-text h2 { font-size: 48px; line-height: 1.2; margin-bottom: 20px; color: var(--color-primary); }
 .hero-text p  { font-size: 18px; color: #666; margin-bottom: 30px; }
 
 .hero-image { flex: 1; display: flex; justify-content: center; }
@@ -201,7 +214,7 @@ main.container {
 .hospital-logo-placeholder {
     width: 300px;
     height: 300px;
-    background-color: #dc2626;
+    background-color: var(--color-primary);
     color: white;
     font-size: 150px;
     display: flex;
@@ -217,17 +230,17 @@ main.container {
 .feature-card {
     flex: 1;
     padding: 40px;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--color-bg);
     border-radius: 10px;
     text-align: center;
     transition: 0.3s;
 }
 
-.feature-card:hover { border-color: #dc2626; transform: translateY(-5px); }
-.feature-card h3 { color: #dc2626; margin-bottom: 15px; font-size: 22px; }
+.feature-card:hover { border-color: var(--color-primary); transform: translateY(-5px); }
+.feature-card h3 { color: var(--color-primary); margin-bottom: 15px; font-size: 22px; }
 
 .info-banner {
-    background-color: #dc2626;
+    background-color: var(--color-primary);
     color: white;
     padding: 50px 0;
     text-align: center;
@@ -236,7 +249,7 @@ main.container {
 }
 
 .page-title { text-align: center; padding: 30px 0 20px; }
-.page-title h2 { font-size: 32px; color: #dc2626; margin-bottom: 5px; }
+.page-title h2 { font-size: 32px; color: var(--color-primary); margin-bottom: 5px; }
 
 .services-grid {
     display: grid;
@@ -247,7 +260,7 @@ main.container {
 
 .service-card {
     background: white;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--color-bg);
     border-radius: 12px;
     padding: 30px;
     display: flex;
@@ -255,7 +268,7 @@ main.container {
     transition: 0.3s;
 }
 
-.service-card:hover { border-color: #dc2626; transform: translateY(-8px); }
+.service-card:hover { border-color: var(--color-primary); transform: translateY(-8px); }
 
 .doctors-grid {
     display: grid;
@@ -266,7 +279,7 @@ main.container {
 
 .doctor-card {
     background: white;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--color-bg);
     border-radius: 12px;
     padding: 25px;
     display: flex;
@@ -277,8 +290,8 @@ main.container {
 .doctor-photo-box {
     width: 120px;
     height: 150px;
-    background-color: #f9fafb;
-    border: 2px dashed #e5e7eb;
+    background-color: var(--color-bg-subtle);
+    border: 2px dashed var(--color-border);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -353,19 +366,19 @@ main.container {
 #symptoms { overflow-y: hidden; min-height: 100px; }
 
 .booking-summary {
-    background-color: #fef2f2;
-    border-left: 5px solid #dc2626;
+    background-color: var(--color-primary-light);
+    border-left: 5px solid var(--color-primary);
     padding: 20px;
     border-radius: 0 12px 12px 0;
     text-align: left;
     margin-bottom: 25px;
 }
 
-.booking-summary strong { color: #dc2626; }
+.booking-summary strong { color: var(--color-primary); }
 
 .error-message {
-    background: #fef2f2;
-    color: #dc2626;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
     padding: 10px;
     border-radius: 6px;
     margin-bottom: 20px;
@@ -399,7 +412,7 @@ main.container {
 .profile-photo {
     width: 200px;
     height: 250px;
-    background: #f3f4f6;
+    background: var(--color-bg);
     border-radius: 12px;
     margin: 0 auto 20px;
     display: flex;
@@ -409,15 +422,15 @@ main.container {
 }
 
 .rating-badge { color: #f59e0b; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-.price-tag   { font-size: 24px; font-weight: bold; color: #dc2626; margin: 20px 0; }
+.price-tag   { font-size: 24px; font-weight: bold; color: var(--color-primary); margin: 20px 0; }
 
 .info-section { margin-bottom: 30px; }
 
 .info-section h3 {
-    border-bottom: 2px solid #f3f4f6;
+    border-bottom: 2px solid var(--color-bg);
     padding-bottom: 10px;
     margin-bottom: 15px;
-    color: #dc2626;
+    color: var(--color-primary);
     font-size: 20px;
 }
 
@@ -431,11 +444,11 @@ main.container {
 
 .view-switcher {
     display: flex;
-    background: #f3f4f6;
+    background: var(--color-bg);
     padding: 4px;
     border-radius: 20px;
     margin-right: 15px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--color-border);
 }
 
 .view-btn {
@@ -452,7 +465,7 @@ main.container {
 
 .view-btn.active {
     background: white;
-    color: #dc2626;
+    color: var(--color-primary);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -473,12 +486,12 @@ main.container {
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s;
-    background-color: #dc2626;
+    background-color: var(--color-primary);
     color: white;
 }
 
 .slot-btn:hover    { background-color: #b91c1c; }
-.slot-btn.booked   { background-color: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+.slot-btn.booked   { background-color: var(--color-border); color: #9ca3af; cursor: not-allowed; }
 .slot-btn.selected { background-color: #7f1d1d; box-shadow: inset 0 0 10px rgba(0,0,0,0.3); transform: scale(0.95); }
 
 /* =========================================
@@ -505,7 +518,7 @@ main.container {
 .stat-card--large {
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border-top: 5px solid #dc2626;
+    border-top: 5px solid var(--color-primary);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -521,7 +534,7 @@ main.container {
 .stat-card--large .stat-card__value {
     font-size: 32px;
     font-weight: 800;
-    color: #111827;
+    color: var(--color-heading);
 }
 .stat-card--revenue { border-top-color: #16a34a; }
 
@@ -538,10 +551,10 @@ main.container {
 .stat-card--compact .stat-card__value {
     font-size: 24px;
     font-weight: bold;
-    color: #111827;
+    color: var(--color-heading);
 }
-.stat-card--active { border-bottom-color: #dc2626; }
-.stat-card--active .stat-card__value { color: #dc2626; }
+.stat-card--active { border-bottom-color: var(--color-primary); }
+.stat-card--active .stat-card__value { color: var(--color-primary); }
 
 .schedule-card {
     background: white;
@@ -552,7 +565,7 @@ main.container {
 }
 
 .schedule-controls {
-    background: #f9fafb;
+    background: var(--color-bg-subtle);
     padding: 15px 25px;
     border-bottom: 1px solid #eee;
     display: flex;
@@ -567,12 +580,12 @@ main.container {
     background: #ffffff;
     padding: 8px 16px;
     border-radius: 10px;
-    border: 2px solid #f3f4f6;
+    border: 2px solid var(--color-bg);
     transition: 0.3s;
 }
 
 .date-input-group:focus-within {
-    border-color: #dc2626;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1);
 }
 
@@ -605,7 +618,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 90px;
     padding: 0 30px;
     background: white;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--color-bg);
     border-radius: 12px;
     margin-bottom: 15px;
     transition: all 0.2s ease;
@@ -615,7 +628,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .slot-item:last-child { margin-bottom: 0; }
 
 .slot-item:hover {
-    background-color: #f9fafb;
+    background-color: var(--color-bg-subtle);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
@@ -623,7 +636,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .slot-time {
     font-size: 18px;
     font-weight: 700;
-    color: #111827;
+    color: var(--color-heading);
     min-width: 80px;
 }
 
@@ -637,11 +650,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .slot-item.empty    { background-color: #fafafa; color: #9ca3af; border-style: dashed; }
-.slot-item.occupied { border-left: 6px solid #dc2626; }
+.slot-item.occupied { border-left: 6px solid var(--color-primary); }
 
 .pagination-container {
     padding: 15px;
-    background: #f9fafb;
+    background: var(--color-bg-subtle);
     border-top: 1px solid #eee;
     display: flex;
     justify-content: center;
@@ -665,7 +678,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 16px;
 }
 
-.static-time-display .icon    { font-size: 20px; color: #dc2626; }
+.static-time-display .icon    { font-size: 20px; color: var(--color-primary); }
 .static-time-display .label-sm { font-size: 11px; text-transform: uppercase; color: #94a3b8; margin-bottom: 2px; display: block; }
 
 .modal-overlay {
@@ -700,7 +713,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
    SECTION 10: LOADING SKELETONS
    ========================================= */
 .skeleton {
-    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg) 50%, var(--color-border) 75%);
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s infinite;
     border-radius: 4px;
@@ -721,7 +734,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background: white;
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--color-bg);
     margin-bottom: 25px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -734,7 +747,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .doctors-sidebar {
     flex: 0 0 260px;
     background: white;
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--color-bg);
     border-radius: 12px;
     padding: 25px;
     position: sticky;
@@ -746,12 +759,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .sidebar-block {
     margin-bottom: 25px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--color-bg);
 }
 
 .sidebar-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 
-.filter-title { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 15px; display: block; }
+.filter-title { font-size: 16px; font-weight: 700; color: var(--color-heading); margin-bottom: 15px; display: block; }
 
 .sidebar-search-input {
     width: 100%;
@@ -763,7 +776,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .sidebar-search-input:focus {
-    border-color: #dc2626;
+    border-color: var(--color-primary);
     outline: none;
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
@@ -777,7 +790,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-bottom: 5px;
     cursor: pointer;
     font-size: 14px;
-    color: #4b5563;
+    color: var(--color-text-secondary);
     user-select: none;
     transition: 0.3s;
 }
@@ -800,8 +813,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transition: 0.2s;
 }
 
-.radio-container:hover input ~ .checkmark { border-color: #dc2626; background-color: #fef2f2; }
-.radio-container input:checked ~ .checkmark { background-color: #dc2626; border-color: #dc2626; }
+.radio-container:hover input ~ .checkmark { border-color: var(--color-primary); background-color: var(--color-primary-light); }
+.radio-container input:checked ~ .checkmark { background-color: var(--color-primary); border-color: var(--color-primary); }
 
 .checkmark:after { content: ""; position: absolute; display: none; }
 .radio-container input:checked ~ .checkmark:after { display: block; }
@@ -832,19 +845,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .admin-table th {
-    background-color: #f9fafb;
-    color: #4b5563;
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
     font-weight: 600;
     text-transform: uppercase;
     font-size: 12px;
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 2px solid #e5e7eb;
+    border-bottom: 2px solid var(--color-border);
 }
 
 .admin-table td {
     padding: 15px;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--color-bg);
     font-size: 14px;
     color: #374151;
 }
@@ -854,7 +867,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* =========================================
    SECTION 13: FOOTER AND RESPONSIVE
    ========================================= */
-.main-footer { padding: 30px 0; border-top: 1px solid #f3f4f6; text-align: center; color: #666; }
+.main-footer { padding: 30px 0; border-top: 1px solid var(--color-bg); text-align: center; color: #666; }
 
 @media (max-width: 900px) {
     .hero-grid,
@@ -892,14 +905,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     left: 8px;
     right: 8px;
     height: 4px;
-    background: #e5e7eb;
+    background: var(--color-border);
     border-radius: 2px;
 }
 
 .price-slider-fill {
     position: absolute;
     height: 100%;
-    background: #dc2626;
+    background: var(--color-primary);
     border-radius: 2px;
 }
 
@@ -921,7 +934,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 16px;
     height: 16px;
     background: white;
-    border: 2px solid #dc2626;
+    border: 2px solid var(--color-primary);
     border-radius: 50%;
     pointer-events: none;
 }
