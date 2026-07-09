@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useModal } from '../../hooks/useModal'
 import Modal from '../../components/Modal'
 import api from '../../api/index'
-import { SPECIALIZATIONS, VALIDATION} from '../../constants'
+import { SPECIALIZATIONS, VALIDATION, VALIDATION_MSG } from '../../constants'
 
 export default function CreateDoctor() {
     const navigate = useNavigate()
@@ -31,15 +31,15 @@ export default function CreateDoctor() {
 
         // Клиентская валидация
         if (!form.full_name || form.full_name.length < VALIDATION.NAME_MIN) {
-            showModal('Ошибка', 'Введите полное имя (минимум 2 символа).')
+            showModal('Ошибка', VALIDATION_MSG.NAME_MIN)
             return
         }
         if (!VALIDATION.EMAIL_REGEX.test(form.email)) {
-            showModal('Ошибка', 'Введите корректный email.')
+            showModal('Ошибка', VALIDATION_MSG.EMAIL)
             return
         }
         if (!form.password || form.password.length < VALIDATION.PASSWORD_MIN) {
-            showModal('Ошибка', 'Пароль должен содержать минимум 4 символа.')
+            showModal('Ошибка', VALIDATION_MSG.PASSWORD_MIN)
             return
         }
         if (!form.specialization) {

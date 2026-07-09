@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login as loginRequest } from '../api/index'
-import { VALIDATION } from '../constants'
 import AuthForm, { AuthField } from '../components/AuthForm'
+import { VALIDATION, VALIDATION_MSG } from '../constants'
 
 export default function Login() {
     const { login } = useAuth()
@@ -18,7 +18,7 @@ export default function Login() {
         setError('')
 
         if (!VALIDATION.EMAIL_REGEX.test(email)) {
-            setError('Введите корректный email')
+            setError(VALIDATION_MSG.EMAIL)
             return
         }
 

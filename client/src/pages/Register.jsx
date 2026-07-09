@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { register as registerRequest } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
-import { VALIDATION } from '../constants'
+import { VALIDATION, VALIDATION_MSG } from '../constants'
 import AuthForm, { AuthField } from '../components/AuthForm'
 
 export default function Register() {
@@ -21,11 +21,11 @@ export default function Register() {
         setError('')
 
         if (fullName.length < VALIDATION.NAME_MIN) {
-            setError('Имя должно содержать минимум 2 символа')
+            setError(VALIDATION_MSG.NAME_MIN)
             return
         }
         if (password.length < VALIDATION.PASSWORD_MIN) {
-            setError('Пароль должен содержать минимум 4 символа')
+            setError(VALIDATION_MSG.PASSWORD_MIN)
             return
         }
 

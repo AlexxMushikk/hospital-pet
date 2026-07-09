@@ -6,7 +6,7 @@ import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { getTodayStr } from '../utils/date'
 import { logger } from '../utils/logger'
-import { SLOT_STEP_MINUTES } from '../constants'
+import { SLOT_STEP_MINUTES, VALIDATION, VALIDATION_MSG } from '../constants'
 
 export default function Booking() {
     const navigate                         = useNavigate()
@@ -59,8 +59,8 @@ export default function Booking() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!selectedTime) return
-        if (symptoms.length > 250) {
-            showModal('Ошибка', 'Описание симптомов слишком длинное (макс. 250 символов).')
+        if (symptoms.length > VALIDATION.SYMPTOMS_MAX) {
+            showModal('Ошибка', VALIDATION_MSG.SYMPTOMS_MAX)
             return
         }
         if (user.doctor_id && parseInt(user.doctor_id, 10) === parseInt(doctorId, 10)) {
@@ -184,12 +184,12 @@ export default function Booking() {
                         <textarea
                             value={symptoms}
                             onChange={e => setSymptoms(e.target.value)}
-                            maxLength={250}
+                            maxLength={VALIDATION.SYMPTOMS_MAX}
                             placeholder="Кратко опишите симптомы..."
                             className="appt-textarea"
                         />
                         <div className={`char-counter ${symptoms.length > 220 ? 'char-counter--warn' : ''}`}>
-                            {symptoms.length} / 250
+                            {symptoms.length} / {VALIDATION.SYMPTOMS_MAX}
                         </div>
                     </div>
 

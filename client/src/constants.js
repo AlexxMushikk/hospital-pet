@@ -13,6 +13,14 @@ export const VALIDATION = {
     PASSWORD_MIN: 4,
     NAME_MIN: 2,
     EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    SYMPTOMS_MAX: 250,
+}
+
+export const VALIDATION_MSG = {
+    NAME_MIN:     `Имя минимум ${VALIDATION.NAME_MIN} символа`,
+    PASSWORD_MIN: `Пароль минимум ${VALIDATION.PASSWORD_MIN} символа`,
+    EMAIL:        'Введите корректный email',
+    SYMPTOMS_MAX: `Описание симптомов слишком длинное (макс. ${VALIDATION.SYMPTOMS_MAX} символов)`,
 }
 
 export const SLOT_STEP_MINUTES = 30

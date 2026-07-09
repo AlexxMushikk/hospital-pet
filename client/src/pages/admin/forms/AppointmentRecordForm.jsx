@@ -1,6 +1,6 @@
 import useRecordForm from '../../../hooks/useRecordForm'
 import RecordFormShell from './RecordFormShell'
-import { TIME_OPTIONS } from '../../../constants'
+import { TIME_OPTIONS, VALIDATION } from '../../../constants'
 
 const STATUSES = [
     { value: 'Scheduled', label: 'Запланирован' },
@@ -64,7 +64,7 @@ export default function AppointmentRecordForm({ id }) {
             </select>
 
             <label>Симптомы</label>
-            <textarea rows={3} value={form.symptoms} onChange={onChange('symptoms')} maxLength={250} />
+            <textarea rows={3} value={form.symptoms} onChange={onChange('symptoms')} maxLength={VALIDATION.SYMPTOMS_MAX} />
 
             <label>Заметки врача</label>
             <textarea rows={3} value={form.doctor_notes} onChange={onChange('doctor_notes')} />

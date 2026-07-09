@@ -6,6 +6,7 @@ import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { statusLabel, statusClass } from '../utils/status'
 import { formatDateTime } from '../utils/date'
+import { VALIDATION, VALIDATION_MSG } from '../constants'
 
 export default function AppointmentDetails() {
     const { id }   = useParams()
@@ -71,8 +72,8 @@ export default function AppointmentDetails() {
     }
 
     const handleSaveSymptoms = async () => {
-        if (symptoms.length > 250) {
-            showModal('Ошибка', 'Описание симптомов слишком длинное (макс. 250 символов).')
+        if (symptoms.length > VALIDATION.SYMPTOMS_MAX) {
+            showModal('Ошибка', VALIDATION_MSG.SYMPTOMS_MAX)
             return
         }
         setSaving(true)
@@ -147,14 +148,14 @@ export default function AppointmentDetails() {
                     <textarea
                         value={symptoms}
                         onChange={e => setSymptoms(e.target.value)}
-                        maxLength={250}
+                        maxLength={VALIDATION.SYMPTOMS_MAX}
                         placeholder="Симптомы не указаны"
                         disabled={isDocView || app.status !== 'Scheduled'}
                         className="appt-textarea"
                     />
                     {!isDocView && app.status === 'Scheduled' && (
                         <div className={`char-counter ${symptoms.length > 220 ? 'char-counter--warn' : ''}`}>
-                            {symptoms.length} / 250
+                            {symptoms.length} / {VALIDATION.SYMPTOMS_MAX}
                         </div>
                     )}
                 </div>
