@@ -64,7 +64,7 @@ router.post('/refresh', (req, res) => {
         doctor_id:  user.doctor_id,
     })
 
-    res.json({ accessToken })
+    res.json({ user, accessToken })
 })
 
 router.post('/logout', (req, res) => {

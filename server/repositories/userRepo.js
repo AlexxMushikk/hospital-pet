@@ -17,7 +17,7 @@ const create = (email, hashedPassword, role = 'patient') =>
 
 const findById = (id) =>
     db.prepare(`
-        SELECT u.id, u.email, u.role,
+        SELECT u.id, u.email, u.role, p.full_name,
                p.id as patient_id, d.id as doctor_id
         FROM users u
                  LEFT JOIN patients p ON u.id = p.user_id

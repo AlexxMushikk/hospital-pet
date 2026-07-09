@@ -1,22 +1,30 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
 export const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-
-    const [user, setUser] = useState(() => {
-        const stored = localStorage.getItem('hospital_user')
-        return stored ? JSON.parse(stored) : null
-    })
+    const [user, setUser]   = useState(null)
     const [token, setToken] = useState(null)
+    const [authLoading, setAuthLoading] = useState(true)
 
-    // Вид врача (doctor / patient) — состояние конкретного устройства, живёт в localStorage.
     const [view, setView] = useState(() => localStorage.getItem('hospital_view') || 'doctor')
 
+    useEffect(() => {
+        let cancelled = false
+        axios.post('/api/refresh', {}, { withCredentials: true })
+            .then(({ data }) => {
+                if (cancelled) return
+                setUser(data.user)
+                setToken(data.accessToken)
+            })
+            .catch(() => { /* нет валидной сессии — остаёмся гостем */ })
+            .finally(() => { if (!cancelled) setAuthLoading(false) })
+        return () => { cancelled = true }
+    }, [])
+
     const login = (userData, accessToken) => {
-        localStorage.setItem('hospital_user', JSON.stringify(userData))
         setUser(userData)
         setToken(accessToken)
     }
@@ -27,7 +35,6 @@ export function AuthProvider({ children }) {
         } catch {
             // Ошибка при логауте не критична — токен и так протухнет.
         }
-        localStorage.removeItem('hospital_user')
         setUser(null)
         setToken(null)
     }
@@ -36,7 +43,6 @@ export function AuthProvider({ children }) {
         if (next !== 'patient' && next !== 'doctor') return
         localStorage.setItem('hospital_view', next)
         setView(next)
-        // Переадресация на стартовую страницу выбранного вида.
         if (navigate) navigate(next === 'doctor' ? '/doctor/schedule' : '/')
     }
 
@@ -45,7 +51,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, token, view, login, logout, switchView, updateToken }}>
+        <AuthContext.Provider value={{ user, token, view, authLoading, login, logout, switchView, updateToken }}>
             {children}
         </AuthContext.Provider>
     )

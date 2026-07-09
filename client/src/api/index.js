@@ -67,7 +67,6 @@ api.interceptors.response.use(
 
                 processQueue(refreshError, null)
                 updateToken(null)
-                localStorage.removeItem('hospital_user')
                 window.location.href = '/login'
                 return Promise.reject(refreshError)
             } finally {

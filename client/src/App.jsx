@@ -92,6 +92,12 @@ function AppRoutes() {
 }
 
 export default function App() {
+    const { authLoading } = useAuth()
+
+    if (authLoading) {
+        return <div className="app-loading">Загрузка...</div>
+    }
+
     return (
         <BrowserRouter>
             <ErrorBoundary>

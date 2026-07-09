@@ -1120,3 +1120,5 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .cta-title        { font-size: 32px; margin-bottom: 15px; }
 .cta-text         { color: var(--color-text-muted); margin-bottom: 30px; font-size: 18px; }
 .cta-actions      { display: flex; gap: 15px; justify-content: center; }
+
+.app-loading { display: flex; align-items: center; justify-content: center; min-height: 100vh; color: var(--color-text-muted); }
