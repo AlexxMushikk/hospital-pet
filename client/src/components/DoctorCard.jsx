@@ -16,23 +16,19 @@ export default function DoctorCard({ doctor, onBookClick }) {
             <div className="doctor-info">
                 <div>
                     <span className="doctor-name">{doctor.name}</span>
-                    <span style={{ display: 'block', color: '#6b7280', fontSize: '14px', marginBottom: '8px' }}>
-                        {doctor.specialization}
-                    </span>
+                    <span className="doctor-card__spec">{doctor.specialization}</span>
 
                     {/* Цена — главный критерий выбора, показываем prominently */}
-                    <span style={{ display: 'block', fontSize: '18px', fontWeight: 700, color: '#dc2626', marginBottom: '4px' }}>
-                        {doctor.price} PLN
-                    </span>
+                    <span className="doctor-card__price">{doctor.price} PLN</span>
 
-                    <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 600 }}>
+                    <span className="doctor-card__meta">
                         {doctor.experience
                             ? `${formatExperienceShort(doctor.experience)} опыта`
                             : 'Опыт не указан'} · {doctor.gender === 'Male' ? 'М' : doctor.gender === 'Female' ? 'Ж' : '—'}
                     </span>
                 </div>
 
-                <div style={{ marginTop: '15px', display: 'flex', gap: '10px' }}>
+                <div className="doctor-card__actions">
                     <button
                         className="btn btn-outline btn-sm"
                         onClick={() => navigate(`/doctors/${doctor.id}`)}

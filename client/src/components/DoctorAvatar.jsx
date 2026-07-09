@@ -1,16 +1,12 @@
 export default function DoctorAvatar({ name, imageUrl, size = 28 }) {
-    const borderRadius = Math.round(size / 3.5)
+    const large = size >= 40
 
     if (imageUrl) {
         return (
             <img
                 src={imageUrl}
                 alt={name || ''}
-                style={{
-                    width: '100%', height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: `${borderRadius}px`,
-                }}
+                className={large ? 'doctor-avatar-img doctor-avatar-img--lg' : 'doctor-avatar-img'}
             />
         )
     }
@@ -23,16 +19,7 @@ export default function DoctorAvatar({ name, imageUrl, size = 28 }) {
         .toUpperCase() || '?'
 
     return (
-        <div style={{
-            width: '100%', height: '100%',
-            background: 'linear-gradient(135deg, #dc2626, #991b1b)',
-            borderRadius: `${borderRadius}px`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'white',
-            fontSize: `${size}px`,
-            fontWeight: 700,
-            letterSpacing: size <= 32 ? '2px' : 'normal',
-        }}>
+        <div className={large ? 'doctor-avatar doctor-avatar--lg' : 'doctor-avatar'}>
             {initials}
         </div>
     )

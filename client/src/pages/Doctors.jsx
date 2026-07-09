@@ -326,11 +326,11 @@ export default function Doctors() {
                     )}
 
                     {error && (
-                        <p style={{ color: '#dc2626', textAlign: 'center', padding: '40px' }}>{error}</p>
+                        <p className="text-error">{error}</p>
                     )}
 
                     {!loading && !error && doctors.length === 0 && (
-                        <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                        <div className="empty-state">
                             Специалисты не найдены. Попробуйте изменить фильтры.
                         </div>
                     )}

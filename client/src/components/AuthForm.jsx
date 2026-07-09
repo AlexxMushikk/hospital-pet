@@ -29,7 +29,7 @@ export default function AuthForm({
         <div className="auth-container">
             <div className="auth-card">
                 <h2>{title}</h2>
-                <p style={{ color: '#6b7280', marginBottom: '25px' }}>{subtitle}</p>
+                <p className="auth-subtitle">{subtitle}</p>
 
                 <form onSubmit={onSubmit}>
                     {children}
@@ -47,7 +47,7 @@ export default function AuthForm({
                     </div>
                 </form>
 
-                <div style={{ textAlign: 'center', marginTop: '20px', color: '#6b7280' }}>
+                <div className="auth-footer">
                     {footer}
                 </div>
             </div>

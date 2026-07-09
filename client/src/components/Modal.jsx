@@ -13,8 +13,8 @@ export default function Modal({ isOpen, title, message, onConfirm, onClose, conf
         <div className="modal-overlay active" onClick={onClose}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <h3>{title}</h3>
-                <p style={{ margin: '15px 0 25px', color: '#4b5563' }}>{message}</p>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <p className="modal-message">{message}</p>
+                <div className="modal-actions">
                     {cancelLabel && (
                         <button className="btn btn-outline w-full" onClick={onClose}>
                             {cancelLabel}

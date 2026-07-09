@@ -27,7 +27,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
     if (totalPages <= 1) return null
 
     return (
-        <div className="pagination-container" style={{ background: 'transparent', border: 'none', marginTop: '30px' }}>
+        <div className="pagination-container pagination--bare">
             <button
                 className="btn btn-outline btn-sm"
                 onClick={() => onPageChange(currentPage - 1)}
@@ -38,13 +38,12 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
             {getPageItems(currentPage, totalPages).map(item =>
                 typeof item === 'string' ? (
-                    <span key={item} className="pagination-ellipsis" style={{ padding: '0 8px', color: '#9ca3af' }}>…</span>
+                    <span key={item} className="pagination-ellipsis">…</span>
                 ) : (
                     <button
                         key={item}
                         className={`btn btn-sm ${item === currentPage ? 'btn-solid' : 'btn-outline'}`}
                         onClick={() => onPageChange(item)}
-                        style={{ margin: '0 2px' }}
                     >
                         {item}
                     </button>

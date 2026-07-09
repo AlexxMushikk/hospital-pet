@@ -20,13 +20,13 @@ export default class ErrorBoundary extends Component {
         if (this.state.hasError) {
             return (
                 <div className="auth-container">
-                    <div className="auth-card" style={{ textAlign: 'center' }}>
-                        <h2 style={{ fontSize: '3rem', margin: '0 0 10px' }}>💥</h2>
+                    <div className="auth-card error-boundary-card">
+                        <h2 className="error-boundary__icon">💥</h2>
                         <h3>Что-то пошло не так</h3>
-                        <p style={{ color: '#6b7280', margin: '10px 0 25px' }}>
+                        <p className="error-boundary__text">
                             Произошла непредвиденная ошибка. Попробуйте обновить страницу.
                         </p>
-                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                        <div className="error-boundary__actions">
                             <button className="btn btn-solid" onClick={this.handleReset}>
                                 Попробовать снова
                             </button>
@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component {
                             </button>
                         </div>
                         {import.meta.env.DEV && (
-                            <pre style={{ marginTop: '20px', textAlign: 'left', fontSize: '11px', color: '#dc2626', background: '#fef2f2', padding: '10px', borderRadius: '6px', overflow: 'auto' }}>
+                            <pre className="error-boundary__trace">
                                 {this.state.error?.toString()}
                             </pre>
                         )}

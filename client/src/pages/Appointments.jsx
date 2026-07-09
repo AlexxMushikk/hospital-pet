@@ -59,7 +59,7 @@ export default function Appointments() {
             )}
 
             {!error && appointments.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+                <div className="empty-state">
                     <p style={{ marginBottom: '20px' }}>У вас пока нет записей к врачам.</p>
                     <Link to="/doctors" className="btn btn-solid">Записаться к врачу</Link>
                 </div>
