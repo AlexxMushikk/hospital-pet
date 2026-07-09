@@ -44,10 +44,10 @@ export default function DoctorProfile() {
 
     if (loading) {
         return (
-            <div className="container" style={{ padding: '40px 0' }}>
+            <div className="container profile-loading">
                 <div className="profile-grid">
-                    <div className="skeleton" style={{ height: '400px', borderRadius: '16px' }} />
-                    <div className="skeleton" style={{ height: '400px', borderRadius: '16px' }} />
+                    <div className="skeleton skeleton--profile" />
+                    <div className="skeleton skeleton--profile" />
                 </div>
             </div>
         )
@@ -56,7 +56,7 @@ export default function DoctorProfile() {
     if (!doctor) return null
 
     return (
-        <main className="container" style={{ padding: '30px 0' }}>
+        <main className="container profile-page">
             <div className="profile-grid">
 
                 <aside className="profile-sidebar">
@@ -64,13 +64,12 @@ export default function DoctorProfile() {
                         <DoctorAvatar name={doctor.name} imageUrl={doctor.image_url} size={48} />
                     </div>
 
-                    <h2 style={{ margin: '15px 0 5px' }}>{doctor.name}</h2>
-                    <p style={{ color: '#6b7280', marginBottom: '10px' }}>{doctor.specialization}</p>
+                    <h2 className="profile-name">{doctor.name}</h2>
+                    <p className="profile-spec">{doctor.specialization}</p>
                     <div className="price-tag">{doctor.price} PLN</div>
 
                     <button
-                        className="btn btn-solid w-full"
-                        style={{ marginBottom: '10px' }}
+                        className="btn btn-solid w-full profile-book-btn"
                         onClick={handleBookClick}
                     >
                         Записаться
@@ -96,18 +95,18 @@ export default function DoctorProfile() {
 
                     <div className="info-section">
                         <h3>Образование и опыт</h3>
-                        <ul style={{ listStyle: 'none', padding: 0 }}>
+                        <ul className="plain-list">
                             <li>
                                 Образование:{' '}
                                 {doctor.education
                                     ? doctor.education
-                                    : <span style={{ color: '#9ca3af' }}>не указано</span>
+                                    : <span className="text-placeholder">не указано</span>
                                 }
                             </li>
-                            <li style={{ marginTop: '8px' }}>
+                            <li>
                                 Опыт:{' '}
                                 {formatExperience(doctor.experience)
-                                    ?? <span style={{ color: '#9ca3af' }}>не указан</span>
+                                    ?? <span className="text-placeholder">не указан</span>
                                 }
                             </li>
                         </ul>
@@ -119,13 +118,13 @@ export default function DoctorProfile() {
                             <strong>Языки:</strong>{' '}
                             {doctor.languages
                                 ? doctor.languages
-                                : <span style={{ color: '#9ca3af' }}>не указано</span>
+                                : <span className="text-placeholder">не указано</span>
                             }
                         </p>
                         <p><strong>Рабочие часы:</strong> {doctor.work_start} — {doctor.work_end}</p>
                         <p>
                             <strong>Стоимость визита:</strong>{' '}
-                            <span style={{ color: '#dc2626', fontWeight: 700 }}>{doctor.price} PLN</span>
+                            <span className="price-inline">{doctor.price} PLN</span>
                         </p>
                     </div>
                 </section>

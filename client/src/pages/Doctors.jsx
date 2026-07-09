@@ -73,14 +73,12 @@ function PriceRangeSlider({ min = 0, max = 1000, currentMin, currentMax, onChang
                 renderTrack={({ props, children }) => (
                     <div
                         {...props}
+                        className="price-track"
                         style={{
                             ...props.style,
-                            height: '4px',
-                            width: '100%',
-                            borderRadius: '2px',
                             background: getTrackBackground({
                                 values,
-                                colors: ['#e5e7eb', '#dc2626', '#e5e7eb'],
+                                colors: ['var(--color-border)', 'var(--color-primary)', 'var(--color-border)'],
                                 min,
                                 max,
                             }),
@@ -93,15 +91,7 @@ function PriceRangeSlider({ min = 0, max = 1000, currentMin, currentMax, onChang
                     <div
                         {...props}
                         key={props.key}
-                        style={{
-                            ...props.style,
-                            width: '16px',
-                            height: '16px',
-                            borderRadius: '50%',
-                            backgroundColor: 'white',
-                            border: '2px solid #dc2626',
-                            outline: 'none',
-                        }}
+                        className="price-thumb"
                     />
                 )}
             />
@@ -223,8 +213,8 @@ export default function Doctors() {
 
     return (
         <main className="container">
-            <section className="page-title" style={{ textAlign: 'left', paddingBottom: '20px' }}>
-                <h2 style={{ fontWeight: 800 }}>Наши специалисты</h2>
+            <section className="page-title page-title--left">
+                <h2>Наши специалисты</h2>
                 <p>Найдите нужного врача для вашего случая.</p>
             </section>
 
@@ -316,9 +306,9 @@ export default function Doctors() {
                             {Array.from({ length: DOCTORS_PER_PAGE }).map((_, i) => (
                                 <div key={i} className="doctor-card">
                                     <div className="doctor-photo-box skeleton" />
-                                    <div className="doctor-info" style={{ flex: 1 }}>
+                                    <div className="doctor-info skeleton-info">
                                         <div className="skeleton skeleton-text" />
-                                        <div className="skeleton skeleton-text" style={{ width: '60%' }} />
+                                        <div className="skeleton skeleton-text skeleton-text--sm" />
                                     </div>
                                 </div>
                             ))}

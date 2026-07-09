@@ -36,9 +36,9 @@ export default function Appointments() {
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="doctor-card">
                             <div className="doctor-photo-box skeleton" />
-                            <div className="doctor-info" style={{ flex: 1 }}>
+                            <div className="doctor-info skeleton-info">
                                 <div className="skeleton skeleton-text" />
-                                <div className="skeleton skeleton-text" style={{ width: '60%' }} />
+                                <div className="skeleton skeleton-text skeleton-text--sm" />
                             </div>
                         </div>
                     ))}
@@ -55,12 +55,12 @@ export default function Appointments() {
             </section>
 
             {error && (
-                <p style={{ color: '#dc2626', textAlign: 'center', padding: '20px' }}>{error}</p>
+                <p className="text-error">{error}</p>
             )}
 
             {!error && appointments.length === 0 && (
                 <div className="empty-state">
-                    <p style={{ marginBottom: '20px' }}>У вас пока нет записей к врачам.</p>
+                    <p>У вас пока нет записей к врачам.</p>
                     <Link to="/doctors" className="btn btn-solid">Записаться к врачу</Link>
                 </div>
             )}
@@ -70,18 +70,18 @@ export default function Appointments() {
                     {appointments.map(app => (
                         <div key={app.id} className="doctor-card">
                             <div className="doctor-photo-box">
-                                <span style={{ fontSize: '24px' }}>📅</span>
+                                <span className="appointment-icon">📅</span>
                             </div>
                             <div className="doctor-info">
                                 <div>
                                     <span className={statusClass(app.status)}>
                                         {statusLabel(app.status)}
                                     </span>
-                                    <span className="doctor-name" style={{ display: 'block', marginTop: '5px' }}>
+                                    <span className="doctor-name appt-name">
                                         {app.doctor_name || 'Врач'}
                                     </span>
-                                    <span style={{ color: '#6b7280', fontSize: '14px' }}>{app.doctor_spec}</span>
-                                    <p style={{ marginTop: '5px', fontWeight: 'bold', color: '#dc2626' }}>
+                                    <span className="appt-spec">{app.doctor_spec}</span>
+                                    <p className="appt-datetime">
                                         {formatDate(app.appointment_date)} в {app.appointment_time}
                                     </p>
                                 </div>

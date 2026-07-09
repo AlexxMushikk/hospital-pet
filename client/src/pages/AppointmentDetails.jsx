@@ -108,8 +108,8 @@ export default function AppointmentDetails() {
     if (loading) {
         return (
             <div className="auth-container">
-                <div className="auth-card" style={{ maxWidth: '800px' }}>
-                    <div className="skeleton" style={{ height: '300px', borderRadius: '12px' }} />
+                <div className="auth-card auth-card--wide">
+                    <div className="skeleton skeleton--block" />
                 </div>
             </div>
         )
@@ -119,58 +119,58 @@ export default function AppointmentDetails() {
 
     return (
         <div className="auth-container">
-            <div className="auth-card" style={{ maxWidth: '800px', textAlign: 'left' }}>
+            <div className="auth-card auth-card--wide auth-card--left">
 
-                <div style={{ marginBottom: '20px' }}>
+                <div className="appt-status-row">
                     <span className={statusClass(app.status)}>{statusLabel(app.status)}</span>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+                <div className="appt-header">
                     <div>
                         <h2 className="doctor-name">
                             {isDocView ? `Пациент: ${app.patient_name}` : app.doctor_name}
                         </h2>
-                        <p style={{ color: '#6b7280', marginTop: '5px' }}>
+                        <p className="appt-subtitle">
                             {isDocView ? 'Медицинская карта' : app.doctor_spec}
                         </p>
-                        <p style={{ fontWeight: 'bold', color: '#dc2626', marginTop: '10px', fontSize: '1.1em' }}>
+                        <p className="appt-datetime-lg">
                             {formatDateTime(app.appointment_date, app.appointment_time)}
                         </p>
                     </div>
-                    <div className="hospital-logo-placeholder" style={{ width: '60px', height: '60px', fontSize: '24px' }}>+</div>
+                    <div className="hospital-logo-placeholder hospital-logo-placeholder--sm">+</div>
                 </div>
 
-                <hr style={{ border: 0, borderTop: '1px solid #eee', marginBottom: '25px' }} />
+                <hr className="divider" />
 
                 <div className="form-group">
-                    <label style={{ fontWeight: 'bold' }}>Симптомы / Причина визита</label>
+                    <label className="label-bold">Симптомы / Причина визита</label>
                     <textarea
                         value={symptoms}
                         onChange={e => setSymptoms(e.target.value)}
                         maxLength={250}
                         placeholder="Симптомы не указаны"
                         disabled={isDocView || app.status !== 'Scheduled'}
-                        style={{ width: '100%', minHeight: '80px', padding: '10px', border: '1px solid #ddd', borderRadius: '6px', resize: 'vertical', fontSize: '14px' }}
+                        className="appt-textarea"
                     />
                     {!isDocView && app.status === 'Scheduled' && (
-                        <div style={{ textAlign: 'right', fontSize: '11px', color: symptoms.length > 220 ? '#dc2626' : '#999' }}>
+                        <div className={`char-counter ${symptoms.length > 220 ? 'char-counter--warn' : ''}`}>
                             {symptoms.length} / 250
                         </div>
                     )}
                 </div>
 
-                <div className="form-group" style={{ marginTop: '25px' }}>
-                    <label style={{ fontWeight: 'bold', color: '#3b82f6' }}>Медицинские заметки врача</label>
+                <div className="form-group form-group--spaced">
+                    <label className="label-notes">Медицинские заметки врача</label>
                     <textarea
                         value={doctorNotes}
                         onChange={e => setDoctorNotes(e.target.value)}
                         disabled={!isDocView || (!notesEditing && app.status === 'Completed')}
                         placeholder={isDocView ? 'Введите медицинские заметки...' : 'Заметки врача появятся после визита'}
-                        style={{ width: '100%', minHeight: '100px', padding: '10px', border: '1px solid #ddd', borderLeft: '4px solid #3b82f6', borderRadius: '0 6px 6px 0', resize: 'vertical', fontSize: '14px' }}
+                        className="appt-textarea appt-textarea--notes"
                     />
                 </div>
 
-                <div className="form-actions" style={{ marginTop: '40px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                <div className="form-actions form-actions--detail">
 
                     {isDocView && app.status === 'Scheduled' && (
                         <>
