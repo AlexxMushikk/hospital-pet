@@ -64,6 +64,9 @@ router.post('/refresh', (req, res) => {
         doctor_id:  user.doctor_id,
     })
 
+    const newRefreshToken = jwtService.createRefreshToken({ id: user.id })
+    res.cookie('refreshToken', newRefreshToken, COOKIE_OPTIONS)
+
     res.json({ user, accessToken })
 })
 
