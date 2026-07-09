@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { getAdminRecord, updateAdminRecord } from '../../../api/index'
+import useRecordForm from '../../../hooks/useRecordForm'
 import RecordFormShell from './RecordFormShell'
 import { TIME_OPTIONS } from '../../../constants'
 
@@ -10,62 +8,33 @@ const STATUSES = [
     { value: 'Cancelled', label: 'Отменён' },
 ]
 
+const INITIAL = {
+    appointment_date: '', appointment_time: '08:00',
+    status: 'Scheduled', symptoms: '', doctor_notes: '',
+}
+
+const mapRecord = (r) => ({
+    appointment_date: r.appointment_date || '',
+    appointment_time: r.appointment_time || '08:00',
+    status:           r.status || 'Scheduled',
+    symptoms:         r.symptoms || '',
+    doctor_notes:     r.doctor_notes || '',
+})
+
+const buildPayload = (form) => ({
+    ...form,
+    symptoms:     form.symptoms.trim()     || undefined,
+    doctor_notes: form.doctor_notes.trim() || undefined,
+})
+
 export default function AppointmentRecordForm({ id }) {
-    const navigate = useNavigate()
-
-    const [loading, setLoading] = useState(true)
-    const [submitting, setSubmitting] = useState(false)
-    const [error, setError] = useState('')
-
-    const [meta, setMeta] = useState({ doctor_name: '', patient_name: '' })
-
-    const [form, setForm] = useState({
-        appointment_date: '', appointment_time: '08:00',
-        status: 'Scheduled', symptoms: '', doctor_notes: '',
+    const { loading, submitting, error, form, record, onChange, handleSubmit } = useRecordForm({
+        table: 'appointments',
+        id,
+        initialForm: INITIAL,
+        mapRecord,
+        buildPayload,
     })
-
-    useEffect(() => {
-        getAdminRecord('appointments', id)
-            .then(res => {
-                const r = res.data
-                setMeta({
-                    doctor_name:  r.doctor_name  || '',
-                    patient_name: r.patient_name || '',
-                })
-                setForm({
-                    appointment_date: r.appointment_date || '',
-                    appointment_time: r.appointment_time || '08:00',
-                    status:           r.status || 'Scheduled',
-                    symptoms:         r.symptoms || '',
-                    doctor_notes:     r.doctor_notes || '',
-                })
-            })
-            .catch(err => setError(err.response?.data?.error || 'Не удалось загрузить запись'))
-            .finally(() => setLoading(false))
-    }, [id])
-
-    const onChange = (field) => (e) => {
-        setForm(prev => ({ ...prev, [field]: e.target.value }))
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError('')
-
-        setSubmitting(true)
-        try {
-            await updateAdminRecord('appointments', id, {
-                ...form,
-                symptoms:     form.symptoms.trim()     || undefined,
-                doctor_notes: form.doctor_notes.trim() || undefined,
-            })
-            navigate('/admin/database')
-        } catch (err) {
-            setError(err.response?.data?.error || 'Не удалось сохранить')
-        } finally {
-            setSubmitting(false)
-        }
-    }
 
     if (loading) return <main className="container"><p>Загрузка...</p></main>
 
@@ -77,8 +46,8 @@ export default function AppointmentRecordForm({ id }) {
             error={error}
         >
             <div style={{ background: '#f3f4f6', padding: '10px', borderRadius: '6px', marginBottom: '15px' }}>
-                <p style={{ margin: 0 }}><strong>Пациент:</strong> {meta.patient_name}</p>
-                <p style={{ margin: '5px 0 0' }}><strong>Врач:</strong> {meta.doctor_name}</p>
+                <p style={{ margin: 0 }}><strong>Пациент:</strong> {record?.patient_name}</p>
+                <p style={{ margin: '5px 0 0' }}><strong>Врач:</strong> {record?.doctor_name}</p>
             </div>
 
             <label>Дата</label>

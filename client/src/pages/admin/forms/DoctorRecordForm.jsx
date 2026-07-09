@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { getAdminRecord, updateAdminRecord } from '../../../api/index'
+import useRecordForm from '../../../hooks/useRecordForm'
 import RecordFormShell from './RecordFormShell'
 import { TIME_OPTIONS } from '../../../constants'
 
@@ -15,86 +13,61 @@ const GENDERS = [
     { value: 'Not Specified', label: 'Не указан' },
 ]
 
+const INITIAL = {
+    full_name: '', email: '', phone: '',
+    specialization: '', career_start_date: '',
+    education: '', bio: '', languages: '', image_url: '',
+    price: '', work_start: '08:00', work_end: '18:00',
+    gender: 'Not Specified',
+}
+
+const mapRecord = (r) => ({
+    full_name:         r.name || '',
+    email:             r.email || '',
+    phone:             r.phone || '',
+    specialization:    r.specialization || '',
+    career_start_date: r.career_start_date || '',
+    education:         r.education || '',
+    bio:               r.bio || '',
+    languages:         r.languages || '',
+    image_url:         r.image_url || '',
+    price:             r.price ?? '',
+    work_start:        r.work_start || '08:00',
+    work_end:          r.work_end || '18:00',
+    gender:            r.gender || 'Not Specified',
+})
+
+const validate = (form) => {
+    if (form.work_start >= form.work_end) return 'Начало смены должно быть раньше конца'
+    if (form.price !== '' && Number(form.price) < 0) return 'Цена не может быть отрицательной'
+    return null
+}
+
+const buildPayload = (form) => ({
+    full_name:         form.full_name,
+    email:             form.email,
+    phone:             form.phone,
+    specialization:    form.specialization,
+    career_start_date: form.career_start_date,
+    education:         form.education,
+    bio:               form.bio,
+    languages:         form.languages,
+    image_url:         form.image_url,
+    price:             form.price === '' ? undefined : Number(form.price),
+    work_start:        form.work_start,
+    work_end:          form.work_end,
+    gender:            form.gender,
+})
+
 export default function DoctorRecordForm({ id }) {
-    const navigate = useNavigate()
-
-    const [loading, setLoading] = useState(true)
-    const [submitting, setSubmitting] = useState(false)
-    const [error, setError] = useState('')
-
-    const [form, setForm] = useState({
-        full_name: '', email: '', phone: '',
-        specialization: '', career_start_date: '',
-        education: '', bio: '', languages: '', image_url: '',
-        price: '', work_start: '08:00', work_end: '18:00',
-        gender: 'Not Specified',
+    const { loading, submitting, error, form, onChange, handleSubmit } = useRecordForm({
+        table: 'doctors',
+        id,
+        initialForm: INITIAL,
+        mapRecord,
+        buildPayload,
+        validate,
     })
-
-    useEffect(() => {
-        getAdminRecord('doctors', id)
-            .then(res => {
-                const r = res.data
-                setForm({
-                    full_name:         r.name || '',
-                    email:             r.email || '',
-                    phone:             r.phone || '',
-                    specialization:    r.specialization || '',
-                    career_start_date: r.career_start_date || '',
-                    education:         r.education || '',
-                    bio:               r.bio || '',
-                    languages:         r.languages || '',
-                    image_url:         r.image_url || '',
-                    price:             r.price ?? '',
-                    work_start:        r.work_start || '08:00',
-                    work_end:          r.work_end || '18:00',
-                    gender:            r.gender || 'Not Specified',
-                })
-            })
-            .catch(err => setError(err.response?.data?.error || 'Не удалось загрузить запись'))
-            .finally(() => setLoading(false))
-    }, [id])
-
-    const onChange = (field) => (e) => {
-        setForm(prev => ({ ...prev, [field]: e.target.value }))
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError('')
-
-        if (form.work_start >= form.work_end) {
-            setError('Начало смены должно быть раньше конца')
-            return
-        }
-        if (form.price !== '' && Number(form.price) < 0) {
-            setError('Цена не может быть отрицательной')
-            return
-        }
-
-        setSubmitting(true)
-        try {
-            await updateAdminRecord('doctors', id, {
-                full_name:         form.full_name,
-                email:             form.email,
-                phone:             form.phone,
-                specialization:    form.specialization,
-                career_start_date: form.career_start_date,
-                education:         form.education,
-                bio:               form.bio,
-                languages:         form.languages,
-                image_url:         form.image_url,
-                price:             form.price === '' ? undefined : Number(form.price),
-                work_start:        form.work_start,
-                work_end:          form.work_end,
-                gender:            form.gender,
-            })
-            navigate('/admin/database')
-        } catch (err) {
-            setError(err.response?.data?.error || 'Не удалось сохранить')
-        } finally {
-            setSubmitting(false)
-        }
-    }
 
     if (loading) return <main className="container"><p>Загрузка...</p></main>
 
