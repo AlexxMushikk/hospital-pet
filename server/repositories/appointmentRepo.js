@@ -63,7 +63,6 @@ const update = (id, fields) => {
     const setParts = keys.map(k => `${k} = ?`)
     const values   = keys.map(k => fields[k])
 
-    // Если меняются дата/время — пересобираем scheduled_at, добирая недостающую часть из текущего значения
     if (fields.appointment_date !== undefined || fields.appointment_time !== undefined) {
         const cur = db.prepare(`
             SELECT strftime('%Y-%m-%d', scheduled_at) as d, strftime('%H:%M', scheduled_at) as t
@@ -92,13 +91,23 @@ const findAll = ({ limit, offset }) =>
                a.status,
                p.full_name as patient_name, pd.full_name as doctor_name
         FROM appointments a
-        JOIN patients p  ON a.patient_id = p.id
-        JOIN doctors d   ON a.doctor_id = d.id
-        JOIN patients pd ON d.user_id = pd.user_id
+                 JOIN patients p  ON a.patient_id = p.id
+                 JOIN doctors d   ON a.doctor_id = d.id
+                 JOIN patients pd ON d.user_id = pd.user_id
         LIMIT ? OFFSET ?
     `).all(limit, offset)
 
 const count = () =>
     db.prepare(`SELECT COUNT(*) as total FROM appointments`).get().total
 
-module.exports = { findByDoctor, findByPatient, findById, findConflict, create, update, remove, findAll, count }
+const countByDoctor = (doctorId) =>
+    db.prepare(`SELECT COUNT(*) as total FROM appointments WHERE doctor_id = ?`).get(doctorId).total
+
+const countByPatient = (patientId) =>
+    db.prepare(`SELECT COUNT(*) as total FROM appointments WHERE patient_id = ?`).get(patientId).total
+
+module.exports = {
+    findByDoctor, findByPatient, findById, findConflict,
+    create, update, remove, findAll, count,
+    countByDoctor, countByPatient,
+}

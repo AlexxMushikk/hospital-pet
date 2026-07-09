@@ -2,6 +2,7 @@ const adminRepo       = require('../repositories/adminRepo')
 const appointmentRepo = require('../repositories/appointmentRepo')
 const doctorRepo      = require('../repositories/doctorRepo')
 const patientRepo     = require('../repositories/patientRepo')
+const userRepo        = require('../repositories/userRepo')
 const { db } = require('../db/database')
 const {
     paginationDto,
@@ -106,7 +107,7 @@ function updateRecord(table, id, body) {
                     })
                 }
                 if (data.email) {
-                    db.prepare('UPDATE users SET email = ? WHERE id = ?').run(data.email, doctor.user_id)
+                    userRepo.updateEmail(doctor.user_id, data.email)
                 }
             }
         }
@@ -121,7 +122,7 @@ function updateRecord(table, id, body) {
                     })
                 }
                 if (data.email) {
-                    db.prepare('UPDATE users SET email = ? WHERE id = ?').run(data.email, patient.user_id)
+                    userRepo.updateEmail(patient.user_id, data.email)
                 }
             }
         }
@@ -163,9 +164,7 @@ function deleteRecord(table, id) {
     assertTable(table)
 
     if (table === 'doctors') {
-        const appCount = db.prepare(
-            `SELECT COUNT(*) as count FROM appointments WHERE doctor_id = ?`
-        ).get(id).count
+        const appCount = appointmentRepo.countByDoctor(id)
         if (appCount > 0) {
             const err = new Error(
                 `Нельзя удалить врача — у него ${appCount} записей в истории. ` +
@@ -175,7 +174,7 @@ function deleteRecord(table, id) {
             throw err
         }
 
-        const doctor = db.prepare(`SELECT user_id FROM doctors WHERE id = ?`).get(id)
+        const doctor = doctorRepo.findUserId(id)
         if (!doctor) {
             const err = new Error('Doctor not found')
             err.status = 404
@@ -183,18 +182,16 @@ function deleteRecord(table, id) {
         }
 
         const execute = db.transaction(() => {
-            db.prepare(`DELETE FROM doctors  WHERE id = ?`).run(id)
-            db.prepare(`DELETE FROM patients WHERE user_id = ?`).run(doctor.user_id)
-            db.prepare(`DELETE FROM users    WHERE id = ?`).run(doctor.user_id)
+            doctorRepo.remove(id)
+            patientRepo.removeByUserId(doctor.user_id)
+            userRepo.remove(doctor.user_id)
         })
         execute()
         return
     }
 
     if (table === 'patients') {
-        const appCount = db.prepare(
-            `SELECT COUNT(*) as count FROM appointments WHERE patient_id = ?`
-        ).get(id).count
+        const appCount = appointmentRepo.countByPatient(id)
         if (appCount > 0) {
             const err = new Error(
                 `Нельзя удалить пациента — у него ${appCount} записей в истории. ` +
@@ -204,19 +201,14 @@ function deleteRecord(table, id) {
             throw err
         }
 
-        const patient = db.prepare(`SELECT user_id FROM patients WHERE id = ?`).get(id)
+        const patient = adminRepo.getPatientRecord(id)
         if (!patient) {
             const err = new Error('Patient not found')
             err.status = 404
             throw err
         }
 
-        // Защита: нельзя удалить пациента, чей user_id связан с врачом
-        // (иначе осиротеет запись в doctors)
-        const linkedDoctor = db.prepare(
-            `SELECT id FROM doctors WHERE user_id = ?`
-        ).get(patient.user_id)
-        if (linkedDoctor) {
+        if (doctorRepo.findByUserId(patient.user_id)) {
             const err = new Error(
                 'Эта запись пациента связана с врачом. Удалите врача через раздел "Врачи".'
             )
@@ -224,25 +216,23 @@ function deleteRecord(table, id) {
             throw err
         }
 
-        // Защита: нельзя удалить пациента-админа
-        const user = db.prepare(`SELECT role FROM users WHERE id = ?`).get(patient.user_id)
-        if (user?.role === 'admin') {
+        if (patient.role === 'admin') {
             const err = new Error('Нельзя удалить системного администратора')
             err.status = 409
             throw err
         }
 
         const execute = db.transaction(() => {
-            db.prepare(`DELETE FROM patients WHERE id = ?`).run(id)
-            db.prepare(`DELETE FROM users    WHERE id = ?`).run(patient.user_id)
+            patientRepo.remove(id)
+            userRepo.remove(patient.user_id)
         })
         execute()
         return
     }
 
     if (table === 'appointments') {
-        const result = db.prepare(`DELETE FROM appointments WHERE id = ?`).run(id)
-        if (result.changes === 0) {
+        const { changes } = appointmentRepo.remove(id)
+        if (changes === 0) {
             const err = new Error('Appointment not found')
             err.status = 404
             throw err

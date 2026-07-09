@@ -25,4 +25,10 @@ const findById = (id) =>
         WHERE u.id = ?
     `).get(id)
 
-module.exports = { findByEmail, findById, create }
+const remove = (id) =>
+    db.prepare(`DELETE FROM users WHERE id = ?`).run(id)
+
+const updateEmail = (id, email) =>
+    db.prepare(`UPDATE users SET email = ? WHERE id = ?`).run(email, id)
+
+module.exports = { findByEmail, findById, create, remove, updateEmail }

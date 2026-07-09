@@ -5,7 +5,7 @@ const getLanguagesStr = (doctorId) => {
     const row = db.prepare(`
         SELECT GROUP_CONCAT(l.name, ', ') as languages
         FROM doctor_languages dl
-        JOIN languages l ON l.id = dl.language_id
+                 JOIN languages l ON l.id = dl.language_id
         WHERE dl.doctor_id = ?
     `).get(doctorId)
     return row?.languages || ''
@@ -74,8 +74,8 @@ const findById = (id) => {
     const doctor = db.prepare(`
         SELECT d.*, s.name as specialization, p.full_name as name
         FROM doctors d
-        JOIN patients p        ON d.user_id = p.user_id
-        JOIN specializations s ON s.id = d.specialization_id
+                 JOIN patients p        ON d.user_id = p.user_id
+                 JOIN specializations s ON s.id = d.specialization_id
         WHERE d.id = ?
     `).get(id)
     if (doctor) doctor.languages = getLanguagesStr(id)
@@ -86,7 +86,7 @@ const findByUserId = (userId) => {
     const doctor = db.prepare(`
         SELECT d.*, s.name as specialization
         FROM doctors d
-        JOIN specializations s ON s.id = d.specialization_id
+                 JOIN specializations s ON s.id = d.specialization_id
         WHERE d.user_id = ?
     `).get(userId)
     if (doctor) doctor.languages = getLanguagesStr(doctor.id)
@@ -134,4 +134,13 @@ const getWorkHours = (id) =>
 const getPriceRange = () =>
     db.prepare(`SELECT MIN(price) as min, MAX(price) as max FROM doctors`).get()
 
-module.exports = { findAll, findById, findByUserId, create, update, updateByAdmin, getWorkHours, getPriceRange }
+const findUserId = (id) =>
+    db.prepare(`SELECT user_id FROM doctors WHERE id = ?`).get(id)
+
+const remove = (id) =>
+    db.prepare(`DELETE FROM doctors WHERE id = ?`).run(id)
+
+module.exports = {
+    findAll, findById, findByUserId, create, update, updateByAdmin,
+    getWorkHours, getPriceRange, findUserId, remove,
+}
