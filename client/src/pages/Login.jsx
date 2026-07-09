@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login as loginRequest } from '../api/index'
 import { VALIDATION } from '../constants'
 import AuthForm, { AuthField } from '../components/AuthForm'
-const LANDING = { doctor: '/doctor/schedule', admin: '/admin/stats' }
 
 export default function Login() {
-    const navigate = useNavigate()
     const { login } = useAuth()
 
     const [email, setEmail]       = useState('')
@@ -27,11 +25,8 @@ export default function Login() {
         setLoading(true)
         try {
             const response = await loginRequest({ email, password })
-            const user = response.data.user
-
-            login(user, response.data.accessToken)
-            navigate(LANDING[user.role] || '/')
-
+            login(response.data.user, response.data.accessToken)
+            // Редирект по роли делает роут /login в App.jsx — без гонки с navigate.
         } catch (err) {
             setError(err.response?.data?.error || 'Ошибка соединения с сервером')
         } finally {
@@ -50,20 +45,8 @@ export default function Login() {
             onSubmit={handleSubmit}
             footer={<p>Нет аккаунта? <Link to="/register">Создать сейчас</Link></p>}
         >
-            <AuthField
-                label="Email"
-                type="email"
-                placeholder="example@mail.com"
-                value={email}
-                onChange={setEmail}
-            />
-            <AuthField
-                label="Пароль"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={setPassword}
-            />
+            <AuthField label="Email" type="email" placeholder="example@mail.com" value={email} onChange={setEmail} />
+            <AuthField label="Пароль" type="password" placeholder="••••••••" value={password} onChange={setPassword} />
         </AuthForm>
     )
 }

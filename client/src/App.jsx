@@ -44,6 +44,9 @@ function DoctorViewGuard({ children }) {
     return children
 }
 
+const LANDING = { doctor: '/doctor/schedule', admin: '/admin/stats' }
+const landingFor = (user) => LANDING[user?.role] || '/'
+
 function AppRoutes() {
     const { user } = useAuth()
 
@@ -56,8 +59,8 @@ function AppRoutes() {
                 <Route path="/doctors/:id" element={<DoctorProfile />} />
 
                 {/* Перенаправление залогиненных со страниц auth */}
-                <Route path="/login"    element={user ? <Navigate to="/" replace /> : <Login />} />
-                <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+                <Route path="/login"    element={user ? <Navigate to={landingFor(user)} replace /> : <Login />} />
+                <Route path="/register" element={user ? <Navigate to={landingFor(user)} replace /> : <Register />} />
 
                 {/* Защищённые — только для залогиненных (любая роль) */}
                 <Route path="/booking"      element={<ProtectedRoute><Booking /></ProtectedRoute>} />
