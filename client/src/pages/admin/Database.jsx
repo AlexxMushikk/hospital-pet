@@ -127,7 +127,7 @@ export default function AdminDatabase() {
     return (
         <main className="container admin-section">
 
-            <section className="page-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <section className="page-title page-title--row">
                 <div>
                     <h2>Управление базой данных</h2>
                     <p>Просмотр и редактирование всех записей системы.</p>
@@ -142,7 +142,7 @@ export default function AdminDatabase() {
                 )}
             </section>
 
-            <div className="view-switcher" style={{ justifyContent: 'center', marginBottom: '20px' }}>
+            <div className="view-switcher view-switcher--center">
                 {TABLES.map(t => (
                     <button
                         key={t}
@@ -154,7 +154,7 @@ export default function AdminDatabase() {
                 ))}
             </div>
 
-            <div className="sidebar-block" style={{ maxWidth: '400px', margin: '0 auto 30px', borderBottom: 'none' }}>
+            <div className="sidebar-block search-block">
                 <input
                     type="text"
                     placeholder={searchDisabled ? 'Поиск недоступен для записей' : 'Поиск по имени или email...'}
@@ -166,15 +166,15 @@ export default function AdminDatabase() {
             </div>
 
             <div className="info-section">
-                <div style={{ overflowX: 'auto' }}>
+                <div className="table-scroll">
                     <table className="admin-table">
                         <thead>{renderHead()}</thead>
                         <tbody>
                         {loading && (
-                            <tr><td colSpan={colSpan} style={{ textAlign: 'center' }}>Загрузка...</td></tr>
+                            <tr><td colSpan={colSpan} className="text-center">Загрузка...</td></tr>
                         )}
                         {!loading && data.length === 0 && (
-                            <tr><td colSpan={colSpan} style={{ textAlign: 'center' }}>Записи не найдены</td></tr>
+                            <tr><td colSpan={colSpan} className="text-center">Записи не найдены</td></tr>
                         )}
                         {!loading && data.map(item => (
                             <tr key={item.id}>

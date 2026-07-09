@@ -1073,3 +1073,50 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .textarea-sm       { min-height: 80px; }
 .textarea-lg       { min-height: 120px; }
 .form-actions--end { flex-direction: row; justify-content: flex-end; gap: 15px; }
+
+.text-center { text-align: center; }
+
+/* App shell */
+.app-shell { display: flex; flex-direction: column; min-height: 100vh; }
+.app-main  { flex: 1; }
+
+/* NotFound */
+.notfound-code { font-size: 4rem; margin: 0; }
+.notfound-text { color: var(--color-text-muted); margin: 10px 0 25px; }
+
+/* Stats (admin) */
+.skeleton--stat { height: 160px; border-radius: 12px; }
+
+/* общее для админ-страниц */
+.page-title--row { display: flex; justify-content: space-between; align-items: center; }
+
+/* Database */
+.view-switcher--center { justify-content: center; margin-bottom: 20px; }
+.search-block { max-width: 400px; margin: 0 auto 30px; border-bottom: none; }
+.table-scroll { overflow-x: auto; }
+
+/* CreateDoctor */
+.form-narrow   { max-width: 700px; margin: 0 auto; }
+.select-styled { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+.doctor-notes-box--mb { margin-bottom: 30px; }
+.notes-text    { margin: 0; font-size: 14px; }
+
+/* Home */
+.hero-accent      { color: #333; }
+.hero-actions     { display: flex; gap: 15px; flex-wrap: wrap; }
+.stats-band       { background: var(--color-primary); padding: 40px 0; }
+.stats-band-grid  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
+.stats-band-num   { font-size: 36px; font-weight: 800; color: #fff; }
+.stats-band-label { font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 5px; }
+.section-pad-top  { padding-top: 60px; }
+.page-title--mb   { margin-bottom: 40px; }
+.section-subtitle { color: var(--color-text-muted); margin-top: 10px; }
+.spec-link        { text-decoration: none; color: inherit; }
+.feature-card--link { cursor: pointer; height: 100%; }
+.feature-icon     { font-size: 48px; margin-bottom: 15px; }
+.feature-desc     { color: var(--color-text-muted); margin-top: 10px; font-size: 14px; line-height: 1.6; }
+.feature-cta      { margin-top: 15px; color: var(--color-primary); font-weight: 600; font-size: 14px; }
+.cta-section      { padding: 60px 0; background: var(--color-bg-subtle); }
+.cta-title        { font-size: 32px; margin-bottom: 15px; }
+.cta-text         { color: var(--color-text-muted); margin-bottom: 30px; font-size: 18px; }
+.cta-actions      { display: flex; gap: 15px; justify-content: center; }

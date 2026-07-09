@@ -31,7 +31,7 @@ export default function AdminStats() {
             <section className="admin-section container">
                 <div className="stats-grid">
                     {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="skeleton" style={{ height: '160px', borderRadius: '12px' }} />
+                        <div key={i} className="skeleton skeleton--stat" />
                     ))}
                 </div>
             </section>
@@ -60,31 +60,31 @@ export default function AdminStats() {
                 <h3>Последняя активность</h3>
                 <table className="admin-table">
                     <thead>
-                        <tr>
-                            <th>Дата</th>
-                            <th>Пациент</th>
-                            <th>Врач</th>
-                            <th>Статус</th>
-                        </tr>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Пациент</th>
+                        <th>Врач</th>
+                        <th>Статус</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {activity.length === 0 && (
-                            <tr>
-                                <td colSpan={4} style={{ textAlign: 'center' }}>Нет данных</td>
-                            </tr>
-                        )}
-                        {activity.map((act) => (
-                            <tr key={act.id}>
-                                <td>{act.date || '---'}</td>
-                                <td>{act.patient_name || 'Неизвестен'}</td>
-                                <td>{act.doctor_name  || 'Неизвестен'}</td>
-                                <td>
+                    {activity.length === 0 && (
+                        <tr>
+                            <td colSpan={4} className="text-center">Нет данных</td>
+                        </tr>
+                    )}
+                    {activity.map((act) => (
+                        <tr key={act.id}>
+                            <td>{act.date || '---'}</td>
+                            <td>{act.patient_name || 'Неизвестен'}</td>
+                            <td>{act.doctor_name  || 'Неизвестен'}</td>
+                            <td>
                                     <span className={statusClass(act.status)}>
                                         {statusLabel(act.status)}
                                     </span>
-                                </td>
-                            </tr>
-                        ))}
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
             </div>

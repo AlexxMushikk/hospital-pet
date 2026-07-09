@@ -4,9 +4,9 @@ export default function NotFound() {
     const navigate = useNavigate()
     return (
         <div className="auth-container">
-            <div className="auth-card" style={{ textAlign: 'center' }}>
-                <h2 style={{ fontSize: '4rem', margin: 0 }}>404</h2>
-                <p style={{ color: '#6b7280', margin: '10px 0 25px' }}>
+            <div className="auth-card text-center">
+                <h2 className="notfound-code">404</h2>
+                <p className="notfound-text">
                     Страница не найдена
                 </p>
                 <button className="btn btn-solid" onClick={() => navigate('/')}>

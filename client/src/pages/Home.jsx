@@ -22,13 +22,13 @@ export default function Home() {
                     <div className="hero-text">
                         <h2>
                             Ваше здоровье —<br />
-                            <span style={{ color: '#333' }}>Наш приоритет</span>
+                            <span className="hero-accent">Наш приоритет</span>
                         </h2>
                         <p>
                             Добро пожаловать в City Care Hospital. Мы предоставляем
                             медицинские услуги высшего уровня с лучшими специалистами.
                         </p>
-                        <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                        <div className="hero-actions">
                             <Link to="/doctors" className="btn btn-solid btn-lg">
                                 Найти врача
                             </Link>
@@ -52,30 +52,30 @@ export default function Home() {
 
             {/* ── СТАТИСТИКА ── */}
             {stats && (
-                <div style={{ background: '#dc2626', padding: '40px 0' }}>
+                <div className="stats-band">
                     <div className="container">
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', textAlign: 'center' }}>
+                        <div className="stats-band-grid">
                             <div>
-                                <div style={{ fontSize: '36px', fontWeight: 800, color: 'white' }}>
+                                <div className="stats-band-num">
                                     {stats.doctorsCount}
                                 </div>
-                                <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginTop: '5px' }}>
+                                <div className="stats-band-label">
                                     Врачей-специалистов
                                 </div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '36px', fontWeight: 800, color: 'white' }}>
+                                <div className="stats-band-num">
                                     {stats.specializationsCount}
                                 </div>
-                                <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginTop: '5px' }}>
+                                <div className="stats-band-label">
                                     Специализаций
                                 </div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '36px', fontWeight: 800, color: 'white' }}>
+                                <div className="stats-band-num">
                                     {new Intl.NumberFormat('pl-PL').format(stats.completedAppointments)}
                                 </div>
-                                <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', marginTop: '5px' }}>
+                                <div className="stats-band-label">
                                     Завершённых визитов
                                 </div>
                             </div>
@@ -85,11 +85,11 @@ export default function Home() {
             )}
 
             {/* ── СПЕЦИАЛИЗАЦИИ ── */}
-            <section className="features" style={{ paddingTop: '60px' }}>
+            <section className="features section-pad-top">
                 <div className="container">
-                    <div className="page-title" style={{ marginBottom: '40px' }}>
+                    <div className="page-title page-title--mb">
                         <h2>Наши специализации</h2>
-                        <p style={{ color: '#6b7280', marginTop: '10px' }}>
+                        <p className="section-subtitle">
                             Квалифицированная помощь по всем направлениям медицины
                         </p>
                     </div>
@@ -99,15 +99,15 @@ export default function Home() {
                             <Link
                                 key={spec.value}
                                 to={`/doctors?specialization=${encodeURIComponent(spec.value)}`}
-                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                className="spec-link"
                             >
-                                <div className="feature-card" style={{ cursor: 'pointer', height: '100%' }}>
-                                    <div style={{ fontSize: '48px', marginBottom: '15px' }}>{spec.icon}</div>
+                                <div className="feature-card feature-card--link">
+                                    <div className="feature-icon">{spec.icon}</div>
                                     <h3>{spec.label}</h3>
-                                    <p style={{ color: '#6b7280', marginTop: '10px', fontSize: '14px', lineHeight: '1.6' }}>
+                                    <p className="feature-desc">
                                         {spec.desc}
                                     </p>
-                                    <div style={{ marginTop: '15px', color: '#dc2626', fontWeight: 600, fontSize: '14px' }}>
+                                    <div className="feature-cta">
                                         Найти специалиста →
                                     </div>
                                 </div>
@@ -119,15 +119,15 @@ export default function Home() {
 
             {/* ── CTA ── */}
             {!user && (
-                <section style={{ padding: '60px 0', background: '#f9fafb' }}>
-                    <div className="container" style={{ textAlign: 'center' }}>
-                        <h2 style={{ fontSize: '32px', marginBottom: '15px' }}>
+                <section className="cta-section">
+                    <div className="container text-center">
+                        <h2 className="cta-title">
                             Готовы записаться?
                         </h2>
-                        <p style={{ color: '#6b7280', marginBottom: '30px', fontSize: '18px' }}>
+                        <p className="cta-text">
                             Создайте аккаунт и запишитесь к врачу за несколько минут
                         </p>
-                        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+                        <div className="cta-actions">
                             <Link to="/register" className="btn btn-solid btn-lg">
                                 Зарегистрироваться
                             </Link>

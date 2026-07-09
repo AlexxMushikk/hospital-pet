@@ -95,9 +95,9 @@ export default function App() {
     return (
         <BrowserRouter>
             <ErrorBoundary>
-                <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+                <div className="app-shell">
                     <Navbar />
-                    <main style={{ flex: 1 }}>
+                    <main className="app-main">
                         <AppRoutes />
                     </main>
                     <Footer />

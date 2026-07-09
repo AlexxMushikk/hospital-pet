@@ -75,7 +75,7 @@ export default function CreateDoctor() {
 
     return (
         <main className="container admin-section">
-            <section className="page-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <section className="page-title page-title--row">
                 <div>
                     <h2>Создать нового врача</h2>
                     <p>Заполните данные для создания аккаунта врача.</p>
@@ -85,14 +85,14 @@ export default function CreateDoctor() {
                 </button>
             </section>
 
-            <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+            <div className="form-narrow">
                 <form onSubmit={handleSubmit}>
 
                     {/* ── ЛИЧНЫЕ ДАННЫЕ ── */}
                     <div className="info-section">
                         <h3>Личные данные</h3>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div className="form-grid-2">
                             <div className="form-group">
                                 <label>Полное имя *</label>
                                 <input
@@ -110,7 +110,7 @@ export default function CreateDoctor() {
                                     name="gender"
                                     value={form.gender}
                                     onChange={handleChange}
-                                    style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '15px' }}
+                                    className="select-styled"
                                 >
                                     <option value="Not Specified">Не указан</option>
                                     <option value="Male">Мужской</option>
@@ -155,7 +155,7 @@ export default function CreateDoctor() {
                                 name="specialization"
                                 value={form.specialization}
                                 onChange={handleChange}
-                                style={{ width: '100%', padding: '12px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '15px' }}
+                                className="select-styled"
                                 required
                             >
                                 <option value="">— Выберите специализацию —</option>
@@ -165,7 +165,7 @@ export default function CreateDoctor() {
                             </select>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div className="form-grid-2">
                             <div className="form-group">
                                 <label>Дата начала карьеры *</label>
                                 <input
@@ -192,8 +192,8 @@ export default function CreateDoctor() {
                     </div>
 
                     {/* ── ИНФО ── */}
-                    <div className="doctor-notes-box" style={{ marginBottom: '30px' }}>
-                        <p style={{ margin: 0, fontSize: '14px' }}>
+                    <div className="doctor-notes-box doctor-notes-box--mb">
+                        <p className="notes-text">
                             <strong>После создания</strong> врач сможет войти в систему и заполнить
                             профиль самостоятельно: фото, биографию, образование, языки.
                             Рабочие часы по умолчанию 08:00 — 18:00, изменить можно в разделе
@@ -201,7 +201,7 @@ export default function CreateDoctor() {
                         </p>
                     </div>
 
-                    <div className="form-actions" style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: '15px' }}>
+                    <div className="form-actions form-actions--end">
                         <button
                             type="button"
                             className="btn btn-outline"
