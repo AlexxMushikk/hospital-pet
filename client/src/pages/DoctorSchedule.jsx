@@ -44,8 +44,8 @@ export default function DoctorSchedule() {
 
     return (
         <main className="container">
-            <section className="page-title" style={{ textAlign: 'left' }}>
-                <h2 style={{ fontWeight: 800 }}>Расписание на день</h2>
+            <section className="page-title page-title--left">
+                <h2>Расписание на день</h2>
                 <p>Управление записями пациентов</p>
             </section>
 
@@ -65,8 +65,7 @@ export default function DoctorSchedule() {
                             onChange={e => setDate(e.target.value)}
                         />
                         <button
-                            className="btn btn-outline btn-sm"
-                            style={{ marginLeft: '10px' }}
+                            className="btn btn-outline btn-sm today-btn"
                             onClick={() => setDate(getTodayStr())}
                         >
                             Сегодня
@@ -98,12 +97,11 @@ export default function DoctorSchedule() {
                             <li key={slot.time} className="slot-item occupied">
                                 <div className="slot-time">🕒 {slot.time}</div>
                                 <div className="slot-info">
-                                    <strong style={{ fontSize: '18px' }}>
+                                    <strong className="slot-patient">
                                         👤 {slot.patient_name || 'Пациент'}
                                     </strong>
                                     <span
-                                        className={statusClass(slot.status)}
-                                        style={{ margin: 0, padding: '2px 8px', fontSize: '10px' }}
+                                        className={`${statusClass(slot.status)} slot-status`}
                                     >
                                         {statusLabel(slot.status)}
                                     </span>

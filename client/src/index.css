@@ -1034,3 +1034,42 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .plain-list li + li { margin-top: 8px; }
 .text-placeholder   { color: var(--color-text-light); }
 .price-inline       { color: var(--color-primary); font-weight: 700; }
+
+/* переиспользуемый текст */
+.text-muted  { color: var(--color-text-muted); }
+.text-danger { color: var(--color-primary); }
+
+/* Booking */
+.auth-card--md    { max-width: 700px; }
+.booking-title    { margin-bottom: 10px; }
+.booking-summary  { margin-bottom: 25px; }
+.booking-to       { margin: 0; }
+.booking-patient  { margin: 5px 0 0; font-size: 0.9em; color: #666; }
+.booking-price    { margin: 8px 0 0; font-weight: bold; color: var(--color-primary); }
+.booking-form     { text-align: left; }
+.date-row         { display: flex; gap: 10px; }
+.date-input       { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+.time-section     { margin-top: 20px; }
+.time-label       { display: block; font-weight: bold; margin-bottom: 10px; }
+.slots-legend     { font-size: 12px; color: #666; margin-top: 10px; }
+.dot-available    { color: var(--color-primary); }
+.dot-booked       { color: var(--color-border); }
+.form-actions--mt { margin-top: 30px; }
+
+/* DoctorSchedule */
+.today-btn    { margin-left: 10px; }
+.slot-patient { font-size: 18px; }
+.slot-status  { margin: 0; padding: 2px 8px; font-size: 10px; }
+
+/* DoctorEditProfile */
+.skeleton--mt      { margin-top: 30px; }
+.profile-form-card { max-width: 800px; margin: 0 auto; text-align: left; }
+.section-heading   { display: flex; align-items: center; gap: 10px; }
+.form-grid-2       { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid-2--mt   { margin-top: 15px; }
+.field-label-sm    { font-size: 12px; text-transform: uppercase; color: #94a3b8; }
+.form-divider      { border: 0; border-top: 1px solid #eee; margin: 30px 0; }
+.input-readonly    { background: var(--color-bg); cursor: not-allowed; }
+.textarea-sm       { min-height: 80px; }
+.textarea-lg       { min-height: 120px; }
+.form-actions--end { flex-direction: row; justify-content: flex-end; gap: 15px; }

@@ -92,35 +92,35 @@ export default function Booking() {
 
     return (
         <div className="auth-container">
-            <div className="auth-card" style={{ maxWidth: '700px' }}>
-                <h2 style={{ marginBottom: '10px' }}>Запись к врачу</h2>
+            <div className="auth-card auth-card--md">
+                <h2 className="booking-title">Запись к врачу</h2>
 
-                <div className="booking-summary" style={{ marginBottom: '25px' }}>
-                    <p style={{ margin: 0 }}>
+                <div className="booking-summary">
+                    <p className="booking-to">
                         Запись к: <strong>{decodeURIComponent(doctorName)}</strong>
                     </p>
-                    <p style={{ margin: '5px 0 0', fontSize: '0.9em', color: '#666' }}>
+                    <p className="booking-patient">
                         Пациент: {user?.full_name}
                     </p>
                     {/* Показываем цену только когда загрузилась — не показываем пока null */}
                     {doctorPrice && (
-                        <p style={{ margin: '8px 0 0', fontWeight: 'bold', color: '#dc2626' }}>
+                        <p className="booking-price">
                             Стоимость визита: {doctorPrice} PLN
                         </p>
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ textAlign: 'left' }}>
+                <form onSubmit={handleSubmit} className="booking-form">
 
                     <div className="form-group">
                         <label>1. Выберите дату</label>
-                        <div style={{ display: 'flex', gap: '10px' }}>
+                        <div className="date-row">
                             <input
                                 type="date"
                                 value={date}
                                 min={getTodayStr()}
                                 onChange={e => setDate(e.target.value)}
-                                style={{ flex: 1, padding: '10px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '15px' }}
+                                className="date-input"
                             />
                             <button
                                 type="button"
@@ -132,23 +132,23 @@ export default function Booking() {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '20px' }}>
-                        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>
+                    <div className="time-section">
+                        <label className="time-label">
                             2. Выберите время (слоты по {SLOT_STEP_MINUTES} минут)
                         </label>
 
                         {slotsLoading && (
-                            <p style={{ color: '#6b7280' }}>Загрузка слотов...</p>
+                            <p className="text-muted">Загрузка слотов...</p>
                         )}
 
                         {!slotsLoading && slotsError && (
-                            <p style={{ color: '#dc2626' }}>
+                            <p className="text-danger">
                                 Не удалось загрузить слоты. Попробуйте обновить страницу.
                             </p>
                         )}
 
                         {!slotsLoading && !slotsError && slots.length === 0 && (
-                            <p style={{ color: '#6b7280' }}>Нет доступных слотов на эту дату.</p>
+                            <p className="text-muted">Нет доступных слотов на эту дату.</p>
                         )}
 
                         {!slotsLoading && !slotsError && slots.length > 0 && (
@@ -170,29 +170,29 @@ export default function Booking() {
                                         )
                                     })}
                                 </div>
-                                <p style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
-                                    <span style={{ color: '#dc2626' }}>●</span> Доступно |{' '}
-                                    <span style={{ color: '#e5e7eb' }}>●</span> Занято
+                                <p className="slots-legend">
+                                    <span className="dot-available">●</span> Доступно |{' '}
+                                    <span className="dot-booked">●</span> Занято
                                 </p>
                             </>
                         )}
                     </div>
 
-                    <div className="form-group" style={{ marginTop: '25px' }}>
+                    <div className="form-group form-group--spaced">
                         <label>3. Симптомы / Причина визита (необязательно)</label>
                         <textarea
                             value={symptoms}
                             onChange={e => setSymptoms(e.target.value)}
                             maxLength={250}
                             placeholder="Кратко опишите симптомы..."
-                            style={{ width: '100%', minHeight: '80px', padding: '10px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '14px', resize: 'vertical' }}
+                            className="appt-textarea"
                         />
-                        <div style={{ textAlign: 'right', fontSize: '11px', color: symptoms.length > 220 ? '#dc2626' : '#999' }}>
+                        <div className={`char-counter ${symptoms.length > 220 ? 'char-counter--warn' : ''}`}>
                             {symptoms.length} / 250
                         </div>
                     </div>
 
-                    <div className="form-actions" style={{ marginTop: '30px' }}>
+                    <div className="form-actions form-actions--mt">
                         {selectedTime && (
                             <button type="submit" className="btn btn-solid w-full" disabled={submitting}>
                                 {submitting ? 'Отправка...' : `Подтвердить запись на ${selectedTime}`}
