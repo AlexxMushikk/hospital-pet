@@ -28,8 +28,7 @@ body {
 }
 
 textarea {
-    resize: none;
-    overflow-y: hidden;
+    resize: vertical;
     transition: none;
 }
 
@@ -40,8 +39,8 @@ textarea {
 }
 
 main.container {
-    padding-top: 15px !important;
-    padding-bottom: 25px !important;
+    padding-top: 15px;
+    padding-bottom: 25px;
     min-height: auto;
 }
 
@@ -362,8 +361,6 @@ main.container {
     font-size: 15px;
     margin-bottom: 20px;
 }
-
-#symptoms { overflow-y: hidden; min-height: 100px; }
 
 .booking-summary {
     background-color: var(--color-primary-light);
