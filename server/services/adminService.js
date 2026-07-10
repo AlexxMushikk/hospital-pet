@@ -3,6 +3,7 @@ const appointmentRepo = require('../repositories/appointmentRepo')
 const doctorRepo      = require('../repositories/doctorRepo')
 const patientRepo     = require('../repositories/patientRepo')
 const userRepo        = require('../repositories/userRepo')
+const refreshTokenRepo = require('../repositories/refreshTokenRepo')
 const { db } = require('../db/database')
 const {
     paginationDto,
@@ -63,7 +64,6 @@ function getList(table, query) {
         const total = adminRepo.getPatientCount({ search })
         return { data, totalCount: total, page, totalPages: Math.ceil(total / limit) }
     }
-    // appointments — поиск не поддерживается
     const data  = appointmentRepo.findAll({ limit, offset })
     const total = appointmentRepo.count()
     return { data, totalCount: total, page, totalPages: Math.ceil(total / limit) }
@@ -174,7 +174,7 @@ function deleteRecord(table, id) {
         const execute = db.transaction(() => {
             appointmentRepo.cancelScheduledByDoctor(id)
             userRepo.softDelete(doctor.user_id)
-            // TODO (Фича 2): refreshTokenRepo.revokeAllForUser(doctor.user_id)
+            refreshTokenRepo.revokeAllForUser(doctor.user_id)
         })
         execute()
         return
@@ -197,7 +197,7 @@ function deleteRecord(table, id) {
         const execute = db.transaction(() => {
             appointmentRepo.cancelScheduledByPatient(id)
             userRepo.softDelete(patient.user_id)
-            // TODO (Фича 2): refreshTokenRepo.revokeAllForUser(patient.user_id)
+            refreshTokenRepo.revokeAllForUser(patient.user_id)
         })
         execute()
         return

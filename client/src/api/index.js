@@ -33,6 +33,18 @@ const processQueue = (error, token = null) => {
     waitingQueue = []
 }
 
+let refreshPromise = null
+
+export function refreshSession() {
+    if (!refreshPromise) {
+        refreshPromise = axios
+            .post('/api/refresh', {}, { withCredentials: true })
+            .then(res => res.data)
+            .finally(() => { refreshPromise = null })
+    }
+    return refreshPromise
+}
+
 api.interceptors.response.use(
     response => response,
     async error => {
@@ -53,8 +65,8 @@ api.interceptors.response.use(
             isRefreshing = true
 
             try {
-                const { data } = await axios.post('/api/refresh', {}, { withCredentials: true })
-                const newToken  = data.accessToken
+                const data     = await refreshSession()
+                const newToken = data.accessToken
 
                 updateToken(newToken)
 

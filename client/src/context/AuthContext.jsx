@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
+import { refreshSession } from '../api'
 
 export const AuthContext = createContext(null)
 
@@ -13,13 +14,13 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         let cancelled = false
-        axios.post('/api/refresh', {}, { withCredentials: true })
-            .then(({ data }) => {
+        refreshSession()
+            .then((data) => {
                 if (cancelled) return
                 setUser(data.user)
                 setToken(data.accessToken)
             })
-            .catch(() => { /* нет валидной сессии — остаёмся гостем */ })
+            .catch(() => {})
             .finally(() => { if (!cancelled) setAuthLoading(false) })
         return () => { cancelled = true }
     }, [])
