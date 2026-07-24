@@ -4,6 +4,8 @@ import { useModal } from '../../hooks/useModal'
 import Modal from '../../components/Modal'
 import api from '../../api/index'
 import { SPECIALIZATIONS, VALIDATION, VALIDATION_MSG } from '../../constants'
+import DatePicker from '../../components/DatePicker'
+import { getTodayStr } from '../../utils/date'
 
 export default function CreateDoctor() {
     const navigate = useNavigate()
@@ -168,15 +170,11 @@ export default function CreateDoctor() {
                         <div className="form-grid-2">
                             <div className="form-group">
                                 <label>Дата начала карьеры *</label>
-                                <input
-                                    type="date"
-                                    name="career_start_date"
+                                <DatePicker
                                     value={form.career_start_date}
-                                    onChange={handleChange}
-                                    max={new Date().toISOString().split('T')[0]}
-                                    required
-                                />
-                            </div>
+                                    onChange={(v) => setForm(prev => ({ ...prev, career_start_date: v }))}
+                                    maxDate={getTodayStr()}
+                                />                            </div>
                             <div className="form-group">
                                 <label>Стоимость визита (PLN) *</label>
                                 <input

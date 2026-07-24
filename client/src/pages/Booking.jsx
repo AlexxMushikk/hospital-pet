@@ -5,6 +5,7 @@ import { getDoctorSlots, createAppointment, getDoctor } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { getTodayStr } from '../utils/date'
+import DatePicker from '../components/DatePicker'
 import { logger } from '../utils/logger'
 import { SLOT_STEP_MINUTES, VALIDATION, VALIDATION_MSG } from '../constants'
 
@@ -115,22 +116,11 @@ export default function Booking() {
 
                     <div className="form-group">
                         <label>1. Выберите дату</label>
-                        <div className="date-row">
-                            <input
-                                type="date"
-                                value={date}
-                                min={getTodayStr()}
-                                onChange={e => setDate(e.target.value)}
-                                className="date-input"
-                            />
-                            <button
-                                type="button"
-                                className="btn btn-outline btn-sm"
-                                onClick={() => setDate(getTodayStr())}
-                            >
-                                Сегодня
-                            </button>
-                        </div>
+                        <DatePicker
+                            value={date}
+                            onChange={setDate}
+                            minDate={getTodayStr()}
+                        />
                     </div>
 
                     <div className="time-section">

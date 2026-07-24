@@ -25,6 +25,10 @@ export default function useRecordForm({ table, id, initialForm, mapRecord, build
         setForm(prev => ({ ...prev, [field]: e.target.value }))
     }
 
+    const setField = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
@@ -45,5 +49,5 @@ export default function useRecordForm({ table, id, initialForm, mapRecord, build
         }
     }
 
-    return { loading, submitting, error, form, record, onChange, handleSubmit, setError }
+    return { loading, submitting, error, form, record, onChange, setField, handleSubmit, setError }
 }

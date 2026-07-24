@@ -5,6 +5,7 @@ import { getDoctorSlots } from '../api/index'
 import { statusLabel, statusClass } from '../utils/status'
 import { getTodayStr } from '../utils/date'
 import Pagination from '../components/Pagination'
+import DatePicker from '../components/DatePicker'
 import StatCard from '../components/StatCard'
 
 const PAGE_SIZE = 4
@@ -57,19 +58,13 @@ export default function DoctorSchedule() {
 
             <div className="schedule-card">
                 <div className="schedule-controls">
-                    <div className="date-input-group">
+                    <div className="schedule-day">
                         <label>🗓 День:</label>
-                        <input
-                            type="date"
+                        <DatePicker
+                            className="datepicker--compact"
                             value={date}
-                            onChange={e => setDate(e.target.value)}
+                            onChange={setDate}
                         />
-                        <button
-                            className="btn btn-outline btn-sm today-btn"
-                            onClick={() => setDate(getTodayStr())}
-                        >
-                            Сегодня
-                        </button>
                     </div>
                     <button className="btn btn-solid btn-sm" onClick={fetchSlots}>
                         🔄 Обновить

@@ -1,6 +1,8 @@
 import useRecordForm from '../../../hooks/useRecordForm'
 import RecordFormShell from './RecordFormShell'
+import DatePicker from '../../../components/DatePicker'
 import { TIME_OPTIONS } from '../../../constants'
+import { getTodayStr } from '../../../utils/date'
 
 const SPECIALIZATIONS = [
     'Cardiology', 'Neurology', 'Diagnostics',
@@ -60,7 +62,7 @@ const buildPayload = (form) => ({
 })
 
 export default function DoctorRecordForm({ id }) {
-    const { loading, submitting, error, form, onChange, handleSubmit } = useRecordForm({
+    const { loading, submitting, error, form, onChange, setField, handleSubmit } = useRecordForm({
         table: 'doctors',
         id,
         initialForm: INITIAL,
@@ -93,7 +95,11 @@ export default function DoctorRecordForm({ id }) {
             </select>
 
             <label>Дата начала карьеры</label>
-            <input type="date" value={form.career_start_date} onChange={onChange('career_start_date')} />
+            <DatePicker
+                value={form.career_start_date}
+                onChange={(v) => setField('career_start_date', v)}
+                maxDate={getTodayStr()}
+            />
 
             <label>Цена визита (PLN)</label>
             <input type="number" min="0" value={form.price} onChange={onChange('price')} />

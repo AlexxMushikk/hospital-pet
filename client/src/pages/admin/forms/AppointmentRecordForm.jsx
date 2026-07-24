@@ -1,5 +1,6 @@
 import useRecordForm from '../../../hooks/useRecordForm'
 import RecordFormShell from './RecordFormShell'
+import DatePicker from '../../../components/DatePicker'
 import { TIME_OPTIONS, VALIDATION } from '../../../constants'
 
 const STATUSES = [
@@ -28,7 +29,7 @@ const buildPayload = (form) => ({
 })
 
 export default function AppointmentRecordForm({ id }) {
-    const { loading, submitting, error, form, record, onChange, handleSubmit } = useRecordForm({
+    const { loading, submitting, error, form, record, onChange, setField, handleSubmit } = useRecordForm({
         table: 'appointments',
         id,
         initialForm: INITIAL,
@@ -51,7 +52,10 @@ export default function AppointmentRecordForm({ id }) {
             </div>
 
             <label>Дата</label>
-            <input type="date" value={form.appointment_date} onChange={onChange('appointment_date')} required />
+            <DatePicker
+                value={form.appointment_date}
+                onChange={(v) => setField('appointment_date', v)}
+            />
 
             <label>Время</label>
             <select value={form.appointment_time} onChange={onChange('appointment_time')} required>
