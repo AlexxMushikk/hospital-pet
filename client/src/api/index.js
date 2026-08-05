@@ -35,6 +35,9 @@ const processQueue = (error, token = null) => {
 
 let refreshPromise = null
 
+const AUTH_PATHS = ['/login', '/register', '/refresh', '/logout']
+const isAuthPath = (url = '') => AUTH_PATHS.includes(url)
+
 export function refreshSession() {
     if (!refreshPromise) {
         refreshPromise = axios
@@ -50,7 +53,7 @@ api.interceptors.response.use(
     async error => {
         const originalRequest = error.config
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && !originalRequest._retry && !isAuthPath(originalRequest?.url)) {
 
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
