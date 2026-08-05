@@ -15,7 +15,7 @@ const {
 function validate(dto, data) {
     const result = dto.safeParse(data)
     if (!result.success) {
-        const err = new Error(result.error.errors[0].message)
+        const err = new Error(result.error.issues[0].message)
         err.status = 400
         throw err
     }
