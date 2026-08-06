@@ -1,5 +1,9 @@
-import { db } from '../../db/database.js'
-import { TABLES } from '../../db/schema.js'
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
+
+const { db }     = require('../../db/database.js')
+const { TABLES } = require('../../db/schema.js')
 
 export function resetDb() {
     db.pragma('foreign_keys = OFF')

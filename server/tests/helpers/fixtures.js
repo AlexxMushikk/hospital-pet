@@ -65,12 +65,20 @@ export function createDoctor({
     return { id: userId, doctor_id: doctorId, patient_id: patientId, email, password, role: 'doctor', fullName }
 }
 
-export function createAdmin({ email = 'admin@test.com', password = 'admin123' } = {}) {
+export function createAdmin({
+                                email    = 'admin@test.com',
+                                password = 'admin123',
+                                fullName = 'System Administrator',
+                            } = {}) {
     const userId = db
         .prepare(`INSERT INTO users (email, password, role) VALUES (?, ?, 'admin')`)
         .run(email, hashPassword(password)).lastInsertRowid
 
-    return { id: userId, patient_id: null, doctor_id: null, email, password, role: 'admin' }
+    const patientId = db
+        .prepare(`INSERT INTO patients (user_id, full_name) VALUES (?, ?)`)
+        .run(userId, fullName).lastInsertRowid
+
+    return { id: userId, patient_id: patientId, doctor_id: null, email, password, role: 'admin', fullName }
 }
 
 export function createAppointment({
