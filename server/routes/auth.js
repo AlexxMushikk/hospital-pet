@@ -1,12 +1,13 @@
 const express     = require('express')
 const authService = require('../services/authService')
+const { REFRESH_TOKEN_DAYS } = require('../constants')
 
 const router = express.Router()
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
     sameSite: 'strict',
-    maxAge:   7 * 24 * 60 * 60 * 1000,
+    maxAge:   REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000,
 }
 
 router.post('/login', async (req, res) => {

@@ -1,13 +1,14 @@
 const crypto = require('crypto')
 const { db } = require('../db/database')
+const { REFRESH_TOKEN_DAYS } = require('../constants')
 
 const hash = (token) => crypto.createHash('sha256').update(token).digest('hex')
 
 const store = (userId, token) =>
     db.prepare(`
         INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
-        VALUES (?, ?, datetime('now', '+7 days'))
-    `).run(userId, hash(token))
+        VALUES (?, ?, datetime('now', ?))
+    `).run(userId, hash(token), `+${REFRESH_TOKEN_DAYS} days`)
 
 const findByToken = (token) =>
     db.prepare(
