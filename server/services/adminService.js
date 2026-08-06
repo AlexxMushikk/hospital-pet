@@ -22,6 +22,17 @@ function validate(dto, data) {
     return result.data
 }
 
+function fail(message, status) {
+    const err = new Error(message)
+    err.status = status
+    throw err
+}
+
+function assertEmailFree(email, userId) {
+    const owner = userRepo.findIdByEmail(email)
+    if (owner !== null && owner !== userId) fail('Email already exists', 400)
+}
+
 const ALLOWED_TABLES = ['doctors', 'patients', 'appointments']
 
 function assertTable(table) {
@@ -97,33 +108,43 @@ function updateRecord(table, id, body) {
 
     const execute = db.transaction(() => {
         if (table === 'doctors') {
-            doctorRepo.updateByAdmin(id, data)
             const doctor = doctorRepo.findById(id)
-            if (doctor) {
-                if (data.full_name || data.phone) {
-                    patientRepo.updateByUserId(doctor.user_id, {
-                        full_name: data.full_name,
-                        phone:     data.phone,
-                    })
-                }
-                if (data.email) {
-                    userRepo.updateEmail(doctor.user_id, data.email)
-                }
+            if (!doctor) fail('Doctor not found', 404)
+
+            if (data.specialization !== undefined
+                && doctorRepo.findSpecializationId(data.specialization) === null) {
+                fail('Unknown specialization', 400)
+            }
+
+            if (data.email) assertEmailFree(data.email, doctor.user_id)
+
+            doctorRepo.updateByAdmin(id, data)
+
+            if (data.full_name || data.phone) {
+                patientRepo.updateByUserId(doctor.user_id, {
+                    full_name: data.full_name,
+                    phone:     data.phone,
+                })
+            }
+            if (data.email) {
+                userRepo.updateEmail(doctor.user_id, data.email)
             }
         }
 
         if (table === 'patients') {
             const patient = adminRepo.getPatientRecord(id)
-            if (patient) {
-                if (data.full_name || data.phone) {
-                    patientRepo.updateByUserId(patient.user_id, {
-                        full_name: data.full_name,
-                        phone:     data.phone,
-                    })
-                }
-                if (data.email) {
-                    userRepo.updateEmail(patient.user_id, data.email)
-                }
+            if (!patient) fail('Patient not found', 404)
+
+            if (data.email) assertEmailFree(data.email, patient.user_id)
+
+            if (data.full_name || data.phone) {
+                patientRepo.updateByUserId(patient.user_id, {
+                    full_name: data.full_name,
+                    phone:     data.phone,
+                })
+            }
+            if (data.email) {
+                userRepo.updateEmail(patient.user_id, data.email)
             }
         }
 
