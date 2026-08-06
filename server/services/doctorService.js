@@ -1,13 +1,13 @@
-const bcrypt      = require('bcrypt')
-const doctorRepo  = require('../repositories/doctorRepo')
-const userRepo    = require('../repositories/userRepo')
-const patientRepo = require('../repositories/patientRepo')
-const appointmentRepo = require('../repositories/appointmentRepo')
+const bcrypt= require('bcrypt')
+const doctorRepo= require('../repositories/doctorRepo')
+const userRepo= require('../repositories/userRepo')
+const patientRepo= require('../repositories/patientRepo')
+const appointmentRepo= require('../repositories/appointmentRepo')
 const { db } = require('../db/database')
 
 const { doctorQueryDto, updateDoctorDto, createDoctorDto } = require('../dto/doctorDto')
 
-const { SLOT_STEP_MINUTES } = require('../constants')
+const { SLOT_STEP_MINUTES, BCRYPT_ROUNDS } = require('../constants')
 
 function validate(dto, data) {
     const result = dto.safeParse(data)
@@ -144,7 +144,7 @@ async function createDoctor(body) {
         throw err
     }
 
-    const hash   = await bcrypt.hash(data.password, 10)
+    const hash   = await bcrypt.hash(data.password, BCRYPT_ROUNDS)
 
     const createAll = db.transaction(() => {
         const userId   = userRepo.create(data.email, hash, 'doctor')

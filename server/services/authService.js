@@ -1,10 +1,11 @@
-const bcrypt           = require('bcrypt')
-const userRepo         = require('../repositories/userRepo')
-const patientRepo      = require('../repositories/patientRepo')
-const refreshTokenRepo = require('../repositories/refreshTokenRepo')
-const jwtService       = require('./jwtService')
+const bcrypt= require('bcrypt')
+const userRepo= require('../repositories/userRepo')
+const patientRepo= require('../repositories/patientRepo')
+const refreshTokenRepo= require('../repositories/refreshTokenRepo')
+const jwtService= require('./jwtService')
 const { loginDto, registerDto } = require('../dto/authDto')
 const { db } = require('../db/database')
+const { BCRYPT_ROUNDS } = require('../constants')
 const logger = require('./logger')
 
 function validate(dto, data) {
@@ -66,7 +67,7 @@ async function register(body) {
         throw err
     }
 
-    const hash = await bcrypt.hash(password, 10)
+    const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
 
     const createAll = db.transaction(() => {
         const userId = userRepo.create(email, hash, 'patient')

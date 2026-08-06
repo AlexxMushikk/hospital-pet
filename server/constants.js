@@ -1,3 +1,18 @@
 const SLOT_STEP_MINUTES = 30
 
-module.exports = { SLOT_STEP_MINUTES }
+const BCRYPT_ROUNDS = 10
+
+const PASSWORD_MIN_LENGTH = 4
+const NAME_MIN_LENGTH     = 2
+
+const SYMPTOMS_MAX_LENGTH = 250
+const BIO_MAX_LENGTH      = 1000
+
+module.exports = {
+    SLOT_STEP_MINUTES,
+    BCRYPT_ROUNDS,
+    PASSWORD_MIN_LENGTH,
+    NAME_MIN_LENGTH,
+    SYMPTOMS_MAX_LENGTH,
+    BIO_MAX_LENGTH,
+}

@@ -1,6 +1,7 @@
 const { z } = require('zod')
 
 const { emailField, passwordField, nameField, dateField, specializationField } = require('./fields')
+const { BIO_MAX_LENGTH } = require('../constants')
 
 const doctorQueryDto = z.object({
     page:           z.coerce.number().int().min(1).default(1),
@@ -20,7 +21,7 @@ const doctorQueryDto = z.object({
 })
 
 const updateDoctorDto = z.object({
-    bio:       z.string().max(1000, 'Bio максимум 1000 символов').optional(),
+    bio:       z.string().max(BIO_MAX_LENGTH, `Bio максимум ${BIO_MAX_LENGTH} символов`).optional(),
     education: z.string().optional(),
     languages: z.string().optional(),
     image_url: z.string().optional(),

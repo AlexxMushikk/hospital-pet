@@ -1,8 +1,10 @@
 const { z } = require('zod')
 
+const { PASSWORD_MIN_LENGTH, NAME_MIN_LENGTH } = require('../constants')
+
 const emailField          = z.string().email('Введите корректный email')
-const passwordField       = z.string().min(4, 'Пароль минимум 4 символа')
-const nameField           = z.string().min(2, 'Имя минимум 2 символа')
+const passwordField       = z.string().min(PASSWORD_MIN_LENGTH, `Пароль минимум ${PASSWORD_MIN_LENGTH} символа`)
+const nameField           = z.string().min(NAME_MIN_LENGTH, `Имя минимум ${NAME_MIN_LENGTH} символа`)
 
 const isRealDate = (value) => {
     const [year, month, day] = value.split('-').map(Number)
