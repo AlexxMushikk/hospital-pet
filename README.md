@@ -106,7 +106,7 @@ not exist, and a race that replayed a refreshed request with the expired token.
 Requires Node.js 20 or newer.
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/AlexxMushikk/hospital-pet/
 cd hospital
 npm run install:all
 ```
