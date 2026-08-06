@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix client\" \"node server/server.js\"",
-    "install:all": "npm install --prefix client && npm install --prefix server"
+    "install:all": "npm install && npm install --prefix client && npm install --prefix server",
+    "test": "npm test --prefix server && npm test --prefix client"
   },
   "devDependencies": {
-    "concurrently": "npm^8.2.0"
-  },
-  "dependencies": {
-    "react-range": "^1.10.0"
+    "concurrently": "^8.2.0"
   }
 }
