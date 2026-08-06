@@ -1,5 +1,7 @@
 const appointmentRepo = require('../repositories/appointmentRepo')
+const doctorRepo      = require('../repositories/doctorRepo')
 const { createAppointmentDto, updateAppointmentDto } = require('../dto/appointmentDto')
+const { SLOT_STEP_MINUTES } = require('../constants')
 
 function validate(dto, data) {
     const result = dto.safeParse(data)
@@ -11,19 +13,48 @@ function validate(dto, data) {
     return result.data
 }
 
+function fail(message, status) {
+    const err = new Error(message)
+    err.status = status
+    throw err
+}
+
+function assertSlotExists(doctorId, time) {
+    const doctor = doctorRepo.getWorkHours(doctorId)
+    if (!doctor) fail('Doctor not found', 404)
+
+    if (time < doctor.work_start || time >= doctor.work_end) {
+        fail('Time is outside the doctor working hours', 400)
+    }
+
+    const minutes = Number(time.slice(3))
+    if (minutes % SLOT_STEP_MINUTES !== 0) {
+        fail(`Appointments start every ${SLOT_STEP_MINUTES} minutes`, 400)
+    }
+}
+
+function assertNotInPast(date, time) {
+    const scheduled = new Date(`${date}T${time}:00`)
+    if (Number.isNaN(scheduled.getTime())) fail('Invalid date or time', 400)
+    if (scheduled.getTime() < Date.now()) fail('Cannot book a slot in the past', 400)
+}
+
 function createAppointment(body, user) {
     const data = validate(createAppointmentDto, body)
 
+    if (user.role !== 'patient' || !user.patient_id) {
+        fail('Only patients can book appointments', 403)
+    }
+
     data.patient_id = user.patient_id
+
+    assertSlotExists(data.doctor_id, data.appointment_time)
+    assertNotInPast(data.appointment_date, data.appointment_time)
 
     const conflict = appointmentRepo.findConflict(
         data.doctor_id, data.appointment_date, data.appointment_time
     )
-    if (conflict) {
-        const err = new Error('This slot is already booked')
-        err.status = 409
-        throw err
-    }
+    if (conflict) fail('This slot is already booked', 409)
 
     const id = appointmentRepo.create(data)
     return { id }

@@ -95,6 +95,9 @@ const findByUserId = (userId) => {
     return doctor
 }
 
+const findSpecializationId = (name) =>
+    db.prepare(`SELECT id FROM specializations WHERE name = ?`).get(name)?.id ?? null
+
 const create = (userId, { specialization, careerStartDate, price, gender }) =>
     db.prepare(`
         INSERT INTO doctors (user_id, specialization_id, career_start_date, price, gender)
@@ -148,6 +151,6 @@ const remove = (id) =>
     db.prepare(`DELETE FROM doctors WHERE id = ?`).run(id)
 
 module.exports = {
-    findAll, findById, findByUserId, create, update, updateByAdmin,
+    findAll, findById, findByUserId, findSpecializationId, create, update, updateByAdmin,
     getWorkHours, getPriceRange, findUserId, remove,
 }

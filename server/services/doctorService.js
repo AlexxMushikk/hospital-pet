@@ -7,7 +7,7 @@ const { db } = require('../db/database')
 
 const { doctorQueryDto, updateDoctorDto, createDoctorDto } = require('../dto/doctorDto')
 
-const SLOT_STEP_MINUTES = 30
+const { SLOT_STEP_MINUTES } = require('../constants')
 
 function validate(dto, data) {
     const result = dto.safeParse(data)
@@ -128,7 +128,6 @@ function updateDoctor(id, body, requester) {
     doctorRepo.update(id, data)
 }
 
-// Создание врача — три INSERT в транзакции
 async function createDoctor(body) {
     const data = validate(createDoctorDto, body)
 
@@ -139,9 +138,14 @@ async function createDoctor(body) {
         throw err
     }
 
+    if (doctorRepo.findSpecializationId(data.specialization) === null) {
+        const err = new Error('Unknown specialization')
+        err.status = 400
+        throw err
+    }
+
     const hash   = await bcrypt.hash(data.password, 10)
 
-    // Транзакция — всё или ничего
     const createAll = db.transaction(() => {
         const userId   = userRepo.create(data.email, hash, 'doctor')
         patientRepo.create(userId, data.full_name)
