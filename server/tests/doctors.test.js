@@ -88,6 +88,24 @@ describe('GET /api/doctors', () => {
         })
     })
 
+    it('filters by minimum experience', async () => {
+        createDoctor({ email: 'senior@test.com', careerStart: '2000-01-01' })
+
+        const res = await request(app).get('/api/doctors').query({ minExperience: 20 })
+
+        expect(res.body.totalCount).toBe(1)
+    })
+
+    it('excludes one doctor from the list', async () => {
+        const list = await request(app).get('/api/doctors')
+        const skip = list.body.doctors[0].id
+
+        const res = await request(app).get('/api/doctors').query({ excludeDoctorId: skip })
+
+        expect(res.body.totalCount).toBe(2)
+        expect(res.body.doctors.map(d => d.id)).not.toContain(skip)
+    })
+
     it('reports the price range across the catalogue', async () => {
         const res = await request(app).get('/api/doctors/price-range')
 

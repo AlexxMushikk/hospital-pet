@@ -233,6 +233,22 @@ describe('PATCH /api/appointments/:id', () => {
             .toBeNull()
     })
 
+    it('stops the patient from writing doctor notes', async () => {
+        const res = await patch(patient, { doctor_notes: 'I diagnose myself' })
+
+        expect(res.status).toBe(400)
+        expect(db.prepare('SELECT doctor_notes FROM appointments WHERE id = ?').get(appointmentId).doctor_notes)
+            .toBeNull()
+    })
+
+    it('stops anyone from reopening a completed visit', async () => {
+        db.prepare(`UPDATE appointments SET status = 'Completed' WHERE id = ?`).run(appointmentId)
+
+        const res = await patch(doctor, { status: 'Scheduled' })
+
+        expect(res.status).toBe(403)
+    })
+
     it('rejects an empty body', async () => {
         const res = await patch(patient, {})
 

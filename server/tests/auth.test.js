@@ -52,6 +52,15 @@ describe('POST /api/register', () => {
         expect(db.prepare('SELECT COUNT(*) AS n FROM users').get().n).toBe(0)
     })
 
+    it('ignores a role sent by the client', async () => {
+        const res = await request(app)
+            .post('/api/register')
+            .send({ email: 'esc@test.com', password: 'testtest', full_name: 'Escalator', role: 'admin' })
+
+        expect(res.status).toBe(201)
+        expect(db.prepare('SELECT role FROM users WHERE email = ?').get('esc@test.com').role).toBe('patient')
+    })
+
     it('rejects a malformed email with 400', async () => {
         const res = await request(app)
             .post('/api/register')
