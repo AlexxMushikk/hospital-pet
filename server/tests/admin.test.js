@@ -225,6 +225,12 @@ describe('PUT /api/admin/doctors/:id', () => {
         expect(row).toMatchObject({ work_start: '09:00', work_end: '17:00' })
     })
 
+    it('rejects a career start date that does not exist', async () => {
+        const res = await put({ career_start_date: '2019-02-30' })
+
+        expect(res.status).toBe(400)
+    })
+
     it('rejects a shift that ends before it starts', async () => {
         const res = await put({ work_start: '18:00', work_end: '09:00' })
 
@@ -427,6 +433,14 @@ describe('PUT /api/admin/appointments/:id', () => {
         const res = await put({ status: 'Rescheduled' })
 
         expect(res.status).toBe(400)
+    })
+
+    it('rejects a day that does not exist in that month', async () => {
+        const res = await put({ appointment_date: '2030-02-31' })
+
+        expect(res.status).toBe(400)
+        expect(db.prepare('SELECT scheduled_at FROM appointments WHERE id = ?').get(appointmentId).scheduled_at)
+            .toBe('2030-01-01 10:00:00')
     })
 
     it('rejects a malformed time', async () => {

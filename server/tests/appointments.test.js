@@ -102,6 +102,37 @@ describe('POST /api/appointments', () => {
         expect(badTime.status).toBe(400)
     })
 
+    it('rejects a day that does not exist in that month', async () => {
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: '2030-02-31',
+            appointment_time: '10:00',
+        })
+
+        expect(res.status).toBe(400)
+        expect(db.prepare('SELECT COUNT(*) AS n FROM appointments').get().n).toBe(0)
+    })
+
+    it('rejects 29 February outside a leap year', async () => {
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: '2031-02-29',
+            appointment_time: '10:00',
+        })
+
+        expect(res.status).toBe(400)
+    })
+
+    it('accepts 29 February in a leap year', async () => {
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: '2032-02-29',
+            appointment_time: '10:00',
+        })
+
+        expect(res.status).toBe(201)
+    })
+
     it('rejects symptoms longer than the column allows', async () => {
         const res = await book(patient, {
             doctor_id:        doctor.doctor_id,
