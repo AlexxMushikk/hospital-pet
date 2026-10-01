@@ -26,16 +26,10 @@ export default function AdminDatabase() {
 
     const totalPages = Math.ceil(total / LIMIT)
 
-    // Дебаунс ввода: не дёргаем сервер на каждую букву
     useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(search), SEARCH_DEBOUNCE_MS)
         return () => clearTimeout(t)
     }, [search])
-
-    // При смене поиска возвращаемся на первую страницу
-    useEffect(() => {
-        setPage(1)
-    }, [debouncedSearch, table])
 
     useEffect(() => {
         let cancelled = false
@@ -69,10 +63,12 @@ export default function AdminDatabase() {
     const handleTableSwitch = (t) => {
         setTable(t)
         setSearch('')
+        setPage(1)
     }
 
     const handleSearchChange = (e) => {
         setSearch(e.target.value)
+        setPage(1)
     }
 
     const handleDelete = (id) => {

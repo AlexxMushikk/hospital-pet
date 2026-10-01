@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getDoctorSlots } from '../api/index'
@@ -15,30 +15,40 @@ export default function DoctorSchedule() {
     const { user } = useAuth()
     const doctorId = user?.doctor_id
 
-    const [date,    setDate]    = useState(getTodayStr())
-    const [slots,   setSlots]   = useState([])
-    const [loading, setLoading] = useState(false)
-    const [page,    setPage]    = useState(0)
+    const [date,       setDate]       = useState(getTodayStr())
+    const [slots,      setSlots]      = useState([])
+    const [loading,    setLoading]    = useState(false)
+    const [page,       setPage]       = useState(0)
+    const [refreshKey, setRefreshKey] = useState(0)
 
     const total  = slots.length
     const booked = slots.filter(s => s.status !== 'Free').length
     const free   = total - booked
 
-    const fetchSlots = useCallback(async () => {
+    useEffect(() => {
         if (!doctorId) return
-        setLoading(true)
-        setPage(0)
-        try {
-            const res = await getDoctorSlots(doctorId, date)
-            setSlots(res.data.slots || [])
-        } catch {
-            setSlots([])
-        } finally {
-            setLoading(false)
-        }
-    }, [doctorId, date])
+        let cancelled = false
 
-    useEffect(() => { fetchSlots() }, [fetchSlots])
+        const load = async () => {
+            setLoading(true)
+            try {
+                const res = await getDoctorSlots(doctorId, date)
+                if (!cancelled) setSlots(res.data.slots || [])
+            } catch {
+                if (!cancelled) setSlots([])
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
+        }
+
+        void load()
+        return () => { cancelled = true }
+    }, [doctorId, date, refreshKey])
+
+    const handleDateChange = (next) => {
+        setDate(next)
+        setPage(0)
+    }
 
     const totalPages = Math.ceil(slots.length / PAGE_SIZE)
     const pageSlots  = slots.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
@@ -63,10 +73,13 @@ export default function DoctorSchedule() {
                         <DatePicker
                             className="datepicker--compact"
                             value={date}
-                            onChange={setDate}
+                            onChange={handleDateChange}
                         />
                     </div>
-                    <button className="btn btn-solid btn-sm" onClick={fetchSlots}>
+                    <button
+                        className="btn btn-solid btn-sm"
+                        onClick={() => setRefreshKey(k => k + 1)}
+                    >
                         🔄 Обновить
                     </button>
                 </div>

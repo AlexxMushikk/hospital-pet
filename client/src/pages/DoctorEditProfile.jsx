@@ -34,7 +34,7 @@ export default function DoctorEditProfile() {
             }
         }
         fetchDoctor()
-    }, [doctorId])
+    }, [doctorId, showModal])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
