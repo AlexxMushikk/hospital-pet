@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser')
 const pinoHttp     = require('pino-http')
 
 const logger = require('./services/logger')
+const { buildError } = require('./errors')
 
 const authRouter         = require('./routes/auth')
 const doctorsRouter      = require('./routes/doctors')
@@ -49,8 +50,8 @@ function createApp() {
     app.use('/api/admin', adminRouter)
     app.use('/api/stats', statsRouter)
 
-    app.use('/api', (req, res) => {
-        res.status(404).json({ error: 'Not found' })
+    app.use('/api', (req, res, next) => {
+        next(buildError('errors.NOT_FOUND', 404))
     })
 
     app.use((err, req, res, next) => {
@@ -58,10 +59,15 @@ function createApp() {
 
         if (status >= 500) {
             req.log.error({ err }, 'Unhandled server error')
-            return res.status(status).json({ error: 'Internal server error' })
+            const internal = buildError('errors.INTERNAL', status)
+            return res.status(status).json({ error: internal.message, code: internal.code })
         }
 
-        res.status(status).json({ error: err.message })
+        res.status(status).json({
+            error: err.message,
+            code:  err.code ?? null,
+            ...(err.params ? { params: err.params } : {}),
+        })
     })
 
     return app

@@ -1,22 +1,14 @@
-const bcrypt= require('bcrypt')
-const userRepo= require('../repositories/userRepo')
-const patientRepo= require('../repositories/patientRepo')
-const refreshTokenRepo= require('../repositories/refreshTokenRepo')
-const jwtService= require('./jwtService')
+const bcrypt           = require('bcrypt')
+const userRepo         = require('../repositories/userRepo')
+const patientRepo      = require('../repositories/patientRepo')
+const refreshTokenRepo = require('../repositories/refreshTokenRepo')
+const jwtService       = require('./jwtService')
 const { loginDto, registerDto } = require('../dto/authDto')
 const { db } = require('../db/database')
+const validate = require('../dto/validate')
+const { fail } = require('../errors')
 const { BCRYPT_ROUNDS } = require('../constants')
 const logger = require('./logger')
-
-function validate(dto, data) {
-    const result = dto.safeParse(data)
-    if (!result.success) {
-        const err = new Error(result.error.issues[0].message)
-        err.status = 400
-        throw err
-    }
-    return result.data
-}
 
 function accessPayload(user) {
     return {
@@ -41,16 +33,12 @@ async function login(body) {
     const user = userRepo.findByEmail(email)
     if (!user) {
         logger.warn({ email }, 'Login failed: user not found')
-        const err = new Error('Invalid credentials')
-        err.status = 401
-        throw err
+        fail('errors.INVALID_CREDENTIALS', 401)
     }
 
     const match = await bcrypt.compare(password, user.password)
     if (!match) {
-        const err = new Error('Invalid credentials')
-        err.status = 401
-        throw err
+        fail('errors.INVALID_CREDENTIALS', 401)
     }
 
     const { password: _, ...safe } = user
@@ -62,9 +50,7 @@ async function register(body) {
 
     const existing = userRepo.findByEmail(email)
     if (existing) {
-        const err = new Error('Email already exists')
-        err.status = 400
-        throw err
+        fail('errors.EMAIL_EXISTS', 400)
     }
 
     const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
@@ -79,42 +65,32 @@ async function register(body) {
 
 function rotate(rawToken) {
     if (!rawToken) {
-        const err = new Error('Refresh token required')
-        err.status = 401
-        throw err
+        fail('errors.REFRESH_TOKEN_REQUIRED', 401)
     }
 
     let decoded
     try {
         decoded = jwtService.verifyRefreshToken(rawToken)
     } catch {
-        const err = new Error('Invalid refresh token')
-        err.status = 401
-        throw err
+        fail('errors.INVALID_REFRESH_TOKEN', 401)
     }
 
     const stored = refreshTokenRepo.findByToken(rawToken)
 
     if (!stored) {
-        const err = new Error('Invalid refresh token')
-        err.status = 401
-        throw err
+        fail('errors.INVALID_REFRESH_TOKEN', 401)
     }
 
     if (stored.revoked) {
         refreshTokenRepo.revokeAllForUser(stored.user_id)
         logger.warn({ userId: stored.user_id }, 'Refresh token reuse detected — all sessions revoked')
-        const err = new Error('Session revoked')
-        err.status = 401
-        throw err
+        fail('errors.SESSION_REVOKED', 401)
     }
 
     const user = userRepo.findById(decoded.id)
     if (!user) {
         refreshTokenRepo.revokeById(stored.id)
-        const err = new Error('User not found')
-        err.status = 401
-        throw err
+        fail('errors.USER_NOT_FOUND', 401)
     }
 
     const exec = db.transaction(() => {

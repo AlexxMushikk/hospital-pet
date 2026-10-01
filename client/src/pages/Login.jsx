@@ -26,7 +26,6 @@ export default function Login() {
         try {
             const response = await loginRequest({ email, password })
             login(response.data.user, response.data.accessToken)
-            // Редирект по роли делает роут /login в App.jsx — без гонки с navigate.
         } catch (err) {
             setError(err.response?.data?.error || 'Ошибка соединения с сервером')
         } finally {
