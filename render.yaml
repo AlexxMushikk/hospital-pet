@@ -1,0 +1,21 @@
+services:
+    - type: web
+      name: city-care-hospital-api
+      runtime: node
+      plan: free
+      region: frankfurt
+      rootDir: server
+      buildCommand: npm install
+      startCommand: node server.js
+      healthCheckPath: /api/stats/public
+      envVars:
+          - key: NODE_ENV
+            value: production
+          - key: LOG_LEVEL
+            value: info
+          - key: FRONTEND_URL
+            sync: false
+          - key: JWT_ACCESS_SECRET
+            generateValue: true
+          - key: JWT_REFRESH_SECRET
+            generateValue: true

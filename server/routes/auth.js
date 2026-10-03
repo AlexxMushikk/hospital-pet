@@ -6,6 +6,7 @@ const router = express.Router()
 
 const COOKIE_OPTIONS = {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge:   REFRESH_TOKEN_DAYS * 24 * 60 * 60 * 1000,
 }
