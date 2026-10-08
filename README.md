@@ -7,6 +7,21 @@ records behind both.
 Built as a portfolio project to practise designing a layered backend and a
 React frontend against it, rather than to run a real clinic.
 
+**Live demo — [hospital-pet.vercel.app](https://hospital-pet.vercel.app/)**
+
+| Role | Email | Password |
+|---|---|---|
+| Administrator | `admin@hospital.com` | `admin123` |
+| Patient | `test@gmail.com` | `testtest` |
+| Doctor | `house@med.com` | `doctor123` |
+
+The API runs on a free Render instance that sleeps after fifteen minutes of
+inactivity, so the first request may take up to a minute to wake it. The
+database is recreated and reseeded on every restart — anything changed in the
+demo is temporary.
+
+![Doctor catalogue](docs/screenshot.png)
+
 ---
 
 ## Stack
@@ -107,7 +122,7 @@ Requires Node.js 20 or newer.
 
 ```bash
 git clone https://github.com/AlexxMushikk/hospital-pet/
-cd hospital
+cd hospital-pet
 npm run install:all
 ```
 
@@ -137,13 +152,25 @@ across six specialisations.
 
 ### Seeded accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Administrator | `admin@hospital.com` | `admin123` |
-| Patient | `test@gmail.com` | `testtest` |
-| Doctor | `house@med.com` | `doctor123` |
+The same three accounts as in the live demo above. Any of the seeded doctor
+addresses works with `doctor123`.
 
-Any of the seeded doctor addresses works with the same password.
+---
+
+## Deployment
+
+The frontend is a static build on Vercel; the API runs as a Node service on
+Render, described by `render.yaml` at the repository root.
+
+Vercel rewrites `/api/*` to the Render service, so the browser only ever talks
+to a single origin. That is what keeps the refresh cookie on `SameSite=Strict`
+— a split-domain setup would force `SameSite=None`, which several browsers
+reject as a third-party cookie.
+
+SQLite was kept rather than migrated: a free Render instance has no persistent
+disk, so the database is rebuilt and reseeded on every cold start. For a demo
+that is a reasonable trade — the seeded accounts are always in a known state —
+but a real deployment would need a persistent disk or a managed database.
 
 ---
 
