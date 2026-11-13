@@ -429,6 +429,74 @@ describe('PUT /api/admin/appointments/:id', () => {
         expect(res.status).toBe(409)
     })
 
+    describe('slot rules', () => {
+        const row = () =>
+            db.prepare('SELECT scheduled_at, status FROM appointments WHERE id = ?').get(appointmentId)
+        const setStatus = (status) =>
+            db.prepare('UPDATE appointments SET status = ? WHERE id = ?').run(status, appointmentId)
+
+        it('refuses to reactivate a cancelled visit whose slot was taken meanwhile', async () => {
+            setStatus('Cancelled')
+            createAppointment({
+                doctorId: doctor.doctor_id, patientId: patient.patient_id, date: '2030-01-01', time: '10:00',
+            })
+
+            const res = await put({ status: 'Scheduled' })
+
+            expect(res.status).toBe(409)
+            expect(res.body.code).toBe('errors.SLOT_TAKEN')
+            expect(row().status).toBe('Cancelled')
+        })
+
+        it('reactivates a cancelled visit when its slot is still free', async () => {
+            setStatus('Cancelled')
+
+            const res = await put({ status: 'Scheduled' })
+
+            expect(res.status).toBe(200)
+            expect(row().status).toBe('Scheduled')
+        })
+
+        it('refuses to move a visit outside the doctor working hours', async () => {
+            const res = await put({ appointment_time: '13:00' })
+
+            expect(res.status).toBe(400)
+            expect(row().scheduled_at).toBe('2030-01-01 10:00:00')
+        })
+
+        it('refuses to move a visit off the 30 minute grid', async () => {
+            const res = await put({ appointment_time: '10:15' })
+
+            expect(res.status).toBe(400)
+            expect(row().scheduled_at).toBe('2030-01-01 10:00:00')
+        })
+
+        it('refuses to move a scheduled visit into the past', async () => {
+            const res = await put({ appointment_date: '2020-01-01' })
+
+            expect(res.status).toBe(400)
+            expect(row().scheduled_at).toBe('2030-01-01 10:00:00')
+        })
+
+        it('refuses to reactivate a cancelled visit that is already in the past', async () => {
+            const pastId = createAppointment({
+                doctorId: doctor.doctor_id, patientId: patient.patient_id,
+                date: '2020-01-01', time: '10:00', status: 'Cancelled',
+            })
+
+            const res = await put({ status: 'Scheduled' }, pastId)
+
+            expect(res.status).toBe(400)
+        })
+
+        it('still lets a completed visit be corrected to a past date', async () => {
+            const res = await put({ appointment_date: '2020-01-01', status: 'Completed' })
+
+            expect(res.status).toBe(200)
+            expect(row()).toEqual({ scheduled_at: '2020-01-01 10:00:00', status: 'Completed' })
+        })
+    })
+
     it('rejects an invalid status', async () => {
         const res = await put({ status: 'Rescheduled' })
 
