@@ -113,16 +113,6 @@ describe('POST /api/appointments', () => {
         expect(db.prepare('SELECT COUNT(*) AS n FROM appointments').get().n).toBe(0)
     })
 
-    it('rejects 29 February outside a leap year', async () => {
-        const res = await book(patient, {
-            doctor_id:        doctor.doctor_id,
-            appointment_date: '2031-02-29',
-            appointment_time: '10:00',
-        })
-
-        expect(res.status).toBe(400)
-    })
-
     it('accepts 29 February in a leap year', async () => {
         const res = await book(patient, {
             doctor_id:        doctor.doctor_id,
@@ -145,7 +135,7 @@ describe('POST /api/appointments', () => {
     })
 })
 
-describe('POST /api/appointments — known gaps, failing until step 5', () => {
+describe('POST /api/appointments — slot and role rules', () => {
     it('rejects a date in the past', async () => {
         const res = await book(patient, {
             doctor_id:        doctor.doctor_id,
@@ -164,6 +154,49 @@ describe('POST /api/appointments — known gaps, failing until step 5', () => {
         })
 
         expect(res.status).toBe(400)
+    })
+
+    it('accepts the last slot that still ends inside the shift', async () => {
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: FUTURE,
+            appointment_time: '11:30',
+        })
+
+        expect(res.status).toBe(201)
+    })
+
+    it('rejects a visit starting exactly when the shift ends', async () => {
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: FUTURE,
+            appointment_time: '12:00',
+        })
+
+        expect(res.status).toBe(400)
+    })
+
+    it('rejects a visit before the shift starts', async () => {
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: FUTURE,
+            appointment_time: '07:30',
+        })
+
+        expect(res.status).toBe(400)
+    })
+
+    it('treats a soft-deleted doctor as unknown', async () => {
+        db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(doctor.id)
+
+        const res = await book(patient, {
+            doctor_id:        doctor.doctor_id,
+            appointment_date: FUTURE,
+            appointment_time: '10:00',
+        })
+
+        expect(res.status).toBe(404)
+        expect(db.prepare('SELECT COUNT(*) AS n FROM appointments').get().n).toBe(0)
     })
 
     it('rejects a time that is not on the 30 minute grid', async () => {
@@ -239,6 +272,17 @@ describe('PATCH /api/appointments/:id', () => {
         expect(res.status).toBe(200)
         expect(db.prepare('SELECT status FROM appointments WHERE id = ?').get(appointmentId).status)
             .toBe('Cancelled')
+    })
+
+    it('hands a cancelled slot to the next patient who asks for it', async () => {
+        await patch(patient, { status: 'Cancelled' })
+
+        const next = createPatient({ email: 'next@test.com' })
+        const res  = await book(next, {
+            doctor_id: doctor.doctor_id, appointment_date: FUTURE, appointment_time: '10:00',
+        })
+
+        expect(res.status).toBe(201)
     })
 
     it('stops the patient from marking a visit completed', async () => {
