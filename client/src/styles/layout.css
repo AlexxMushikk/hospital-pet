@@ -1,0 +1,89 @@
+.hospital-logo-placeholder {
+    width: 300px;
+    height: 300px;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.page-title { text-align: center; padding: 30px 0 20px; }
+.page-title h2 { font-size: 32px; color: var(--color-primary); margin-bottom: 5px; }
+
+.doctors-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    min-height: 80vh;
+}
+
+.auth-card {
+    background: var(--color-surface);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(var(--shadow-rgb), 0.1);
+    width: 100%;
+    max-width: 450px;
+}
+
+.info-section { margin-bottom: 30px; }
+
+.info-section h3 {
+    border-bottom: 2px solid var(--color-bg);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: var(--color-primary);
+    font-size: 20px;
+}
+
+.admin-section { padding: 20px 0; }
+
+/* Fixed layout: column widths do not depend on how long the translated headers are. */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    table-layout: fixed;
+}
+
+.admin-table .col-id { width: 80px; }
+
+.admin-table th {
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.admin-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--color-bg);
+    font-size: 14px;
+    color: var(--color-text);
+}
+
+.admin-table tr:hover { background-color: var(--color-primary-light); }
+
+@media (max-width: 900px) {
+    .doctors-grid { grid-template-columns: 1fr; flex-direction: column; }
+}
+
+.page-title--left    { text-align: left; padding-bottom: 20px; }
+.page-title--left h2 { font-weight: 800; }
+.page-title--row { display: flex; justify-content: space-between; align-items: center; }

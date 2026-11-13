@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--color-page);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+textarea {
+    resize: vertical;
+    transition: none;
+}
+
+/* Without these, browsers paint fields in their own system grey in the dark theme. */
+input,
+textarea,
+select {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+main.container {
+    padding-top: 15px;
+    padding-bottom: 25px;
+    min-height: auto;
+}
+
+.text-error  { color: var(--color-primary);      text-align: center; padding: 40px; }
+.empty-state { color: var(--color-text-muted);   text-align: center; padding: 40px; }
+.empty-state p { margin-bottom: 20px; }
+.text-muted  { color: var(--color-text-muted); }
+.text-danger { color: var(--color-primary); }
+.text-center { text-align: center; }

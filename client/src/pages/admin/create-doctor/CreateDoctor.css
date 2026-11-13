@@ -1,0 +1,13 @@
+.doctor-notes-box {
+    background-color: var(--color-info-soft);
+    border-left: 5px solid var(--color-info);
+    padding: 20px;
+    border-radius: 0 12px 12px 0;
+    margin-top: 20px;
+}
+
+.form-narrow   { max-width: 700px; margin: 0 auto; }
+.select-styled { width: 100%; padding: 12px; border: 1px solid var(--color-input-border); border-radius: 6px; font-size: 15px; }
+.doctor-notes-box--mb { margin-bottom: 30px; }
+/* Three lines in every language, so the buttons below do not move when it switches. */
+.notes-text    { margin: 0; font-size: 14px; line-height: 1.6; min-height: 4.8em; }
