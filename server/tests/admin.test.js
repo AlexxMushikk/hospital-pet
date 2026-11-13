@@ -130,6 +130,20 @@ describe('GET /api/admin/:table', () => {
         expect(res.body.totalCount).toBe(1)
     })
 
+    it('lists appointments newest first, so pages do not shuffle', async () => {
+        const doctor  = db.prepare('SELECT id FROM doctors LIMIT 1').get()
+        const patient = db.prepare(`SELECT id FROM patients WHERE full_name = 'Petra Pine'`).get()
+        for (const [date, time] of [['2030-01-02', '09:00'], ['2030-03-01', '10:00'], ['2030-01-02', '11:00'], ['2029-12-31', '09:00']]) {
+            createAppointment({ doctorId: doctor.id, patientId: patient.id, date, time })
+        }
+
+        const first  = await request(app).get('/api/admin/appointments').query({ limit: 2, page: 1 }).set(asAdmin())
+        const second = await request(app).get('/api/admin/appointments').query({ limit: 2, page: 2 }).set(asAdmin())
+
+        const order = [...first.body.data, ...second.body.data].map(a => `${a.appointment_date} ${a.appointment_time}`)
+        expect(order).toEqual(['2030-03-01 10:00', '2030-01-02 11:00', '2030-01-02 09:00', '2029-12-31 09:00'])
+    })
+
     it('paginates', async () => {
         const res = await request(app).get('/api/admin/doctors').query({ limit: 1, page: 2 }).set(asAdmin())
 
