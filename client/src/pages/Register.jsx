@@ -1,14 +1,17 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { register as registerRequest } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
-import { VALIDATION, VALIDATION_MSG } from '../constants'
+import { VALIDATION } from '../constants'
+import { apiErrorMessage } from '../utils/apiError'
 import AuthForm, { AuthField } from '../components/AuthForm'
 
 export default function Register() {
     const navigate = useNavigate()
     const { modal, showModal, closeModal } = useModal()
+    const { t } = useTranslation()
 
     const [fullName, setFullName] = useState('')
     const [email,    setEmail]    = useState('')
@@ -21,11 +24,11 @@ export default function Register() {
         setError('')
 
         if (fullName.length < VALIDATION.NAME_MIN) {
-            setError(VALIDATION_MSG.NAME_MIN)
+            setError(t('validation.nameMin', { count: VALIDATION.NAME_MIN }))
             return
         }
         if (password.length < VALIDATION.PASSWORD_MIN) {
-            setError(VALIDATION_MSG.PASSWORD_MIN)
+            setError(t('validation.passwordMin', { count: VALIDATION.PASSWORD_MIN }))
             return
         }
 
@@ -33,12 +36,12 @@ export default function Register() {
         try {
             await registerRequest({ full_name: fullName, email, password })
             showModal(
-                'Аккаунт создан!',
-                'Регистрация прошла успешно. Войдите в систему.',
+                t('auth.accountCreatedTitle'),
+                t('auth.accountCreatedText'),
                 () => navigate('/login')
             )
         } catch (err) {
-            setError(err.response?.data?.error || 'Ошибка соединения с сервером')
+            setError(apiErrorMessage(err))
         } finally {
             setLoading(false)
         }
@@ -47,32 +50,32 @@ export default function Register() {
     return (
         <>
             <AuthForm
-                title="Создать аккаунт"
-                subtitle="Присоединяйтесь к City Care Hospital"
+                title={t('auth.registerTitle')}
+                subtitle={t('auth.registerSubtitle')}
                 error={error}
                 loading={loading}
-                submitLabel="Зарегистрироваться"
-                loadingLabel="Регистрация..."
+                submitLabel={t('auth.registerSubmit')}
+                loadingLabel={t('auth.registerLoading')}
                 onSubmit={handleSubmit}
-                footer={<p>Уже есть аккаунт? <Link to="/login">Войти</Link></p>}
+                footer={<p>{t('auth.haveAccount')} <Link to="/login">{t('nav.login')}</Link></p>}
             >
                 <AuthField
-                    label="Полное имя"
+                    label={t('common.fullName')}
                     type="text"
-                    placeholder="Иван Иванов"
+                    placeholder={t('auth.fullNamePlaceholder')}
                     value={fullName}
                     onChange={setFullName}
                     minLength={VALIDATION.NAME_MIN}
                 />
                 <AuthField
-                    label="Email"
+                    label={t('common.email')}
                     type="email"
-                    placeholder="example@mail.com"
+                    placeholder={t('auth.emailPlaceholder')}
                     value={email}
                     onChange={setEmail}
                 />
                 <AuthField
-                    label="Пароль"
+                    label={t('common.password')}
                     type="password"
                     placeholder="••••••••"
                     value={password}
