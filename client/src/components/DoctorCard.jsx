@@ -18,7 +18,6 @@ export default function DoctorCard({ doctor, onBookClick }) {
                     <span className="doctor-name">{doctor.name}</span>
                     <span className="doctor-card__spec">{doctor.specialization}</span>
 
-                    {/* Цена — главный критерий выбора, показываем prominently */}
                     <span className="doctor-card__price">{doctor.price} PLN</span>
 
                     <span className="doctor-card__meta">

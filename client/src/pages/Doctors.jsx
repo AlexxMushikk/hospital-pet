@@ -108,7 +108,6 @@ export default function Doctors() {
 
     const [searchParams, setSearchParams] = useSearchParams()
 
-    // Диапазон цен из БД — загружается один раз при mount
     const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 })
 
     const { page: currentPage, filters } = readQuery(searchParams)
@@ -118,8 +117,6 @@ export default function Doctors() {
     const [loading,    setLoading]    = useState(true)
     const [error,      setError]      = useState('')
 
-    // Загружаем реальный диапазон цен один раз —
-    // нужен чтобы задать границы ползунка
     useEffect(() => {
         getDoctorPriceRange()
             .then(res => {
@@ -136,10 +133,9 @@ export default function Doctors() {
         setSearchParams(next)
     }
 
-    // Применяем диапазон цен в URL когда пользователь отпустил ползунок
     const handlePriceChange = (min, max) => {
         const next = new URLSearchParams(searchParams.toString())
-        // Если выбран весь диапазон — убираем параметры из URL
+        // Full range selected: drop the params so the URL stays clean
         if (min === priceRange.min && max === priceRange.max) {
             next.delete('minPrice')
             next.delete('maxPrice')
@@ -248,7 +244,6 @@ export default function Doctors() {
                         </select>
                     </div>
 
-                    {/* Ползунок цены — показываем только когда диапазон загружен */}
                     {priceRange.max > priceRange.min && (
                         <div className="sidebar-block">
                             <span className="filter-title">Цена визита (PLN)</span>

@@ -104,7 +104,6 @@ export default function Booking() {
                     <p className="booking-patient">
                         Пациент: {user?.full_name}
                     </p>
-                    {/* Показываем цену только когда загрузилась — не показываем пока null */}
                     {doctorPrice && (
                         <p className="booking-price">
                             Стоимость визита: {doctorPrice} PLN

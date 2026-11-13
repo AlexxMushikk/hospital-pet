@@ -1,6 +1,5 @@
 const { db } = require('../db/database')
 
-// Собирает scheduled_at 'YYYY-MM-DD HH:MM:SS' из даты и времени.
 const combine = (date, time) => `${date} ${time}:00`
 
 const findByDoctor = (doctorId, date) =>
@@ -63,7 +62,7 @@ const update = (id, fields) => {
     const setParts = keys.map(k => `${k} = ?`)
     const values   = keys.map(k => fields[k])
 
-    // Если меняются дата/время — пересобираем scheduled_at, добирая недостающую часть из текущего значения
+    // If date or time changes, rebuild scheduled_at, taking the missing part from the current value
     if (fields.appointment_date !== undefined || fields.appointment_time !== undefined) {
         const cur = db.prepare(`
             SELECT strftime('%Y-%m-%d', scheduled_at) as d, strftime('%H:%M', scheduled_at) as t
@@ -107,8 +106,8 @@ const countByDoctor = (doctorId) =>
 const countByPatient = (patientId) =>
     db.prepare(`SELECT COUNT(*) as total FROM appointments WHERE patient_id = ?`).get(patientId).total
 
-// Отменяет все запланированные визиты врача/пациента (при soft-delete).
-// Прошлые Completed/Cancelled не трогаем — это история.
+// Cancel all scheduled visits of a doctor/patient (used on soft-delete).
+// Past Completed/Cancelled appointments are kept as history.
 const cancelScheduledByDoctor = (doctorId) =>
     db.prepare(`UPDATE appointments SET status = 'Cancelled' WHERE doctor_id = ? AND status = 'Scheduled'`).run(doctorId)
 
