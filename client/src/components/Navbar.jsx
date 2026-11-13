@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Navbar() {
     const { user, logout, switchView, view } = useAuth()
@@ -42,6 +43,7 @@ export default function Navbar() {
                     </ul>
 
                     <div className="nav-actions">
+                        <LanguageSwitcher />
                         {user ? (
                             <>
                                 {user.role === 'doctor' && (
