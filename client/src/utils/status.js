@@ -1,5 +1,5 @@
-// Единственный источник правды для статусов визитов.
-// Если добавится новый статус — меняем только здесь.
+// Single source of truth for appointment statuses:
+// a new status only needs to be added here.
 
 const STATUS_LABELS = {
     Scheduled: 'Запланирован',
