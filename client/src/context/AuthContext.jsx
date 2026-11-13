@@ -1,14 +1,26 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
 import axios from 'axios'
-import { refreshSession } from '../api'
+import { refreshSession, setTokenGetter } from '../api'
 
 export const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-    const [user, setUser]   = useState(null)
-    const [token, setToken] = useState(null)
+    const [user, setUser]        = useState(null)
+    const [token, setTokenState] = useState(null)
     const [authLoading, setAuthLoading] = useState(true)
+
+    // The API layer reads the token from this ref, so a request sent right after
+    // login or a refresh already carries the new token, before React re-renders.
+    const tokenRef = useRef(null)
+    const setToken = useCallback((next) => {
+        tokenRef.current = next
+        setTokenState(next)
+    }, [])
+
+    useEffect(() => {
+        setTokenGetter(() => tokenRef.current, setToken)
+    }, [setToken])
 
     const [view, setView] = useState(() => localStorage.getItem('hospital_view') || 'doctor')
 
@@ -23,7 +35,7 @@ export function AuthProvider({ children }) {
             .catch(() => {})
             .finally(() => { if (!cancelled) setAuthLoading(false) })
         return () => { cancelled = true }
-    }, [])
+    }, [setToken])
 
     const login = (userData, accessToken) => {
         setUser(userData)
@@ -47,12 +59,8 @@ export function AuthProvider({ children }) {
         if (navigate) navigate(next === 'doctor' ? '/doctor/schedule' : '/')
     }
 
-    const updateToken = (newToken) => {
-        setToken(newToken)
-    }
-
     return (
-        <AuthContext.Provider value={{ user, token, view, authLoading, login, logout, switchView, updateToken }}>
+        <AuthContext.Provider value={{ user, token, view, authLoading, login, logout, switchView }}>
             {children}
         </AuthContext.Provider>
     )
