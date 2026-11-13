@@ -8,6 +8,10 @@ import { SPECIALIZATIONS, VALIDATION } from '../../../constants'
 import { apiErrorMessage } from '../../../utils/apiError'
 import DatePicker from '../../../components/date-picker/DatePicker'
 import { getTodayStr } from '../../../utils/date'
+import '../../../styles/buttons.css'
+import '../../../styles/forms.css'
+import '../../../styles/layout.css'
+import './CreateDoctor.css'
 
 export default function CreateDoctor() {
     const navigate = useNavigate()

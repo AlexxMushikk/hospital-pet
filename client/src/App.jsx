@@ -25,6 +25,7 @@ import AdminStats       from './pages/admin/stats/Stats'
 import AdminDatabase    from './pages/admin/database/Database'
 import AdminEditRecord  from './pages/admin/edit-record/EditRecord'
 import CreateDoctor from './pages/admin/create-doctor/CreateDoctor'
+import './App.css'
 
 function DoctorViewGuard({ children }) {
     const { user, view } = useAuth()

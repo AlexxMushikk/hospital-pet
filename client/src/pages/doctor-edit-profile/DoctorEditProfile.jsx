@@ -6,6 +6,11 @@ import { getDoctor, updateDoctor } from '../../api/index'
 import Modal from '../../components/modal/Modal'
 import { useModal } from '../../hooks/useModal'
 import { apiErrorMessage } from '../../utils/apiError'
+import '../../styles/buttons.css'
+import '../../styles/forms.css'
+import '../../styles/layout.css'
+import '../../styles/skeleton.css'
+import './DoctorEditProfile.css'
 
 export default function DoctorEditProfile() {
     const navigate  = useNavigate()

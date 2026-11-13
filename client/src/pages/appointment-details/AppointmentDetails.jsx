@@ -9,6 +9,12 @@ import { statusLabel, statusClass } from '../../utils/status'
 import { formatDateTime } from '../../utils/date'
 import { VALIDATION } from '../../constants'
 import { apiErrorMessage } from '../../utils/apiError'
+import '../../styles/buttons.css'
+import '../../styles/forms.css'
+import '../../styles/layout.css'
+import '../../styles/cards.css'
+import '../../styles/skeleton.css'
+import './AppointmentDetails.css'
 
 export default function AppointmentDetails() {
     const { id }   = useParams()

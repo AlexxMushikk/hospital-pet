@@ -1,0 +1,10 @@
+.error-boundary-card      { text-align: center; }
+.error-boundary__icon     { font-size: 3rem; margin: 0 0 10px; }
+.error-boundary__text     { color: var(--color-text-muted); margin: 10px 0 25px; }
+.error-boundary__actions  { display: flex; gap: 10px; justify-content: center; }
+
+.error-boundary__trace {
+    margin-top: 20px; text-align: left; font-size: 11px;
+    color: var(--color-primary); background: var(--color-primary-light);
+    padding: 10px; border-radius: 6px; overflow: auto;
+}

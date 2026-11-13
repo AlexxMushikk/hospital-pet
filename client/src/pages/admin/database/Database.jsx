@@ -6,6 +6,10 @@ import Pagination from '../../../components/pagination/Pagination'
 import Modal from '../../../components/modal/Modal'
 import { useModal } from '../../../hooks/useModal'
 import { apiErrorMessage } from '../../../utils/apiError'
+import '../../../styles/buttons.css'
+import '../../../styles/forms.css'
+import '../../../styles/layout.css'
+import './Database.css'
 
 const TABLES = ['doctors', 'patients', 'appointments']
 const TABLE_LABELS = {

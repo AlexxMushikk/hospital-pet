@@ -1,3 +1,4 @@
+import './DoctorAvatar.css'
 export default function DoctorAvatar({ name, imageUrl, size = 28 }) {
     const large = size >= 40
 

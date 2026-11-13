@@ -1,3 +1,7 @@
+import '../../styles/buttons.css'
+import '../../styles/forms.css'
+import '../../styles/layout.css'
+import './AuthForm.css'
 export function AuthField({ label, type = 'text', value, onChange, placeholder, minLength, required = true }) {
     return (
         <div className="form-group">

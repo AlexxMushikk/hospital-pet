@@ -1,0 +1,49 @@
+.hero { padding: 80px 0; background: linear-gradient(to bottom, #ffffff, #fff5f5); }
+.hero-grid { display: flex; align-items: center; gap: 50px; }
+.hero-text h2 { font-size: 48px; line-height: 1.2; margin-bottom: 20px; color: var(--color-primary); }
+.hero-text p  { font-size: 18px; color: #666; margin-bottom: 30px; }
+.hero-image { flex: 1; display: flex; justify-content: center; }
+.features { padding: 60px 0; }
+
+.feature-card {
+    flex: 1;
+    padding: 40px;
+    border: 1px solid var(--color-bg);
+    border-radius: 10px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.feature-card:hover { border-color: var(--color-primary); transform: translateY(-5px); }
+.feature-card h3 { color: var(--color-primary); margin-bottom: 15px; font-size: 22px; }
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; flex-direction: column; }
+    .hero-text h2 { font-size: 32px; }
+}
+
+.hero-accent      { color: #333; }
+.hero-actions     { display: flex; gap: 15px; flex-wrap: wrap; }
+.stats-band       { background: var(--color-primary); padding: 40px 0; }
+.stats-band-grid  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
+.stats-band-num   { font-size: 36px; font-weight: 800; color: #fff; }
+.stats-band-label { font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 5px; }
+.section-pad-top  { padding-top: 60px; }
+.page-title--mb   { margin-bottom: 40px; }
+.section-subtitle { color: var(--color-text-muted); margin-top: 10px; }
+.spec-link        { text-decoration: none; color: inherit; }
+.feature-card--link { cursor: pointer; height: 100%; }
+.feature-icon     { font-size: 48px; margin-bottom: 15px; }
+.feature-desc     { color: var(--color-text-muted); margin-top: 10px; font-size: 14px; line-height: 1.6; }
+.feature-cta      { margin-top: 15px; color: var(--color-primary); font-weight: 600; font-size: 14px; }
+.cta-section      { padding: 60px 0; background: var(--color-bg-subtle); }
+.cta-title        { font-size: 32px; margin-bottom: 15px; }
+.cta-text         { color: var(--color-text-muted); margin-bottom: 30px; font-size: 18px; }
+.cta-actions      { display: flex; gap: 15px; justify-content: center; }

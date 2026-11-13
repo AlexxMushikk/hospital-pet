@@ -1,3 +1,4 @@
+import './StatCard.css'
 export default function StatCard({ variant = 'large', accent, label, value }) {
     const classes = ['stat-card', `stat-card--${variant}`]
     if (accent) classes.push(`stat-card--${accent}`)

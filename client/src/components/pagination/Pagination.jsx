@@ -1,3 +1,5 @@
+import '../../styles/buttons.css'
+import './Pagination.css'
 const SIBLINGS = 1
 
 function getPageItems(current, total) {

@@ -1,4 +1,5 @@
 import i18n from '../i18n'
+import '../styles/status.css'
 
 // Appointment status badges. A new status needs a class here and a label
 // under "status" in every i18n catalog.

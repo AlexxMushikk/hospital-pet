@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import { formatExperienceShort } from '../../utils/experience'
 import DoctorAvatar from '../doctor-avatar/DoctorAvatar'
+import '../../styles/buttons.css'
+import '../../styles/cards.css'
+import './DoctorCard.css'
 
 export default function DoctorCard({ doctor, onBookClick }) {
     const navigate  = useNavigate()

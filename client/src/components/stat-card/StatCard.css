@@ -1,0 +1,54 @@
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-card__label { display: block; }
+.stat-card__value { display: block; }
+
+.stat-card--large {
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-top: 5px solid var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 160px;
+}
+
+.stat-card--large .stat-card__label {
+    font-size: 14px;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.stat-card--large .stat-card__value {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--color-heading);
+}
+
+.stat-card--revenue { border-top-color: #16a34a; }
+
+.stat-card--compact {
+    padding: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-bottom: 4px solid #eee;
+}
+
+.stat-card--compact .stat-card__label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.stat-card--compact .stat-card__value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--color-heading);
+}
+
+.stat-card--active { border-bottom-color: var(--color-primary); }
+.stat-card--active .stat-card__value { color: var(--color-primary); }

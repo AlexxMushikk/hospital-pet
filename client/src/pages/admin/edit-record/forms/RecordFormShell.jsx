@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import '../../../../styles/buttons.css'
+import '../../../../styles/layout.css'
+import './RecordFormShell.css'
 
 export default function RecordFormShell({ title, onSubmit, submitting, error, children }) {
     const { t } = useTranslation()

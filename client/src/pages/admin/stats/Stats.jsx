@@ -4,6 +4,9 @@ import { getAdminStats, getAdminRecentActivity } from '../../../api/index'
 import { statusLabel, statusClass } from '../../../utils/status'
 import StatCard from '../../../components/stat-card/StatCard'
 import {logger} from "../../../utils/logger.js";
+import '../../../styles/layout.css'
+import '../../../styles/skeleton.css'
+import './Stats.css'
 
 export default function AdminStats() {
     const { t } = useTranslation()

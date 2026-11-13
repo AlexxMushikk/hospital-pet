@@ -1,0 +1,81 @@
+.dashboard-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.schedule-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.schedule-controls {
+    background: var(--color-bg-subtle);
+    padding: 15px 25px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slots-list {
+    list-style: none;
+    padding: 20px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.slot-item {
+    display: flex;
+    align-items: center;
+    height: 90px;
+    padding: 0 30px;
+    background: white;
+    border: 1px solid var(--color-bg);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.slot-item:last-child { margin-bottom: 0; }
+
+.slot-item:hover {
+    background-color: var(--color-bg-subtle);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.slot-time {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-heading);
+    min-width: 80px;
+}
+
+.slot-info {
+    flex-grow: 1;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.slot-item.empty    { background-color: #fafafa; color: #9ca3af; border-style: dashed; }
+.slot-item.occupied { border-left: 6px solid var(--color-primary); }
+
+@media (max-width: 900px) {
+    .dashboard-header { grid-template-columns: 1fr; flex-direction: column; }
+    .slot-item { height: auto; padding: 15px; }
+}
+
+.slot-patient { font-size: 18px; }
+.slot-status  { margin: 0; padding: 2px 8px; font-size: 10px; }
+.schedule-day { display: flex; align-items: center; gap: 12px; }
+.schedule-day label { font-weight: 600; white-space: nowrap; }
