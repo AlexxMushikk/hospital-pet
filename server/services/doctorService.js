@@ -10,6 +10,7 @@ const { doctorQueryDto, updateDoctorDto, createDoctorDto } = require('../dto/doc
 const { SLOT_STEP_MINUTES, BCRYPT_ROUNDS } = require('../constants')
 
 const validate = require('../dto/validate')
+const { isPast } = require('./clinicTime')
 const { fail } = require('../errors')
 
 function calculateExperience(startDate) {
@@ -74,9 +75,11 @@ function getSlots(doctorId, date, requester) {
 
     while (current < end) {
         const booked = appointments.find(a => a.appointment_time === current)
+        // Patients cannot book a slot that is already over; the doctor still sees the real state.
+        const freeStatus = !privileged && isPast(date, current) ? 'Past' : 'Free'
         slots.push({
             time:           current,
-            status:         booked ? (privileged ? booked.status : 'Booked') : 'Free',
+            status:         booked ? (privileged ? booked.status : 'Booked') : freeStatus,
             patient_name:   booked && privileged ? booked.patient_name   : null,
             appointment_id: booked && privileged ? booked.appointment_id : null,
         })

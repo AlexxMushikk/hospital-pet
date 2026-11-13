@@ -10,6 +10,8 @@ export default defineConfig({
 
         env: {
             NODE_ENV:           'test',
+            // Same as the production host, so clock-dependent rules are tested where they break.
+            TZ:                 'UTC',
             DB_PATH:            ':memory:',
             LOG_LEVEL:          'silent',
             JWT_ACCESS_SECRET:  'test_access_secret',

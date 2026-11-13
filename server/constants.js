@@ -1,5 +1,8 @@
 const SLOT_STEP_MINUTES = 30
 
+// Appointment dates and times are wall-clock values of the clinic, not of the server.
+const CLINIC_TIMEZONE = process.env.CLINIC_TIMEZONE || 'Europe/Warsaw'
+
 const BCRYPT_ROUNDS = 10
 
 const REFRESH_TOKEN_DAYS = 7
@@ -12,6 +15,7 @@ const BIO_MAX_LENGTH      = 1000
 
 module.exports = {
     SLOT_STEP_MINUTES,
+    CLINIC_TIMEZONE,
     BCRYPT_ROUNDS,
     REFRESH_TOKEN_DAYS,
     PASSWORD_MIN_LENGTH,
