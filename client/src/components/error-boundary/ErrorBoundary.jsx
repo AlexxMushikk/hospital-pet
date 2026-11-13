@@ -1,6 +1,7 @@
 import { Component } from 'react'
 import { logger } from '../../utils/logger'
 import i18n from '../../i18n'
+import { TriangleAlert } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import './ErrorBoundary.css'
@@ -29,7 +30,7 @@ export default class ErrorBoundary extends Component {
             return (
                 <div className="auth-container">
                     <div className="auth-card error-boundary-card">
-                        <h2 className="error-boundary__icon">💥</h2>
+                        <TriangleAlert className="error-boundary__icon" size={48} aria-hidden="true" />
                         <h3>{t('errorBoundary.title')}</h3>
                         <p className="error-boundary__text">
                             {t('errorBoundary.text')}

@@ -9,6 +9,7 @@ import { apiErrorMessage } from '../../../utils/apiError'
 import StableText from '../../../components/stable-text/StableText'
 import DatePicker from '../../../components/date-picker/DatePicker'
 import { getTodayStr } from '../../../utils/date'
+import { ArrowLeft } from 'lucide-react'
 import '../../../styles/buttons.css'
 import '../../../styles/forms.css'
 import '../../../styles/layout.css'
@@ -90,7 +91,10 @@ export default function CreateDoctor() {
                     <p>{t('adminCreateDoctor.subtitle')}</p>
                 </div>
                 <button className="btn btn-outline" onClick={() => navigate('/admin/database')}>
-                    ← <StableText k="common.back" />
+                    <span className="with-icon">
+                        <ArrowLeft size={16} aria-hidden="true" />
+                        <StableText k="common.back" />
+                    </span>
                 </button>
             </section>
 

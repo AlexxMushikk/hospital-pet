@@ -9,6 +9,7 @@ import Pagination from '../../components/pagination/Pagination'
 import DatePicker from '../../components/date-picker/DatePicker'
 import StatCard from '../../components/stat-card/StatCard'
 import StableText from '../../components/stable-text/StableText'
+import { CalendarDays, RefreshCw, Clock, UserRound } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import './DoctorSchedule.css'
@@ -75,7 +76,10 @@ export default function DoctorSchedule() {
             <div className="schedule-card">
                 <div className="schedule-controls">
                     <div className="schedule-day">
-                        <label>{t('schedule.dayLabel')}</label>
+                        <label className="with-icon">
+                            <CalendarDays size={18} aria-hidden="true" />
+                            {t('schedule.dayLabel')}
+                        </label>
                         <DatePicker
                             className="datepicker--compact"
                             value={date}
@@ -86,7 +90,10 @@ export default function DoctorSchedule() {
                         className="btn btn-solid btn-sm"
                         onClick={() => setRefreshKey(k => k + 1)}
                     >
-                        <StableText k="schedule.refresh" />
+                        <span className="with-icon">
+                            <RefreshCw size={14} aria-hidden="true" />
+                            <StableText k="schedule.refresh" />
+                        </span>
                     </button>
                 </div>
 
@@ -104,15 +111,16 @@ export default function DoctorSchedule() {
                     {!loading && pageSlots.map(slot => (
                         slot.status === 'Free' ? (
                             <li key={slot.time} className="slot-item empty">
-                                <div className="slot-time">🕒 {slot.time}</div>
+                                <div className="slot-time with-icon"><Clock size={18} aria-hidden="true" />{slot.time}</div>
                                 <div className="slot-info">{t('schedule.freeSlot')}</div>
                             </li>
                         ) : (
                             <li key={slot.time} className="slot-item occupied">
-                                <div className="slot-time">🕒 {slot.time}</div>
+                                <div className="slot-time with-icon"><Clock size={18} aria-hidden="true" />{slot.time}</div>
                                 <div className="slot-info">
                                     <strong className="slot-patient">
-                                        👤 {slot.patient_name || t('common.patient')}
+                                        <UserRound size={18} aria-hidden="true" />
+                                        {slot.patient_name || t('common.patient')}
                                     </strong>
                                     <span
                                         className={`${statusClass(slot.status)} slot-status`}

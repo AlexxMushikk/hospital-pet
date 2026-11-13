@@ -10,6 +10,9 @@
     letter-spacing: 1px;
 }
 
+.brand       { display: flex; align-items: center; gap: 12px; }
+.brand__icon { flex-shrink: 0; }
+
 .navbar {
     background-color: var(--color-surface);
     border-bottom: 2px solid var(--color-bg);

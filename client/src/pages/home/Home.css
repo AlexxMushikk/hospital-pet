@@ -43,10 +43,11 @@
 .section-subtitle { color: var(--color-text-muted); margin-top: 10px; }
 .spec-link        { text-decoration: none; color: inherit; }
 .feature-card--link { cursor: pointer; height: 100%; }
-.feature-icon     { font-size: 48px; margin-bottom: 15px; }
+.feature-icon     { display: flex; justify-content: center; margin-bottom: 15px; color: var(--color-primary); }
 /* Room for two lines in every language keeps the cards the same height. */
 .feature-desc     { color: var(--color-text-muted); margin-top: 10px; font-size: 14px; line-height: 1.6; min-height: 3.2em; }
-.feature-cta      { margin-top: 15px; color: var(--color-primary); font-weight: 600; font-size: 14px; }
+.feature-cta      { margin-top: 15px; color: var(--color-primary); font-weight: 600; font-size: 14px;
+                    display: inline-flex; align-items: center; gap: 6px; }
 .cta-section      { padding: 60px 0; background: var(--color-bg-subtle); }
 .cta-title        { font-size: 32px; margin-bottom: 15px; }
 .cta-text         { color: var(--color-text-muted); margin-bottom: 30px; font-size: 18px; }

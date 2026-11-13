@@ -2,6 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { currentTheme, setTheme, subscribeTheme } from '../../theme/theme'
+import { Sun, Moon } from 'lucide-react'
 import './ThemeSwitcher.css'
 
 export default function ThemeSwitcher() {
@@ -18,7 +19,9 @@ export default function ThemeSwitcher() {
             aria-label={label}
             title={label}
         >
-            <span aria-hidden="true">{theme === 'dark' ? '☀️' : '🌙'}</span>
+            {theme === 'dark'
+                ? <Sun size={18} aria-hidden="true" />
+                : <Moon size={18} aria-hidden="true" />}
         </button>
     )
 }

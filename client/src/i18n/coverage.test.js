@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
 import en from './en.json'
+import pl from './pl.json'
 import { SPECIALIZATIONS } from '../constants'
 
 // Every source file of the app, as text (tests excluded).
@@ -31,6 +32,19 @@ describe('translation coverage', () => {
         const offenders = Object.entries(sources)
             .filter(([, text]) => /[Ѐ-ӿ]/.test(text))
             .map(([file]) => file)
+
+        expect(offenders).toEqual([])
+    })
+
+    it('draws icons with SVG, not emoji or arrow characters', () => {
+        // Pictographs render differently on every OS; lucide-react icons are used instead.
+        // © ® ™ are ordinary typography, even though Unicode lists them as pictographs.
+        const PICTOGRAPH = /(?![©®™])\p{Extended_Pictographic}|[←-⇿■-◿]/u
+        const texts = { ...sources, 'en.json': JSON.stringify(en), 'pl.json': JSON.stringify(pl) }
+
+        const offenders = Object.entries(texts).flatMap(([file, text]) =>
+            text.split('\n').filter(line => PICTOGRAPH.test(line)).map(line => `${file}: ${line.trim().slice(0, 80)}`)
+        )
 
         expect(offenders).toEqual([])
     })

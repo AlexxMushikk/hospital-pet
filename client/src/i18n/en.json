@@ -161,20 +161,20 @@
     "statCompleted": "Completed appointments",
     "specializationsTitle": "Our specializations",
     "specializationsSubtitle": "Qualified care across every field of medicine",
-    "findSpecialist": "Find a specialist →",
+    "findSpecialist": "Find a specialist",
     "ctaTitle": "Ready to book?",
     "ctaText": "Create an account and book a doctor in a couple of minutes"
   },
   "doctors": {
     "title": "Our specialists",
     "subtitle": "Find the right doctor for your case.",
-    "searchLabel": "🔍 Search by name",
+    "searchLabel": "Search by name",
     "searchPlaceholder": "For example: Dr. House...",
     "sortLabel": "Sorting",
     "sortNameAsc": "By name (A–Z)",
-    "sortPriceAsc": "Price ↑",
-    "sortPriceDesc": "Price ↓",
-    "sortExpDesc": "Experience ↓",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "sortExpDesc": "Most experienced first",
     "priceFilter": "Visit price (PLN)",
     "allSpecializations": "All specializations",
     "experienceFilter": "Work experience",
@@ -264,8 +264,8 @@
     "totalSlots": "Total slots",
     "booked": "Booked",
     "free": "Free",
-    "dayLabel": "🗓 Day:",
-    "refresh": "🔄 Refresh",
+    "dayLabel": "Day:",
+    "refresh": "Refresh",
     "loading": "Loading schedule...",
     "noSlots": "No slots for this day.",
     "freeSlot": "Available for booking",
@@ -277,7 +277,7 @@
     "workingHours": "Working hours (managed by the administrator)",
     "shiftStart": "Shift start",
     "shiftEnd": "Shift end",
-    "publicInfo": "👤 Public information",
+    "publicInfo": "Public information",
     "priceReadonly": "Visit price (read-only)",
     "priceValue": "{{price}} PLN (managed by the admin)",
     "educationLabel": "Education and qualifications",
@@ -328,7 +328,7 @@
     "careerStartRequired": "Career start date *",
     "priceRequired": "Visit price (PLN) *",
     "infoTitle": "After creation",
-    "infoText": "the doctor can sign in and fill in their profile themselves: photo, biography, education, languages. Working hours default to 08:00–18:00 and can be changed under \"Database → Edit\".",
+    "infoText": "the doctor can sign in and fill in their profile themselves: photo, biography, education, languages. Working hours default to 08:00–18:00 and can be changed in the \"Database\" section with the \"Edit\" button.",
     "submit": "Create doctor",
     "submitting": "Creating...",
     "errSpecialization": "Pick a specialization.",
@@ -399,5 +399,9 @@
   },
   "notFound": {
     "text": "Page not found"
+  },
+  "pagination": {
+    "prev": "Previous page",
+    "next": "Next page"
   }
 }
