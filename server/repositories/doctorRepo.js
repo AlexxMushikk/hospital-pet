@@ -149,7 +149,12 @@ const getWorkHours = (id) =>
     `).get(id)
 
 const getPriceRange = () =>
-    db.prepare(`SELECT MIN(price) as min, MAX(price) as max FROM doctors`).get()
+    db.prepare(`
+        SELECT MIN(d.price) as min, MAX(d.price) as max
+        FROM doctors d
+                 JOIN users u ON d.user_id = u.id
+        WHERE u.deleted_at IS NULL
+    `).get()
 
 const findUserId = (id) =>
     db.prepare(`SELECT user_id FROM doctors WHERE id = ?`).get(id)

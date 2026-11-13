@@ -117,6 +117,15 @@ describe('GET /api/doctors', () => {
 
         expect(res.body).toEqual({ min: 100, max: 500 })
     })
+
+    it('leaves soft-deleted doctors out of the price range', async () => {
+        const gone = createDoctor({ email: 'gone@test.com', price: 9000 })
+        db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(gone.id)
+
+        const res = await request(app).get('/api/doctors/price-range')
+
+        expect(res.body).toEqual({ min: 100, max: 500 })
+    })
 })
 
 describe('GET /api/doctors/:id', () => {
