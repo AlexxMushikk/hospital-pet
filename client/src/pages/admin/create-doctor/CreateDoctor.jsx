@@ -6,6 +6,7 @@ import Modal from '../../../components/modal/Modal'
 import api from '../../../api/index'
 import { SPECIALIZATIONS, VALIDATION } from '../../../constants'
 import { apiErrorMessage } from '../../../utils/apiError'
+import StableText from '../../../components/stable-text/StableText'
 import DatePicker from '../../../components/date-picker/DatePicker'
 import { getTodayStr } from '../../../utils/date'
 import '../../../styles/buttons.css'
@@ -89,7 +90,7 @@ export default function CreateDoctor() {
                     <p>{t('adminCreateDoctor.subtitle')}</p>
                 </div>
                 <button className="btn btn-outline" onClick={() => navigate('/admin/database')}>
-                    ← {t('common.back')}
+                    ← <StableText k="common.back" />
                 </button>
             </section>
 
@@ -205,14 +206,14 @@ export default function CreateDoctor() {
                             className="btn btn-outline"
                             onClick={() => navigate('/admin/database')}
                         >
-                            {t('common.cancel')}
+                            <StableText k="common.cancel" />
                         </button>
                         <button
                             type="submit"
                             className="btn btn-solid"
                             disabled={saving}
                         >
-                            {saving ? t('adminCreateDoctor.submitting') : t('adminCreateDoctor.submit')}
+                            {saving ? <StableText k="adminCreateDoctor.submitting" /> : <StableText k="adminCreateDoctor.submit" />}
                         </button>
                     </div>
                 </form>

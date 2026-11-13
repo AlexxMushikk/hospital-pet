@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { getPatientAppointments } from '../../api/index'
 import { statusLabel, statusClass } from '../../utils/status'
 import { formatDate } from '../../utils/date'
+import StableText from '../../components/stable-text/StableText'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import '../../styles/cards.css'
@@ -96,7 +97,7 @@ export default function Appointments() {
                                     className="btn btn-solid btn-sm"
                                     onClick={() => navigate(`/appointments/${app.id}`)}
                                 >
-                                    {t('common.details')}
+                                    <StableText k="common.details" />
                                 </button>
                             </div>
                         </div>

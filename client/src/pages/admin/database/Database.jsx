@@ -6,6 +6,7 @@ import Pagination from '../../../components/pagination/Pagination'
 import Modal from '../../../components/modal/Modal'
 import { useModal } from '../../../hooks/useModal'
 import { apiErrorMessage } from '../../../utils/apiError'
+import StableText from '../../../components/stable-text/StableText'
 import '../../../styles/buttons.css'
 import '../../../styles/forms.css'
 import '../../../styles/layout.css'
@@ -118,13 +119,13 @@ export default function AdminDatabase() {
 
     const renderHead = () => {
         if (table === 'doctors') return (
-            <tr><th>{t('common.id')}</th><th>{t('common.fullName')}</th><th>{t('common.specialization')}</th><th>{t('common.actions')}</th></tr>
+            <tr><th className="col-id">{t('common.id')}</th><th>{t('common.fullName')}</th><th>{t('common.specialization')}</th><th>{t('common.actions')}</th></tr>
         )
         if (table === 'patients') return (
-            <tr><th>{t('common.id')}</th><th>{t('adminDatabase.patientName')}</th><th>{t('common.email')}</th><th>{t('common.actions')}</th></tr>
+            <tr><th className="col-id">{t('common.id')}</th><th>{t('adminDatabase.patientName')}</th><th>{t('common.email')}</th><th>{t('common.actions')}</th></tr>
         )
         return (
-            <tr><th>{t('common.id')}</th><th>{t('common.date')}</th><th>{t('common.patient')}</th><th>{t('common.doctor')}</th><th>{t('common.actions')}</th></tr>
+            <tr><th className="col-id">{t('common.id')}</th><th>{t('common.date')}</th><th>{t('common.patient')}</th><th>{t('common.doctor')}</th><th>{t('common.actions')}</th></tr>
         )
     }
 
@@ -144,7 +145,7 @@ export default function AdminDatabase() {
                         className="btn btn-solid"
                         onClick={() => navigate('/admin/create-doctor')}
                     >
-                        {t('adminDatabase.createDoctor')}
+                        <StableText k="adminDatabase.createDoctor" />
                     </button>
                 )}
             </section>
@@ -191,14 +192,14 @@ export default function AdminDatabase() {
                                         className="btn btn-solid btn-sm"
                                         onClick={() => navigate(`/admin/records/${table}/${item.id}`)}
                                     >
-                                        {t('common.edit')}
+                                        <StableText k="common.edit" />
                                     </button>
                                     {' '}
                                     <button
                                         className="btn btn-outline btn-sm"
                                         onClick={() => handleDelete(item.id)}
                                     >
-                                        {t('common.delete')}
+                                        <StableText k="common.delete" />
                                     </button>
                                 </td>
                             </tr>

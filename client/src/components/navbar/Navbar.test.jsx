@@ -33,20 +33,35 @@ afterEach(async () => {
     await i18n.changeLanguage('en')
 })
 
-const buttonByText = (text) => [...container.querySelectorAll('button')].find(b => b.textContent === text)
+// What a user sees and a screen reader reads: the width-reserving ghosts are aria-hidden.
+function visibleText(node = container) {
+    const copy = node.cloneNode(true)
+    copy.querySelectorAll('[aria-hidden="true"]').forEach(el => el.remove())
+    return copy.textContent
+}
+
+const buttonByText = (text) => [...container.querySelectorAll('button')].find(b => visibleText(b) === text)
 
 describe('Navbar', () => {
     it('shows guest links in English by default', () => {
-        expect(container.textContent).toContain(en.nav.doctors)
-        expect(container.textContent).toContain(en.nav.login)
+        expect(visibleText()).toContain(en.nav.doctors)
+        expect(visibleText()).toContain(en.nav.login)
     })
 
     it('switches every label to Polish from the language switcher', async () => {
         await act(async () => buttonByText(en.lang.pl).click())
 
-        expect(container.textContent).toContain(pl.nav.doctors)
-        expect(container.textContent).toContain(pl.nav.register)
-        expect(container.textContent).not.toContain(en.nav.login)
+        expect(visibleText()).toContain(pl.nav.doctors)
+        expect(visibleText()).toContain(pl.nav.register)
+        expect(visibleText()).not.toContain(en.nav.login)
         expect(buttonByText(pl.lang.pl).getAttribute('aria-pressed')).toBe('true')
+    })
+
+    it('reserves the width of every translation without reading them out', () => {
+        const login = [...container.querySelectorAll('a')].find(a => visibleText(a) === en.nav.login)
+        const ghost = login.querySelector('.stable-text__ghost')
+
+        expect(ghost.textContent).toBe(pl.nav.login)
+        expect(ghost.getAttribute('aria-hidden')).toBe('true')
     })
 })

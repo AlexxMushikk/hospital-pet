@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 import { getPublicStats } from '../../api/index'
 import { logger } from '../../utils/logger'
 import { SPECIALIZATIONS } from '../../constants'
+import StableText from '../../components/stable-text/StableText'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import './Home.css'
@@ -35,16 +36,16 @@ export default function Home() {
                         </p>
                         <div className="hero-actions">
                             <Link to="/doctors" className="btn btn-solid btn-lg">
-                                {t('home.findDoctor')}
+                                <StableText k="home.findDoctor" />
                             </Link>
                             {!user && (
                                 <Link to="/register" className="btn btn-outline btn-lg">
-                                    {t('home.createAccount')}
+                                    <StableText k="home.createAccount" />
                                 </Link>
                             )}
                             {user && (
                                 <Link to="/appointments" className="btn btn-outline btn-lg">
-                                    {t('nav.myAppointments')}
+                                    <StableText k="nav.myAppointments" />
                                 </Link>
                             )}
                         </div>
@@ -132,10 +133,10 @@ export default function Home() {
                         </p>
                         <div className="cta-actions">
                             <Link to="/register" className="btn btn-solid btn-lg">
-                                {t('auth.registerSubmit')}
+                                <StableText k="auth.registerSubmit" />
                             </Link>
                             <Link to="/login" className="btn btn-outline btn-lg">
-                                {t('nav.login')}
+                                <StableText k="nav.login" />
                             </Link>
                         </div>
                     </div>
