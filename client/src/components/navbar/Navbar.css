@@ -1,6 +1,6 @@
 .main-header {
     background-color: var(--color-primary);
-    color: white;
+    color: var(--color-on-primary);
     padding: 20px 0;
     text-align: left;
 }
@@ -11,7 +11,7 @@
 }
 
 .navbar {
-    background-color: white;
+    background-color: var(--color-surface);
     border-bottom: 2px solid var(--color-bg);
     padding: 10px 0;
 }

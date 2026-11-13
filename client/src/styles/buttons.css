@@ -21,7 +21,7 @@
 .btn-solid {
     background-color: var(--color-primary);
     border: 1px solid var(--color-primary);
-    color: white;
+    color: var(--color-on-primary);
 }
 
 .btn-solid:hover { background-color: var(--color-primary-dark); }
@@ -47,11 +47,11 @@
     cursor: pointer;
     transition: 0.3s;
     background: transparent;
-    color: #6b7280;
+    color: var(--color-text-muted);
 }
 
 .view-btn.active {
-    background: white;
+    background: var(--color-surface);
     color: var(--color-primary);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(var(--shadow-rgb), 0.1);
 }

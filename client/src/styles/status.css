@@ -8,6 +8,6 @@
     width: fit-content;
 }
 
-.status-scheduled { background: #dcfce7; color: #166534; }
-.status-cancelled  { background: #fee2e2; color: var(--color-primary-dark); }
+.status-scheduled { background: var(--color-success-soft); color: var(--color-success-text); }
+.status-cancelled  { background: var(--color-primary-soft); color: var(--color-primary-dark); }
 .status-completed  { background: var(--color-bg); color: var(--color-text-secondary); }
