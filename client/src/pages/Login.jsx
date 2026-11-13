@@ -1,12 +1,15 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { login as loginRequest } from '../api/index'
 import AuthForm, { AuthField } from '../components/AuthForm'
-import { VALIDATION, VALIDATION_MSG } from '../constants'
+import { VALIDATION } from '../constants'
+import { apiErrorMessage } from '../utils/apiError'
 
 export default function Login() {
     const { login } = useAuth()
+    const { t } = useTranslation()
 
     const [email, setEmail]       = useState('')
     const [password, setPassword] = useState('')
@@ -18,7 +21,7 @@ export default function Login() {
         setError('')
 
         if (!VALIDATION.EMAIL_REGEX.test(email)) {
-            setError(VALIDATION_MSG.EMAIL)
+            setError(t('validation.email'))
             return
         }
 
@@ -27,7 +30,7 @@ export default function Login() {
             const response = await loginRequest({ email, password })
             login(response.data.user, response.data.accessToken)
         } catch (err) {
-            setError(err.response?.data?.error || 'Ошибка соединения с сервером')
+            setError(apiErrorMessage(err))
         } finally {
             setLoading(false)
         }
@@ -35,17 +38,17 @@ export default function Login() {
 
     return (
         <AuthForm
-            title="Добро пожаловать"
-            subtitle="Введите данные для входа"
+            title={t('auth.loginTitle')}
+            subtitle={t('auth.loginSubtitle')}
             error={error}
             loading={loading}
-            submitLabel="Войти"
-            loadingLabel="Вход..."
+            submitLabel={t('auth.loginSubmit')}
+            loadingLabel={t('auth.loginLoading')}
             onSubmit={handleSubmit}
-            footer={<p>Нет аккаунта? <Link to="/register">Создать сейчас</Link></p>}
+            footer={<p>{t('auth.noAccount')} <Link to="/register">{t('auth.createNow')}</Link></p>}
         >
-            <AuthField label="Email" type="email" placeholder="example@mail.com" value={email} onChange={setEmail} />
-            <AuthField label="Пароль" type="password" placeholder="••••••••" value={password} onChange={setPassword} />
+            <AuthField label={t('common.email')} type="email" placeholder={t('auth.emailPlaceholder')} value={email} onChange={setEmail} />
+            <AuthField label={t('common.password')} type="password" placeholder="••••••••" value={password} onChange={setPassword} />
         </AuthForm>
     )
 }
