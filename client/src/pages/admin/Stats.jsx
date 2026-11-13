@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getAdminStats, getAdminRecentActivity } from '../../api/index'
 import { statusLabel, statusClass } from '../../utils/status'
 import StatCard from '../../components/StatCard'
 import {logger} from "../../utils/logger.js";
 
 export default function AdminStats() {
+    const { t } = useTranslation()
     const [stats,    setStats]    = useState(null)
     const [activity, setActivity] = useState([])
     const [loading,  setLoading]  = useState(true)
@@ -42,43 +44,43 @@ export default function AdminStats() {
     return (
         <section className="admin-section container">
             <section className="page-title">
-                <h2>Статистика больницы</h2>
+                <h2>{t('adminStats.title')}</h2>
             </section>
 
             <div className="stats-grid">
-                <StatCard variant="large" label="Всего записей"   value={stats?.totalAppointments ?? 0} />
-                <StatCard variant="large" label="Активных врачей" value={stats?.activeDoctors ?? 0} />
-                <StatCard variant="large" label="Пациентов"       value={stats?.totalPatients ?? 0} />
+                <StatCard variant="large" label={t('adminStats.totalAppointments')} value={stats?.totalAppointments ?? 0} />
+                <StatCard variant="large" label={t('adminStats.activeDoctors')} value={stats?.activeDoctors ?? 0} />
+                <StatCard variant="large" label={t('adminStats.totalPatients')} value={stats?.totalPatients ?? 0} />
                 <StatCard
                     variant="large"
                     accent="revenue"
-                    label="Общий доход"
+                    label={t('adminStats.totalRevenue')}
                     value={`${new Intl.NumberFormat('pl-PL').format(stats?.totalRevenue || 0)} PLN`}
                 />
             </div>
 
             <div className="info-section">
-                <h3>Последняя активность</h3>
+                <h3>{t('adminStats.recentActivity')}</h3>
                 <table className="admin-table">
                     <thead>
                     <tr>
-                        <th>Дата</th>
-                        <th>Пациент</th>
-                        <th>Врач</th>
-                        <th>Статус</th>
+                        <th>{t('common.date')}</th>
+                        <th>{t('common.patient')}</th>
+                        <th>{t('common.doctor')}</th>
+                        <th>{t('common.status')}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {activity.length === 0 && (
                         <tr>
-                            <td colSpan={4} className="text-center">Нет данных</td>
+                            <td colSpan={4} className="text-center">{t('adminStats.noData')}</td>
                         </tr>
                     )}
                     {activity.map((act) => (
                         <tr key={act.id}>
                             <td>{act.date || '---'}</td>
-                            <td>{act.patient_name || 'Неизвестен'}</td>
-                            <td>{act.doctor_name  || 'Неизвестен'}</td>
+                            <td>{act.patient_name || t('common.unknown')}</td>
+                            <td>{act.doctor_name  || t('common.unknown')}</td>
                             <td>
                                     <span className={statusClass(act.status)}>
                                         {statusLabel(act.status)}

@@ -1,12 +1,13 @@
 import useRecordForm from '../../../hooks/useRecordForm'
+import { useTranslation } from 'react-i18next'
 import RecordFormShell from './RecordFormShell'
 import DatePicker from '../../../components/DatePicker'
 import { TIME_OPTIONS, VALIDATION } from '../../../constants'
 
 const STATUSES = [
-    { value: 'Scheduled', label: 'Запланирован' },
-    { value: 'Completed', label: 'Завершён' },
-    { value: 'Cancelled', label: 'Отменён' },
+    { value: 'Scheduled' },
+    { value: 'Completed' },
+    { value: 'Cancelled' },
 ]
 
 const INITIAL = {
@@ -29,6 +30,7 @@ const buildPayload = (form) => ({
 })
 
 export default function AppointmentRecordForm({ id }) {
+    const { t } = useTranslation()
     const { loading, submitting, error, form, record, onChange, setField, handleSubmit } = useRecordForm({
         table: 'appointments',
         id,
@@ -37,40 +39,40 @@ export default function AppointmentRecordForm({ id }) {
         buildPayload,
     })
 
-    if (loading) return <main className="container"><p>Загрузка...</p></main>
+    if (loading) return <main className="container"><p>{t('common.loading')}</p></main>
 
     return (
         <RecordFormShell
-            title={`Редактирование записи #${id}`}
+            title={t('adminRecords.editAppointment', { id })}
             onSubmit={handleSubmit}
             submitting={submitting}
             error={error}
         >
             <div style={{ background: '#f3f4f6', padding: '10px', borderRadius: '6px', marginBottom: '15px' }}>
-                <p style={{ margin: 0 }}><strong>Пациент:</strong> {record?.patient_name}</p>
-                <p style={{ margin: '5px 0 0' }}><strong>Врач:</strong> {record?.doctor_name}</p>
+                <p style={{ margin: 0 }}><strong>{t('common.patient')}:</strong> {record?.patient_name}</p>
+                <p style={{ margin: '5px 0 0' }}><strong>{t('common.doctor')}:</strong> {record?.doctor_name}</p>
             </div>
 
-            <label>Дата</label>
+            <label>{t('common.date')}</label>
             <DatePicker
                 value={form.appointment_date}
                 onChange={(v) => setField('appointment_date', v)}
             />
 
-            <label>Время</label>
+            <label>{t('common.time')}</label>
             <select value={form.appointment_time} onChange={onChange('appointment_time')} required>
-                {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                {TIME_OPTIONS.map(time => <option key={time} value={time}>{time}</option>)}
             </select>
 
-            <label>Статус</label>
+            <label>{t('common.status')}</label>
             <select value={form.status} onChange={onChange('status')}>
-                {STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                {STATUSES.map(s => <option key={s.value} value={s.value}>{t(`status.${s.value}`)}</option>)}
             </select>
 
-            <label>Симптомы</label>
+            <label>{t('adminRecords.symptoms')}</label>
             <textarea rows={3} value={form.symptoms} onChange={onChange('symptoms')} maxLength={VALIDATION.SYMPTOMS_MAX} />
 
-            <label>Заметки врача</label>
+            <label>{t('adminRecords.doctorNotes')}</label>
             <textarea rows={3} value={form.doctor_notes} onChange={onChange('doctor_notes')} />
         </RecordFormShell>
     )

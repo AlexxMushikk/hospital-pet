@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { useModal } from '../../hooks/useModal'
 import Modal from '../../components/Modal'
 import api from '../../api/index'
-import { SPECIALIZATIONS, VALIDATION, VALIDATION_MSG } from '../../constants'
+import { SPECIALIZATIONS, VALIDATION } from '../../constants'
+import { apiErrorMessage } from '../../utils/apiError'
 import DatePicker from '../../components/DatePicker'
 import { getTodayStr } from '../../utils/date'
 
@@ -34,27 +35,27 @@ export default function CreateDoctor() {
         e.preventDefault()
 
         if (!form.full_name || form.full_name.length < VALIDATION.NAME_MIN) {
-            showModal('Ошибка', VALIDATION_MSG.NAME_MIN)
+            showModal(t('common.error'), t('validation.nameMin', { count: VALIDATION.NAME_MIN }))
             return
         }
         if (!VALIDATION.EMAIL_REGEX.test(form.email)) {
-            showModal('Ошибка', VALIDATION_MSG.EMAIL)
+            showModal(t('common.error'), t('validation.email'))
             return
         }
         if (!form.password || form.password.length < VALIDATION.PASSWORD_MIN) {
-            showModal('Ошибка', VALIDATION_MSG.PASSWORD_MIN)
+            showModal(t('common.error'), t('validation.passwordMin', { count: VALIDATION.PASSWORD_MIN }))
             return
         }
         if (!form.specialization) {
-            showModal('Ошибка', 'Выберите специализацию.')
+            showModal(t('common.error'), t('adminCreateDoctor.errSpecialization'))
             return
         }
         if (!form.career_start_date) {
-            showModal('Ошибка', 'Укажите дату начала карьеры.')
+            showModal(t('common.error'), t('adminCreateDoctor.errCareerStart'))
             return
         }
         if (Number(form.price) < 0) {
-            showModal('Ошибка', 'Цена не может быть отрицательной.')
+            showModal(t('common.error'), t('validation.priceNegative'))
             return
         }
 
@@ -65,12 +66,12 @@ export default function CreateDoctor() {
                 price: Number(form.price),
             })
             showModal(
-                'Врач создан!',
-                `Аккаунт для ${form.full_name} успешно создан. Врач может войти с email ${form.email}.`,
+                t('adminCreateDoctor.createdTitle'),
+                t('adminCreateDoctor.createdText', { name: form.full_name, email: form.email }),
                 () => navigate('/admin/database')
             )
         } catch (err) {
-            showModal('Ошибка', err.response?.data?.error || 'Не удалось создать врача.')
+            showModal(t('common.error'), apiErrorMessage(err, 'adminCreateDoctor.createError'))
         } finally {
             setSaving(false)
         }
@@ -80,11 +81,11 @@ export default function CreateDoctor() {
         <main className="container admin-section">
             <section className="page-title page-title--row">
                 <div>
-                    <h2>Создать нового врача</h2>
-                    <p>Заполните данные для создания аккаунта врача.</p>
+                    <h2>{t('adminCreateDoctor.title')}</h2>
+                    <p>{t('adminCreateDoctor.subtitle')}</p>
                 </div>
                 <button className="btn btn-outline" onClick={() => navigate('/admin/database')}>
-                    ← Назад
+                    ← {t('common.back')}
                 </button>
             </section>
 
@@ -92,11 +93,11 @@ export default function CreateDoctor() {
                 <form onSubmit={handleSubmit}>
 
                     <div className="info-section">
-                        <h3>Личные данные</h3>
+                        <h3>{t('adminCreateDoctor.personalData')}</h3>
 
                         <div className="form-grid-2">
                             <div className="form-group">
-                                <label>Полное имя *</label>
+                                <label>{t('adminCreateDoctor.fullNameRequired')}</label>
                                 <input
                                     type="text"
                                     name="full_name"
@@ -107,16 +108,16 @@ export default function CreateDoctor() {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>Пол</label>
+                                <label>{t('common.gender')}</label>
                                 <select
                                     name="gender"
                                     value={form.gender}
                                     onChange={handleChange}
                                     className="select-styled"
                                 >
-                                    <option value="Not Specified">Не указан</option>
-                                    <option value="Male">Мужской</option>
-                                    <option value="Female">Женский</option>
+                                    <option value="Not Specified">{t('gender.Not Specified')}</option>
+                                    <option value="Male">{t('gender.Male')}</option>
+                                    <option value="Female">{t('gender.Female')}</option>
                                 </select>
                             </div>
                         </div>
@@ -134,13 +135,13 @@ export default function CreateDoctor() {
                         </div>
 
                         <div className="form-group">
-                            <label>Пароль * (врач сможет сменить позже)</label>
+                            <label>{t('adminCreateDoctor.passwordLabel')}</label>
                             <input
                                 type="password"
                                 name="password"
                                 value={form.password}
                                 onChange={handleChange}
-                                placeholder="Минимум 4 символа"
+                                placeholder={t('adminCreateDoctor.passwordPlaceholder', { count: VALIDATION.PASSWORD_MIN })}
                                 required
                                 minLength={VALIDATION.PASSWORD_MIN}
                             />
@@ -148,10 +149,10 @@ export default function CreateDoctor() {
                     </div>
 
                     <div className="info-section">
-                        <h3>Профессиональные данные</h3>
+                        <h3>{t('adminCreateDoctor.professionalData')}</h3>
 
                         <div className="form-group">
-                            <label>Специализация *</label>
+                            <label>{t('adminCreateDoctor.specializationRequired')}</label>
                             <select
                                 name="specialization"
                                 value={form.specialization}
@@ -159,7 +160,7 @@ export default function CreateDoctor() {
                                 className="select-styled"
                                 required
                             >
-                                <option value="">— Выберите специализацию —</option>
+                                <option value="">{t('adminCreateDoctor.specializationPlaceholder')}</option>
                                 {SPECIALIZATIONS.map(s => (
                                     <option key={s.value} value={s.value}>{t(`spec.${s.value}.label`)}</option>
                                 ))}
@@ -168,14 +169,14 @@ export default function CreateDoctor() {
 
                         <div className="form-grid-2">
                             <div className="form-group">
-                                <label>Дата начала карьеры *</label>
+                                <label>{t('adminCreateDoctor.careerStartRequired')}</label>
                                 <DatePicker
                                     value={form.career_start_date}
                                     onChange={(v) => setForm(prev => ({ ...prev, career_start_date: v }))}
                                     maxDate={getTodayStr()}
                                 />                            </div>
                             <div className="form-group">
-                                <label>Стоимость визита (PLN) *</label>
+                                <label>{t('adminCreateDoctor.priceRequired')}</label>
                                 <input
                                     type="number"
                                     name="price"
@@ -190,10 +191,7 @@ export default function CreateDoctor() {
 
                     <div className="doctor-notes-box doctor-notes-box--mb">
                         <p className="notes-text">
-                            <strong>После создания</strong> врач сможет войти в систему и заполнить
-                            профиль самостоятельно: фото, биографию, образование, языки.
-                            Рабочие часы по умолчанию 08:00 — 18:00, изменить можно в разделе
-                            "База данных → Изменить".
+                            <strong>{t('adminCreateDoctor.infoTitle')}</strong> {t('adminCreateDoctor.infoText')}
                         </p>
                     </div>
 
@@ -203,14 +201,14 @@ export default function CreateDoctor() {
                             className="btn btn-outline"
                             onClick={() => navigate('/admin/database')}
                         >
-                            Отмена
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
                             className="btn btn-solid"
                             disabled={saving}
                         >
-                            {saving ? 'Создание...' : 'Создать врача'}
+                            {saving ? t('adminCreateDoctor.submitting') : t('adminCreateDoctor.submit')}
                         </button>
                     </div>
                 </form>

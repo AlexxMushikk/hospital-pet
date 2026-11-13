@@ -1,17 +1,24 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { getAdminList, deleteAdminRecord } from '../../api/index'
 import Pagination from '../../components/Pagination'
 import Modal from '../../components/Modal'
 import { useModal } from '../../hooks/useModal'
+import { apiErrorMessage } from '../../utils/apiError'
 
 const TABLES = ['doctors', 'patients', 'appointments']
-const TABLE_LABELS = { doctors: 'Врачи', patients: 'Пациенты', appointments: 'Записи' }
+const TABLE_LABELS = {
+    doctors:      'adminDatabase.tableDoctors',
+    patients:     'adminDatabase.tablePatients',
+    appointments: 'adminDatabase.tableAppointments',
+}
 const LIMIT = 10
 const SEARCH_DEBOUNCE_MS = 300
 
 
 export default function AdminDatabase() {
+    const { t } = useTranslation()
     const navigate = useNavigate()
     const { modal, showModal, closeModal } = useModal()
 
@@ -27,8 +34,8 @@ export default function AdminDatabase() {
     const totalPages = Math.ceil(total / LIMIT)
 
     useEffect(() => {
-        const t = setTimeout(() => setDebouncedSearch(search), SEARCH_DEBOUNCE_MS)
-        return () => clearTimeout(t)
+        const timer = setTimeout(() => setDebouncedSearch(search), SEARCH_DEBOUNCE_MS)
+        return () => clearTimeout(timer)
     }, [search])
 
     useEffect(() => {
@@ -60,8 +67,8 @@ export default function AdminDatabase() {
         return () => { cancelled = true }
     }, [table, page, fetchKey, debouncedSearch])
 
-    const handleTableSwitch = (t) => {
-        setTable(t)
+    const handleTableSwitch = (name) => {
+        setTable(name)
         setSearch('')
         setPage(1)
     }
@@ -73,8 +80,8 @@ export default function AdminDatabase() {
 
     const handleDelete = (id) => {
         showModal(
-            'Подтверждение удаления',
-            `Вы уверены что хотите удалить запись #${id}? Это действие необратимо.`,
+            t('adminDatabase.deleteConfirmTitle'),
+            t('adminDatabase.deleteConfirmText', { id }),
             async () => {
                 try {
                     await deleteAdminRecord(table, id)
@@ -85,17 +92,17 @@ export default function AdminDatabase() {
                         setPage(1)
                     }
                 } catch (err) {
-                    showModal('Ошибка', err.response?.data?.error || 'Не удалось удалить запись.')
+                    showModal(t('common.error'), apiErrorMessage(err, 'adminDatabase.deleteError'))
                 }
             },
-            'Отмена',
+            t('common.cancel'),
             'danger'
         )
     }
 
     const renderRow = (item) => {
         if (table === 'doctors') return (
-            <><td>{item.id}</td><td><strong>{item.name}</strong></td><td>{item.specialization}</td></>
+            <><td>{item.id}</td><td><strong>{item.name}</strong></td><td>{t(`spec.${item.specialization}.label`, { defaultValue: item.specialization })}</td></>
         )
         if (table === 'patients') return (
             <><td>{item.id}</td><td><strong>{item.full_name}</strong></td><td>{item.email}</td></>
@@ -107,13 +114,13 @@ export default function AdminDatabase() {
 
     const renderHead = () => {
         if (table === 'doctors') return (
-            <tr><th>ID</th><th>Имя</th><th>Специализация</th><th>Действия</th></tr>
+            <tr><th>{t('common.id')}</th><th>{t('common.fullName')}</th><th>{t('common.specialization')}</th><th>{t('common.actions')}</th></tr>
         )
         if (table === 'patients') return (
-            <tr><th>ID</th><th>Имя пациента</th><th>Email</th><th>Действия</th></tr>
+            <tr><th>{t('common.id')}</th><th>{t('adminDatabase.patientName')}</th><th>{t('common.email')}</th><th>{t('common.actions')}</th></tr>
         )
         return (
-            <tr><th>ID</th><th>Дата</th><th>Пациент</th><th>Врач</th><th>Действия</th></tr>
+            <tr><th>{t('common.id')}</th><th>{t('common.date')}</th><th>{t('common.patient')}</th><th>{t('common.doctor')}</th><th>{t('common.actions')}</th></tr>
         )
     }
 
@@ -125,27 +132,27 @@ export default function AdminDatabase() {
 
             <section className="page-title page-title--row">
                 <div>
-                    <h2>Управление базой данных</h2>
-                    <p>Просмотр и редактирование всех записей системы.</p>
+                    <h2>{t('adminDatabase.title')}</h2>
+                    <p>{t('adminDatabase.subtitle')}</p>
                 </div>
                 {table === 'doctors' && (
                     <button
                         className="btn btn-solid"
                         onClick={() => navigate('/admin/create-doctor')}
                     >
-                        + Создать врача
+                        {t('adminDatabase.createDoctor')}
                     </button>
                 )}
             </section>
 
             <div className="view-switcher view-switcher--center">
-                {TABLES.map(t => (
+                {TABLES.map(name => (
                     <button
-                        key={t}
-                        className={`view-btn ${table === t ? 'active' : ''}`}
-                        onClick={() => handleTableSwitch(t)}
+                        key={name}
+                        className={`view-btn ${table === name ? 'active' : ''}`}
+                        onClick={() => handleTableSwitch(name)}
                     >
-                        {TABLE_LABELS[t]}
+                        {t(TABLE_LABELS[name])}
                     </button>
                 ))}
             </div>
@@ -153,7 +160,7 @@ export default function AdminDatabase() {
             <div className="sidebar-block search-block">
                 <input
                     type="text"
-                    placeholder={searchDisabled ? 'Поиск недоступен для записей' : 'Поиск по имени или email...'}
+                    placeholder={searchDisabled ? t('adminDatabase.searchDisabled') : t('adminDatabase.searchPlaceholder')}
                     className="sidebar-search-input"
                     value={search}
                     onChange={handleSearchChange}
@@ -167,10 +174,10 @@ export default function AdminDatabase() {
                         <thead>{renderHead()}</thead>
                         <tbody>
                         {loading && (
-                            <tr><td colSpan={colSpan} className="text-center">Загрузка...</td></tr>
+                            <tr><td colSpan={colSpan} className="text-center">{t('common.loading')}</td></tr>
                         )}
                         {!loading && data.length === 0 && (
-                            <tr><td colSpan={colSpan} className="text-center">Записи не найдены</td></tr>
+                            <tr><td colSpan={colSpan} className="text-center">{t('adminDatabase.notFound')}</td></tr>
                         )}
                         {!loading && data.map(item => (
                             <tr key={item.id}>
@@ -180,14 +187,14 @@ export default function AdminDatabase() {
                                         className="btn btn-solid btn-sm"
                                         onClick={() => navigate(`/admin/records/${table}/${item.id}`)}
                                     >
-                                        Изменить
+                                        {t('common.edit')}
                                     </button>
                                     {' '}
                                     <button
                                         className="btn btn-outline btn-sm"
                                         onClick={() => handleDelete(item.id)}
                                     >
-                                        Удалить
+                                        {t('common.delete')}
                                     </button>
                                 </td>
                             </tr>

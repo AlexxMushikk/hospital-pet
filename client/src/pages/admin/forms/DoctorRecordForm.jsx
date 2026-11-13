@@ -1,4 +1,5 @@
 import useRecordForm from '../../../hooks/useRecordForm'
+import { useTranslation } from 'react-i18next'
 import RecordFormShell from './RecordFormShell'
 import DatePicker from '../../../components/DatePicker'
 import { TIME_OPTIONS } from '../../../constants'
@@ -10,9 +11,9 @@ const SPECIALIZATIONS = [
 ]
 
 const GENDERS = [
-    { value: 'Male',          label: 'Мужской' },
-    { value: 'Female',        label: 'Женский' },
-    { value: 'Not Specified', label: 'Не указан' },
+    { value: 'Male' },
+    { value: 'Female' },
+    { value: 'Not Specified' },
 ]
 
 const INITIAL = {
@@ -40,8 +41,8 @@ const mapRecord = (r) => ({
 })
 
 const validate = (form) => {
-    if (form.work_start >= form.work_end) return 'Начало смены должно быть раньше конца'
-    if (form.price !== '' && Number(form.price) < 0) return 'Цена не может быть отрицательной'
+    if (form.work_start >= form.work_end) return 'validation.shiftStartAfterEnd'
+    if (form.price !== '' && Number(form.price) < 0) return 'validation.priceNegative'
     return null
 }
 
@@ -62,6 +63,7 @@ const buildPayload = (form) => ({
 })
 
 export default function DoctorRecordForm({ id }) {
+    const { t } = useTranslation()
     const { loading, submitting, error, form, onChange, setField, handleSubmit } = useRecordForm({
         table: 'doctors',
         id,
@@ -71,69 +73,69 @@ export default function DoctorRecordForm({ id }) {
         validate,
     })
 
-    if (loading) return <main className="container"><p>Загрузка...</p></main>
+    if (loading) return <main className="container"><p>{t('common.loading')}</p></main>
 
     return (
         <RecordFormShell
-            title={`Редактирование врача #${id}`}
+            title={t('adminRecords.editDoctor', { id })}
             onSubmit={handleSubmit}
             submitting={submitting}
             error={error}
         >
-            <label>ФИО</label>
+            <label>{t('common.fullName')}</label>
             <input type="text" value={form.full_name} onChange={onChange('full_name')} required />
 
             <label>Email</label>
             <input type="email" value={form.email} onChange={onChange('email')} required />
 
-            <label>Телефон</label>
+            <label>{t('common.phone')}</label>
             <input type="text" value={form.phone} onChange={onChange('phone')} />
 
-            <label>Специализация</label>
+            <label>{t('common.specialization')}</label>
             <select value={form.specialization} onChange={onChange('specialization')} required>
-                {SPECIALIZATIONS.map(s => <option key={s} value={s}>{s}</option>)}
+                {SPECIALIZATIONS.map(s => <option key={s} value={s}>{t(`spec.${s}.label`)}</option>)}
             </select>
 
-            <label>Дата начала карьеры</label>
+            <label>{t('adminRecords.careerStart')}</label>
             <DatePicker
                 value={form.career_start_date}
                 onChange={(v) => setField('career_start_date', v)}
                 maxDate={getTodayStr()}
             />
 
-            <label>Цена визита (PLN)</label>
+            <label>{t('adminRecords.visitPrice')}</label>
             <input type="number" min="0" value={form.price} onChange={onChange('price')} />
 
             <div style={{ display: 'flex', gap: '10px' }}>
                 <div style={{ flex: 1 }}>
-                    <label>Начало смены</label>
+                    <label>{t('adminRecords.shiftStart')}</label>
                     <select value={form.work_start} onChange={onChange('work_start')}>
-                        {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                        {TIME_OPTIONS.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
                 </div>
                 <div style={{ flex: 1 }}>
-                    <label>Конец смены</label>
+                    <label>{t('adminRecords.shiftEnd')}</label>
                     <select value={form.work_end} onChange={onChange('work_end')}>
-                        {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                        {TIME_OPTIONS.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
                 </div>
             </div>
 
-            <label>Пол</label>
+            <label>{t('common.gender')}</label>
             <select value={form.gender} onChange={onChange('gender')}>
-                {GENDERS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
+                {GENDERS.map(g => <option key={g.value} value={g.value}>{t(`gender.${g.value}`)}</option>)}
             </select>
 
-            <label>Образование</label>
+            <label>{t('common.education')}</label>
             <input type="text" value={form.education} onChange={onChange('education')} />
 
-            <label>Языки</label>
+            <label>{t('common.languages')}</label>
             <input type="text" value={form.languages} onChange={onChange('languages')} />
 
-            <label>URL фото</label>
+            <label>{t('common.photoUrl')}</label>
             <input type="text" value={form.image_url} onChange={onChange('image_url')} />
 
-            <label>Биография</label>
+            <label>{t('adminRecords.bio')}</label>
             <textarea rows={4} value={form.bio} onChange={onChange('bio')} maxLength={1000} />
         </RecordFormShell>
     )
