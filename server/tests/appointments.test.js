@@ -286,6 +286,78 @@ describe('PATCH /api/appointments/:id', () => {
         expect(res.status).toBe(400)
     })
 
+    describe('status transitions', () => {
+        const setStatus = (status) =>
+            db.prepare('UPDATE appointments SET status = ? WHERE id = ?').run(status, appointmentId)
+        const row = () =>
+            db.prepare('SELECT status, symptoms, doctor_notes FROM appointments WHERE id = ?').get(appointmentId)
+
+        it('stops the patient from cancelling a completed visit', async () => {
+            setStatus('Completed')
+
+            const res = await patch(patient, { status: 'Cancelled' })
+
+            expect(res.status).toBe(409)
+            expect(res.body.code).toBe('errors.INVALID_STATUS_TRANSITION')
+            expect(row().status).toBe('Completed')
+        })
+
+        it('stops the doctor from completing a cancelled visit', async () => {
+            setStatus('Cancelled')
+
+            const res = await patch(doctor, { status: 'Completed', doctor_notes: 'Too late' })
+
+            expect(res.status).toBe(409)
+            expect(row()).toMatchObject({ status: 'Cancelled', doctor_notes: null })
+        })
+
+        it('stops the doctor from cancelling a completed visit', async () => {
+            setStatus('Completed')
+
+            const res = await patch(doctor, { status: 'Cancelled' })
+
+            expect(res.status).toBe(409)
+            expect(row().status).toBe('Completed')
+        })
+
+        it('stops the patient from editing symptoms once the visit is closed', async () => {
+            setStatus('Cancelled')
+
+            const res = await patch(patient, { symptoms: 'Rewritten afterwards' })
+
+            expect(res.status).toBe(409)
+            expect(res.body.code).toBe('errors.APPOINTMENT_CLOSED')
+            expect(row().symptoms).toBeNull()
+        })
+
+        it('lets the doctor edit notes on a completed visit', async () => {
+            setStatus('Completed')
+
+            const res = await patch(doctor, { doctor_notes: 'Follow-up in a month' })
+
+            expect(res.status).toBe(200)
+            expect(row()).toMatchObject({ status: 'Completed', doctor_notes: 'Follow-up in a month' })
+        })
+
+        it('stops the doctor from writing notes on a cancelled visit', async () => {
+            setStatus('Cancelled')
+
+            const res = await patch(doctor, { doctor_notes: 'Never happened' })
+
+            expect(res.status).toBe(409)
+            expect(row().doctor_notes).toBeNull()
+        })
+
+        it('still lets an admin close a visit that is already closed', async () => {
+            setStatus('Completed')
+
+            const res = await patch(createAdmin(), { status: 'Cancelled' })
+
+            expect(res.status).toBe(200)
+            expect(row().status).toBe('Cancelled')
+        })
+    })
+
     it('404s for an appointment that does not exist', async () => {
         const res = await request(app)
             .patch('/api/appointments/9999')

@@ -361,6 +361,8 @@
     "FORBIDDEN": "You do not have permission for this action",
     "ACCESS_DENIED": "You do not have permission for this action",
     "STATUS_CHANGE_FORBIDDEN": "Your role cannot change the status this way",
+    "INVALID_STATUS_TRANSITION": "Only a scheduled visit can change its status",
+    "APPOINTMENT_CLOSED": "This visit is closed and can no longer be edited",
     "NO_EDITABLE_FIELDS": "There are no fields you can change",
     "ADMIN_DELETE_FORBIDDEN": "The system administrator cannot be deleted",
     "APPOINTMENT_NOT_FOUND": "Appointment not found",
