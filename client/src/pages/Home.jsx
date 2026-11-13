@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getPublicStats } from '../api/index'
 import { logger } from '../utils/logger'
@@ -7,6 +8,7 @@ import { SPECIALIZATIONS } from '../constants'
 
 export default function Home() {
     const { user } = useAuth()
+    const { t, i18n } = useTranslation()
     const [stats, setStats] = useState(null)
 
     useEffect(() => {
@@ -22,25 +24,24 @@ export default function Home() {
                 <div className="container hero-grid">
                     <div className="hero-text">
                         <h2>
-                            Ваше здоровье —<br />
-                            <span className="hero-accent">Наш приоритет</span>
+                            {t('home.heroTitleLine1')}<br />
+                            <span className="hero-accent">{t('home.heroTitleLine2')}</span>
                         </h2>
                         <p>
-                            Добро пожаловать в City Care Hospital. Мы предоставляем
-                            медицинские услуги высшего уровня с лучшими специалистами.
+                            {t('home.heroText')}
                         </p>
                         <div className="hero-actions">
                             <Link to="/doctors" className="btn btn-solid btn-lg">
-                                Найти врача
+                                {t('home.findDoctor')}
                             </Link>
                             {!user && (
                                 <Link to="/register" className="btn btn-outline btn-lg">
-                                    Создать аккаунт
+                                    {t('home.createAccount')}
                                 </Link>
                             )}
                             {user && (
                                 <Link to="/appointments" className="btn btn-outline btn-lg">
-                                    Мои визиты
+                                    {t('nav.myAppointments')}
                                 </Link>
                             )}
                         </div>
@@ -60,7 +61,7 @@ export default function Home() {
                                     {stats.doctorsCount}
                                 </div>
                                 <div className="stats-band-label">
-                                    Врачей-специалистов
+                                    {t('home.statDoctors')}
                                 </div>
                             </div>
                             <div>
@@ -68,15 +69,15 @@ export default function Home() {
                                     {stats.specializationsCount}
                                 </div>
                                 <div className="stats-band-label">
-                                    Специализаций
+                                    {t('home.statSpecializations')}
                                 </div>
                             </div>
                             <div>
                                 <div className="stats-band-num">
-                                    {new Intl.NumberFormat('pl-PL').format(stats.completedAppointments)}
+                                    {new Intl.NumberFormat(i18n.resolvedLanguage).format(stats.completedAppointments)}
                                 </div>
                                 <div className="stats-band-label">
-                                    Завершённых визитов
+                                    {t('home.statCompleted')}
                                 </div>
                             </div>
                         </div>
@@ -87,9 +88,9 @@ export default function Home() {
             <section className="features section-pad-top">
                 <div className="container">
                     <div className="page-title page-title--mb">
-                        <h2>Наши специализации</h2>
+                        <h2>{t('home.specializationsTitle')}</h2>
                         <p className="section-subtitle">
-                            Квалифицированная помощь по всем направлениям медицины
+                            {t('home.specializationsSubtitle')}
                         </p>
                     </div>
 
@@ -102,12 +103,12 @@ export default function Home() {
                             >
                                 <div className="feature-card feature-card--link">
                                     <div className="feature-icon">{spec.icon}</div>
-                                    <h3>{spec.label}</h3>
+                                    <h3>{t(`spec.${spec.value}.label`)}</h3>
                                     <p className="feature-desc">
-                                        {spec.desc}
+                                        {t(`spec.${spec.value}.desc`)}
                                     </p>
                                     <div className="feature-cta">
-                                        Найти специалиста →
+                                        {t('home.findSpecialist')}
                                     </div>
                                 </div>
                             </Link>
@@ -121,17 +122,17 @@ export default function Home() {
                 <section className="cta-section">
                     <div className="container text-center">
                         <h2 className="cta-title">
-                            Готовы записаться?
+                            {t('home.ctaTitle')}
                         </h2>
                         <p className="cta-text">
-                            Создайте аккаунт и запишитесь к врачу за несколько минут
+                            {t('home.ctaText')}
                         </p>
                         <div className="cta-actions">
                             <Link to="/register" className="btn btn-solid btn-lg">
-                                Зарегистрироваться
+                                {t('auth.registerSubmit')}
                             </Link>
                             <Link to="/login" className="btn btn-outline btn-lg">
-                                Войти
+                                {t('nav.login')}
                             </Link>
                         </div>
                     </div>
