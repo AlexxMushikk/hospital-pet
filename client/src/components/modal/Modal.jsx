@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import '../../styles/buttons.css'
+import './Modal.css'
 
 export default function Modal({ isOpen, title, message, onConfirm, onClose, confirmLabel = 'OK', cancelLabel, variant }) {
     const contentRef = useRef(null)

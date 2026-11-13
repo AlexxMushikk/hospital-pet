@@ -1,0 +1,73 @@
+.doctors-layout { display: flex; gap: 40px; align-items: flex-start; }
+
+.doctors-sidebar {
+    flex: 0 0 260px;
+    background: white;
+    border: 1px solid var(--color-bg);
+    border-radius: 12px;
+    padding: 25px;
+    position: sticky;
+    top: 90px;
+}
+
+.doctors-main-content { flex: 1; }
+.filter-title { font-size: 16px; font-weight: 700; color: var(--color-heading); margin-bottom: 15px; display: block; }
+.filter-radio-group { display: flex; flex-direction: column; gap: 8px; }
+
+.radio-container {
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    user-select: none;
+    transition: 0.3s;
+}
+
+.radio-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 2px; left: 0;
+    height: 18px; width: 18px;
+    background-color: white;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.radio-container:hover input ~ .checkmark { border-color: var(--color-primary); background-color: var(--color-primary-light); }
+.radio-container input:checked ~ .checkmark { background-color: var(--color-primary); border-color: var(--color-primary); }
+.checkmark:after { content: ""; position: absolute; display: none; }
+.radio-container input:checked ~ .checkmark:after { display: block; }
+
+.radio-container .checkmark:after {
+    top: 5px; left: 5px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+@media (max-width: 900px) {
+    .doctors-layout { grid-template-columns: 1fr; flex-direction: column; }
+    .doctors-sidebar { width: 100%; position: static; }
+}
+
+.price-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #374151;
+}
+
+.price-track { height: 4px; width: 100%; border-radius: 2px; }
+.price-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid var(--color-primary); outline: none; }

@@ -7,6 +7,10 @@ import Modal from '../../components/modal/Modal'
 import { useModal } from '../../hooks/useModal'
 import { formatExperience } from '../../utils/experience'
 import DoctorAvatar from '../../components/doctor-avatar/DoctorAvatar'
+import '../../styles/buttons.css'
+import '../../styles/layout.css'
+import '../../styles/skeleton.css'
+import './DoctorProfile.css'
 
 export default function DoctorProfile() {
     const { id }   = useParams()

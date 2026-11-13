@@ -8,6 +8,9 @@ import { getTodayStr } from '../../utils/date'
 import Pagination from '../../components/pagination/Pagination'
 import DatePicker from '../../components/date-picker/DatePicker'
 import StatCard from '../../components/stat-card/StatCard'
+import '../../styles/buttons.css'
+import '../../styles/layout.css'
+import './DoctorSchedule.css'
 
 const PAGE_SIZE = 4
 

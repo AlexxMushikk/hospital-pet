@@ -5,6 +5,9 @@ import { useAuth } from '../../context/AuthContext'
 import { getPublicStats } from '../../api/index'
 import { logger } from '../../utils/logger'
 import { SPECIALIZATIONS } from '../../constants'
+import '../../styles/buttons.css'
+import '../../styles/layout.css'
+import './Home.css'
 
 export default function Home() {
     const { user } = useAuth()

@@ -1,6 +1,9 @@
 import { Component } from 'react'
 import { logger } from '../../utils/logger'
 import i18n from '../../i18n'
+import '../../styles/buttons.css'
+import '../../styles/layout.css'
+import './ErrorBoundary.css'
 
 export default class ErrorBoundary extends Component {
 

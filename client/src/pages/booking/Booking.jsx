@@ -10,6 +10,10 @@ import DatePicker from '../../components/date-picker/DatePicker'
 import { logger } from '../../utils/logger'
 import { SLOT_STEP_MINUTES, VALIDATION } from '../../constants'
 import { apiErrorMessage } from '../../utils/apiError'
+import '../../styles/buttons.css'
+import '../../styles/forms.css'
+import '../../styles/layout.css'
+import './Booking.css'
 
 export default function Booking() {
     const navigate                         = useNavigate()

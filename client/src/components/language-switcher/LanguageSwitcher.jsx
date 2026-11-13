@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { SUPPORTED_LANGUAGES } from '../../i18n/language'
+import '../../styles/buttons.css'
 
 export default function LanguageSwitcher() {
     const { t, i18n } = useTranslation()

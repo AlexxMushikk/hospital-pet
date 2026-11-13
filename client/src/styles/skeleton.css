@@ -1,0 +1,16 @@
+.skeleton {
+    background: linear-gradient(90deg, var(--color-border) 25%, var(--color-bg) 50%, var(--color-border) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-text { height: 15px; width: 80%; margin-bottom: 10px; }
+.skeleton-info     { flex: 1; }
+.skeleton-text--sm { width: 60%; }
+.skeleton--profile  { height: 400px; border-radius: 16px; }

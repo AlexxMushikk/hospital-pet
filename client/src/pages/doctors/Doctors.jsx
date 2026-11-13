@@ -10,6 +10,11 @@ import { useModal } from '../../hooks/useModal'
 import { Range, getTrackBackground } from 'react-range'
 import { logger } from '../../utils/logger'
 import { DOCTORS_PER_PAGE, SPECIALIZATIONS } from '../../constants'
+import '../../styles/forms.css'
+import '../../styles/layout.css'
+import '../../styles/cards.css'
+import '../../styles/skeleton.css'
+import './Doctors.css'
 
 const MIN_PRICE_GAP = 50
 

@@ -5,6 +5,11 @@ import { useAuth } from '../../context/AuthContext'
 import { getPatientAppointments } from '../../api/index'
 import { statusLabel, statusClass } from '../../utils/status'
 import { formatDate } from '../../utils/date'
+import '../../styles/buttons.css'
+import '../../styles/layout.css'
+import '../../styles/cards.css'
+import '../../styles/skeleton.css'
+import './Appointments.css'
 
 export default function Appointments() {
     const { user }   = useAuth()

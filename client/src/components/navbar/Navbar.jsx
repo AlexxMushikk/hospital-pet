@@ -2,6 +2,8 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import LanguageSwitcher from '../language-switcher/LanguageSwitcher'
+import '../../styles/buttons.css'
+import './Navbar.css'
 
 export default function Navbar() {
     const { user, logout, switchView, view } = useAuth()
