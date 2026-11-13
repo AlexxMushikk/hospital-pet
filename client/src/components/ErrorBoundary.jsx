@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { logger } from '../utils/logger'
+import i18n from '../i18n'
 
 export default class ErrorBoundary extends Component {
 
@@ -19,20 +20,23 @@ export default class ErrorBoundary extends Component {
 
     render() {
         if (this.state.hasError) {
+            // A class component cannot use hooks; the boundary only renders after a crash,
+            // so reading the current language at that moment is enough.
+            const t = i18n.t.bind(i18n)
             return (
                 <div className="auth-container">
                     <div className="auth-card error-boundary-card">
                         <h2 className="error-boundary__icon">💥</h2>
-                        <h3>Что-то пошло не так</h3>
+                        <h3>{t('errorBoundary.title')}</h3>
                         <p className="error-boundary__text">
-                            Произошла непредвиденная ошибка. Попробуйте обновить страницу.
+                            {t('errorBoundary.text')}
                         </p>
                         <div className="error-boundary__actions">
                             <button className="btn btn-solid" onClick={this.handleReset}>
-                                Попробовать снова
+                                {t('errorBoundary.retry')}
                             </button>
                             <button className="btn btn-outline" onClick={() => window.location.href = '/'}>
-                                На главную
+                                {t('common.goHome')}
                             </button>
                         </div>
                         {import.meta.env.DEV && (

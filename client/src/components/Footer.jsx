@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next'
+
 export default function Footer() {
+    const { t } = useTranslation()
+
     return (
         <footer className="main-footer">
             <div className="container">
-                <p>© 2024 City Care Hospital. Все права защищены.</p>
+                <p>{t('footer.rights')}</p>
             </div>
         </footer>
     )

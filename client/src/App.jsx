@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from './context/AuthContext'
 
 import Navbar from './components/Navbar'
@@ -88,9 +89,10 @@ function AppRoutes() {
 
 export default function App() {
     const { authLoading } = useAuth()
+    const { t } = useTranslation()
 
     if (authLoading) {
-        return <div className="app-loading">Загрузка...</div>
+        return <div className="app-loading">{t('app.loading')}</div>
     }
 
     return (

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const pad       = (n) => String(n).padStart(2, '0')
 const toYMD     = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
@@ -20,11 +21,15 @@ export default function DatePicker({
                                        onChange,
                                        minDate,
                                        maxDate,
-                                       locale = 'ru',
-                                       placeholder = 'Выберите дату',
+                                       locale,
+                                       placeholder,
                                        id,
                                        className = '',
                                    }) {
+    const { t, i18n } = useTranslation()
+    const lang = locale ?? i18n.resolvedLanguage
+    const placeholderText = placeholder ?? t('datepicker.placeholder')
+
     const [open, setOpen]           = useState(false)
     const [viewMonth, setViewMonth] = useState(() => fromYMD(value) || new Date())
 
@@ -62,10 +67,10 @@ export default function DatePicker({
         setOpen(true)
     }
 
-    const monthFmt   = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' })
-    const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: 'short' })
-    const triggerFmt = new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' })
-    const dayLabelFmt = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' })
+    const monthFmt   = new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric' })
+    const weekdayFmt = new Intl.DateTimeFormat(lang, { weekday: 'short' })
+    const triggerFmt = new Intl.DateTimeFormat(lang, { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const dayLabelFmt = new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'long', year: 'numeric' })
 
     const weekdays = Array.from({ length: 7 }, (_, i) =>
         weekdayFmt.format(new Date(WEEK_ANCHOR[0], WEEK_ANCHOR[1], WEEK_ANCHOR[2] + i))
@@ -109,7 +114,7 @@ export default function DatePicker({
                 aria-expanded={open}
             >
                 <span className={selected ? undefined : 'datepicker-placeholder'}>
-                    {selected ? triggerFmt.format(selected) : placeholder}
+                    {selected ? triggerFmt.format(selected) : placeholderText}
                 </span>
                 <svg className="datepicker-icon" width="18" height="18" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -121,15 +126,15 @@ export default function DatePicker({
             </button>
 
             {open && (
-                <div className="datepicker-popover" role="dialog" aria-label="Выбор даты">
+                <div className="datepicker-popover" role="dialog" aria-label={t('datepicker.dialogLabel')}>
                     <div className="datepicker-header">
                         <button type="button" className="datepicker-nav"
                                 onClick={() => setViewMonth((m) => addMonths(m, -1))}
-                                aria-label="Предыдущий месяц">‹</button>
+                                aria-label={t('datepicker.prevMonth')}>‹</button>
                         <span className="datepicker-month">{monthFmt.format(viewMonth)}</span>
                         <button type="button" className="datepicker-nav"
                                 onClick={() => setViewMonth((m) => addMonths(m, 1))}
-                                aria-label="Следующий месяц">›</button>
+                                aria-label={t('datepicker.nextMonth')}>›</button>
                     </div>
 
                     <div className="datepicker-weekdays">
@@ -170,7 +175,7 @@ export default function DatePicker({
 
                     <div className="datepicker-footer">
                         <button type="button" className="datepicker-link" onClick={goToday}>
-                            Сегодня
+                            {t('datepicker.today')}
                         </button>
                     </div>
                 </div>

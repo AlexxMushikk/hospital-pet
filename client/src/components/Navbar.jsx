@@ -1,10 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import LanguageSwitcher from './LanguageSwitcher'
 
 export default function Navbar() {
     const { user, logout, switchView, view } = useAuth()
     const navigate = useNavigate()
+    const { t } = useTranslation()
     const effectiveRole = user?.role === 'doctor' && view === 'patient' ? 'patient' : user?.role
 
     const navClass = ({ isActive }) => isActive ? 'active' : undefined
@@ -23,21 +25,21 @@ export default function Navbar() {
                     <ul className="nav-links">
                         {(!user || effectiveRole === 'patient') && (
                             <>
-                                <li><NavLink to="/" end className={navClass}>Главная</NavLink></li>
-                                <li><NavLink to="/doctors" className={navClass}>Врачи</NavLink></li>
-                                {user && <li><NavLink to="/appointments" className={navClass}>Мои визиты</NavLink></li>}
+                                <li><NavLink to="/" end className={navClass}>{t('nav.home')}</NavLink></li>
+                                <li><NavLink to="/doctors" className={navClass}>{t('nav.doctors')}</NavLink></li>
+                                {user && <li><NavLink to="/appointments" className={navClass}>{t('nav.myAppointments')}</NavLink></li>}
                             </>
                         )}
                         {effectiveRole === 'doctor' && (
                             <>
-                                <li><NavLink to="/doctor/schedule" className={navClass}>Расписание</NavLink></li>
-                                <li><NavLink to="/doctor/profile" className={navClass}>Настройки</NavLink></li>
+                                <li><NavLink to="/doctor/schedule" className={navClass}>{t('nav.schedule')}</NavLink></li>
+                                <li><NavLink to="/doctor/profile" className={navClass}>{t('nav.settings')}</NavLink></li>
                             </>
                         )}
                         {effectiveRole === 'admin' && (
                             <>
-                                <li><NavLink to="/admin/stats" className={navClass}>Статистика</NavLink></li>
-                                <li><NavLink to="/admin/database" className={navClass}>База данных</NavLink></li>
+                                <li><NavLink to="/admin/stats" className={navClass}>{t('nav.stats')}</NavLink></li>
+                                <li><NavLink to="/admin/database" className={navClass}>{t('nav.database')}</NavLink></li>
                             </>
                         )}
                     </ul>
@@ -52,25 +54,25 @@ export default function Navbar() {
                                             className={`view-btn ${view === 'patient' ? 'active' : ''}`}
                                             onClick={() => switchView('patient', navigate)}
                                         >
-                                            Пациент
+                                            {t('nav.viewPatient')}
                                         </button>
                                         <button
                                             className={`view-btn ${view === 'doctor' ? 'active' : ''}`}
                                             onClick={() => switchView('doctor', navigate)}
                                         >
-                                            Врач
+                                            {t('nav.viewDoctor')}
                                         </button>
                                     </div>
                                 )}
                                 <span><strong>{user.full_name}</strong></span>
                                 <button className="btn btn-outline btn-sm" onClick={logout}>
-                                    Выйти
+                                    {t('nav.logout')}
                                 </button>
                             </>
                         ) : (
                             <>
-                                <NavLink to="/login" className="btn btn-outline btn-sm">Войти</NavLink>
-                                <NavLink to="/register" className="btn btn-solid btn-sm">Регистрация</NavLink>
+                                <NavLink to="/login" className="btn btn-outline btn-sm">{t('nav.login')}</NavLink>
+                                <NavLink to="/register" className="btn btn-solid btn-sm">{t('nav.register')}</NavLink>
                             </>
                         )}
                     </div>
