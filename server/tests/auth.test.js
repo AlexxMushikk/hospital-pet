@@ -223,10 +223,16 @@ describe('POST /api/refresh', () => {
         expect(rows.map(r => r.revoked)).toEqual([1, 0])
     })
 
+    // Pushes every stored token back in time, as if the last rotation happened a while ago.
+    const ageTokens = (seconds) => db
+        .prepare(`UPDATE refresh_tokens SET created_at = datetime(created_at, ?)`)
+        .run(`-${seconds} seconds`)
+
     it('revokes every session when a used token is replayed', async () => {
         const { cookie } = await login()
 
         await request(app).post('/api/refresh').set('Cookie', cookie)
+        ageTokens(60)
 
         const replay = await request(app).post('/api/refresh').set('Cookie', cookie)
 
@@ -235,6 +241,33 @@ describe('POST /api/refresh', () => {
 
         const active = db.prepare('SELECT COUNT(*) AS n FROM refresh_tokens WHERE revoked = 0').get().n
         expect(active).toBe(0)
+    })
+
+    it('lets a second tab refresh with the same token moments later', async () => {
+        const { cookie } = await login()
+
+        const tabA = await request(app).post('/api/refresh').set('Cookie', cookie)
+        const tabB = await request(app).post('/api/refresh').set('Cookie', cookie)
+
+        expect(tabA.status).toBe(200)
+        expect(tabB.status).toBe(200)
+        expect(tabB.body.accessToken).toBeTruthy()
+
+        // Both tabs keep a working session afterwards.
+        const nextA = await request(app).post('/api/refresh').set('Cookie', refreshCookie(tabA))
+        const nextB = await request(app).post('/api/refresh').set('Cookie', refreshCookie(tabB))
+        expect(nextA.status).toBe(200)
+        expect(nextB.status).toBe(200)
+    })
+
+    it('does not bring back a session that was ended by logout', async () => {
+        const { cookie } = await login()
+
+        await request(app).post('/api/logout').set('Cookie', cookie)
+        const res = await request(app).post('/api/refresh').set('Cookie', cookie)
+
+        expect(res.status).toBe(401)
+        expect(db.prepare('SELECT COUNT(*) AS n FROM refresh_tokens WHERE revoked = 0').get().n).toBe(0)
     })
 
     it('ends the session of a user deleted after logging in', async () => {

@@ -23,7 +23,15 @@ const revokeAllForUser = (userId) =>
         `UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked = 0`
     ).run(userId)
 
+// True when the user got a fresh, still active token within the last `seconds`,
+// i.e. a rotation has just happened (another tab refreshed first).
+const rotatedWithin = (userId, seconds) =>
+    !!db.prepare(`
+        SELECT 1 FROM refresh_tokens
+        WHERE user_id = ? AND revoked = 0 AND created_at >= datetime('now', ?)
+    `).get(userId, `-${seconds} seconds`)
+
 const pruneExpired = () =>
     db.prepare(`DELETE FROM refresh_tokens WHERE expires_at < datetime('now')`).run()
 
-module.exports = { store, findByToken, revokeById, revokeAllForUser, pruneExpired }
+module.exports = { store, findByToken, revokeById, revokeAllForUser, rotatedWithin, pruneExpired }

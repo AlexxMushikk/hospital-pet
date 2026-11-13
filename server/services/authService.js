@@ -7,7 +7,7 @@ const { loginDto, registerDto } = require('../dto/authDto')
 const { db } = require('../db/database')
 const validate = require('../dto/validate')
 const { fail } = require('../errors')
-const { BCRYPT_ROUNDS } = require('../constants')
+const { BCRYPT_ROUNDS, REFRESH_REUSE_GRACE_SECONDS } = require('../constants')
 const logger = require('./logger')
 
 function accessPayload(user) {
@@ -82,7 +82,12 @@ function rotate(rawToken) {
         fail('errors.INVALID_REFRESH_TOKEN', 401)
     }
 
-    if (stored.revoked) {
+    // Two tabs share one cookie: when both refresh at once, the slower one presents a token
+    // the faster one has just replaced. That is a race, not theft, so it gets a session too.
+    const racedAnotherTab = stored.revoked
+        && refreshTokenRepo.rotatedWithin(stored.user_id, REFRESH_REUSE_GRACE_SECONDS)
+
+    if (stored.revoked && !racedAnotherTab) {
         refreshTokenRepo.revokeAllForUser(stored.user_id)
         logger.warn({ userId: stored.user_id }, 'Refresh token reuse detected — all sessions revoked')
         fail('errors.SESSION_REVOKED', 401)
@@ -93,6 +98,8 @@ function rotate(rawToken) {
         refreshTokenRepo.revokeById(stored.id)
         fail('errors.USER_NOT_FOUND', 401)
     }
+
+    if (racedAnotherTab) return issueSession(user)
 
     const exec = db.transaction(() => {
         refreshTokenRepo.revokeById(stored.id)
