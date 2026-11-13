@@ -3,7 +3,7 @@ import request from 'supertest'
 
 import createApp from '../app.js'
 import { db, resetDb } from './helpers/db.js'
-import { createPatient } from './helpers/fixtures.js'
+import { createPatient, createDoctor } from './helpers/fixtures.js'
 
 const app = createApp()
 
@@ -50,6 +50,20 @@ describe('POST /api/register', () => {
 
         expect(res.status).toBe(400)
         expect(db.prepare('SELECT COUNT(*) AS n FROM users').get().n).toBe(0)
+    })
+
+    it('lets the new account log in with the chosen password', async () => {
+        await request(app)
+            .post('/api/register')
+            .send({ email: 'new@test.com', password: 'testtest', full_name: 'New Patient' })
+
+        const res = await request(app)
+            .post('/api/login')
+            .send({ email: 'new@test.com', password: 'testtest' })
+
+        expect(res.status).toBe(200)
+        expect(res.body.user).toMatchObject({ role: 'patient', full_name: 'New Patient', doctor_id: null })
+        expect(res.body.user.patient_id).toEqual(expect.any(Number))
     })
 
     it('ignores a role sent by the client', async () => {
@@ -107,6 +121,17 @@ describe('POST /api/login', () => {
         expect(rows[0].user_id).toBe(patient.id)
         expect(rows[0].token_hash).not.toBe(raw)
         expect(rows[0].token_hash).toHaveLength(64)
+    })
+
+    it('tells the client which doctor profile belongs to a doctor account', async () => {
+        const doctor = createDoctor()
+
+        const res = await request(app)
+            .post('/api/login')
+            .send({ email: doctor.email, password: doctor.password })
+
+        expect(res.status).toBe(200)
+        expect(res.body.user).toMatchObject({ role: 'doctor', doctor_id: doctor.doctor_id })
     })
 
     it('rejects a wrong password with 401', async () => {
@@ -176,6 +201,16 @@ describe('POST /api/refresh', () => {
 
         const active = db.prepare('SELECT COUNT(*) AS n FROM refresh_tokens WHERE revoked = 0').get().n
         expect(active).toBe(0)
+    })
+
+    it('ends the session of a user deleted after logging in', async () => {
+        const { patient, cookie } = await login()
+        db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(patient.id)
+
+        const res = await request(app).post('/api/refresh').set('Cookie', cookie)
+
+        expect(res.status).toBe(401)
+        expect(res.body.code).toBe('errors.USER_NOT_FOUND')
     })
 
     it('rejects a request with no cookie', async () => {

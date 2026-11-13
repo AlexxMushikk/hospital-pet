@@ -29,12 +29,25 @@ describe('GET /api/admin/stats', () => {
         const res = await request(app).get('/api/admin/stats').set(asAdmin())
 
         expect(res.status).toBe(200)
-        expect(res.body).toMatchObject({
+        expect(res.body).toEqual({
             totalAppointments: 2,
             activeDoctors:     1,
             totalPatients:     1,
+            totalRevenue:      200,
         })
-        expect(typeof res.body.totalRevenue).toBe('number')
+    })
+
+    it('earns revenue only from completed visits', async () => {
+        const doctor  = createDoctor({ price: 150 })
+        const patient = createPatient()
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '09:00', status: 'Completed' })
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '10:00', status: 'Completed' })
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '11:00', status: 'Scheduled' })
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '12:00', status: 'Cancelled' })
+
+        const res = await request(app).get('/api/admin/stats').set(asAdmin())
+
+        expect(res.body.totalRevenue).toBe(300)
     })
 
     it('does not count a soft-deleted doctor as active', async () => {
@@ -58,15 +71,24 @@ describe('GET /api/admin/stats', () => {
 })
 
 describe('GET /api/admin/recent-activity', () => {
-    it('returns a list', async () => {
+    it('returns the five newest visits with both names joined in', async () => {
         const doctor  = createDoctor()
         const patient = createPatient()
-        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id })
+        const times   = ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30']
+        const ids     = times.map(time =>
+            createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time })
+        )
 
         const res = await request(app).get('/api/admin/recent-activity').set(asAdmin())
 
         expect(res.status).toBe(200)
-        expect(Array.isArray(res.body)).toBe(true)
+        expect(res.body.map(a => a.id)).toEqual(ids.slice(1).reverse())
+        expect(res.body[0]).toMatchObject({
+            date:         '2030-01-01',
+            patient_name: patient.fullName,
+            doctor_name:  doctor.fullName,
+            status:       'Scheduled',
+        })
     })
 
     it('returns an empty list when nothing happened', async () => {
@@ -553,6 +575,18 @@ describe('DELETE /api/admin/doctors/:id', () => {
         expect(db.prepare('SELECT status FROM appointments WHERE id = ?').get(id).status).toBe('Cancelled')
     })
 
+    it('keeps past completed visits as history', async () => {
+        const doctor  = createDoctor()
+        const patient = createPatient()
+        const id      = createAppointment({
+            doctorId: doctor.doctor_id, patientId: patient.patient_id, date: '2020-01-01', status: 'Completed',
+        })
+
+        await request(app).delete(`/api/admin/doctors/${doctor.doctor_id}`).set(asAdmin())
+
+        expect(db.prepare('SELECT status FROM appointments WHERE id = ?').get(id).status).toBe('Completed')
+    })
+
     it('revokes the refresh tokens of that doctor', async () => {
         const doctor = createDoctor()
         await request(app).post('/api/login').send({ email: doctor.email, password: doctor.password })
@@ -639,6 +673,18 @@ describe('GET /api/stats/public', () => {
             doctorsCount:         2,
             specializationsCount: 2,
         })
+    })
+
+    it('counts only completed visits as served patients', async () => {
+        const doctor  = createDoctor()
+        const patient = createPatient()
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '09:00', status: 'Completed' })
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '10:00', status: 'Scheduled' })
+        createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id, time: '11:00', status: 'Cancelled' })
+
+        const res = await request(app).get('/api/stats/public')
+
+        expect(res.body.completedAppointments).toBe(1)
     })
 
     it('does not count soft-deleted doctors', async () => {

@@ -17,10 +17,6 @@ describe('getTodayStr', () => {
 
         offsetSpy.mockRestore()
     })
-
-    it('always returns the YYYY-MM-DD shape the API expects', () => {
-        expect(getTodayStr()).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-    })
 })
 
 describe('formatDate', () => {

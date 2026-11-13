@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import request from 'supertest'
 
 import createApp from '../app.js'
@@ -79,13 +79,19 @@ describe('GET /api/doctors', () => {
         expect(res.status).toBe(400)
     })
 
-    it('computes experience from the career start date', async () => {
-        const res = await request(app).get('/api/doctors').query({ name: 'Anna' })
+    it('computes experience in whole years and months from the career start date', async () => {
+        createDoctor({ email: 'exp@test.com', fullName: 'Eva Expert', careerStart: '2015-01-20' })
+        vi.useFakeTimers({ toFake: ['Date'] })
+        vi.setSystemTime(new Date('2030-03-15T12:00:00'))
 
-        expect(res.body.doctors[0].experience).toMatchObject({
-            years:  expect.any(Number),
-            months: expect.any(Number),
-        })
+        try {
+            const res = await request(app).get('/api/doctors').query({ name: 'Eva' })
+
+            // 15 years, and February is not complete yet because the 20th has not come.
+            expect(res.body.doctors[0].experience).toEqual({ years: 15, months: 1 })
+        } finally {
+            vi.useRealTimers()
+        }
     })
 
     it('filters by minimum experience', async () => {
@@ -125,6 +131,15 @@ describe('GET /api/doctors/:id', () => {
 
     it('404s an unknown doctor', async () => {
         const res = await request(app).get('/api/doctors/9999')
+
+        expect(res.status).toBe(404)
+    })
+
+    it('404s a soft-deleted doctor so an old link cannot lead to booking', async () => {
+        const doctor = createDoctor()
+        db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(doctor.id)
+
+        const res = await request(app).get(`/api/doctors/${doctor.doctor_id}`)
 
         expect(res.status).toBe(404)
     })
