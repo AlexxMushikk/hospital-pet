@@ -136,7 +136,8 @@
     "timeFormat": "Format godziny: GG:MM",
     "priceNegative": "Cena nie może być ujemna",
     "shiftStartAfterEnd": "Początek zmiany musi być wcześniejszy niż koniec",
-    "shiftGrid": "Zmiana musi zaczynać się i kończyć co {{minutes}} minut"
+    "shiftGrid": "Zmiana musi zaczynać się i kończyć co {{minutes}} minut",
+    "invalid": "Nieprawidłowa wartość: {{field}}"
   },
   "auth": {
     "loginTitle": "Witamy ponownie",
@@ -387,7 +388,12 @@
     "NOT_FOUND": "Nie znaleziono rekordu",
     "DATE_REQUIRED": "Data jest wymagana",
     "INVALID_TABLE": "Nieznana tabela",
-    "UNKNOWN_SPECIALIZATION": "Ta specjalizacja jest obecnie niedostępna"
+    "UNKNOWN_SPECIALIZATION": "Ta specjalizacja jest obecnie niedostępna",
+    "ACCESS_TOKEN_REQUIRED": "Zaloguj się, aby kontynuować",
+    "REFRESH_TOKEN_REQUIRED": "Sesja wygasła. Zaloguj się ponownie",
+    "INVALID_REFRESH_TOKEN": "Sesja wygasła. Zaloguj się ponownie",
+    "INVALID_OR_EXPIRED_TOKEN": "Sesja wygasła. Zaloguj się ponownie",
+    "USER_NOT_FOUND": "To konto już nie istnieje"
   },
   "datepicker": {
     "placeholder": "Wybierz datę",

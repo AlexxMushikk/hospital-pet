@@ -5,7 +5,8 @@ const patientRepo     = require('../repositories/patientRepo')
 const userRepo        = require('../repositories/userRepo')
 const refreshTokenRepo = require('../repositories/refreshTokenRepo')
 const { db } = require('../db/database')
-const { buildError } = require('../errors')
+const validate = require('../dto/validate')
+const { fail } = require('../errors')
 const { SLOT_STEP_MINUTES } = require('../constants')
 const { assertSlotExists, assertNotInPast } = require('./appointmentService')
 const {
@@ -15,25 +16,9 @@ const {
     updateAppointmentByAdminDto,
 } = require('../dto/adminDto')
 
-function validate(dto, data) {
-    const result = dto.safeParse(data)
-    if (!result.success) {
-        const err = new Error(result.error.issues[0].message)
-        err.status = 400
-        throw err
-    }
-    return result.data
-}
-
-function fail(message, status) {
-    const err = new Error(message)
-    err.status = status
-    throw err
-}
-
 function assertEmailFree(email, userId) {
     const owner = userRepo.findIdByEmail(email)
-    if (owner !== null && owner !== userId) fail('Email already exists', 400)
+    if (owner !== null && owner !== userId) fail('errors.EMAIL_EXISTS', 400)
 }
 
 function assertValidShift(doctor, data) {
@@ -41,23 +26,19 @@ function assertValidShift(doctor, data) {
 
     for (const time of [data.work_start, data.work_end]) {
         if (time !== undefined && Number(time.slice(3)) % SLOT_STEP_MINUTES !== 0) {
-            throw buildError('validation.shiftGrid', 400, { minutes: SLOT_STEP_MINUTES })
+            fail('validation.shiftGrid', 400, { minutes: SLOT_STEP_MINUTES })
         }
     }
 
     const start = data.work_start ?? doctor.work_start
     const end   = data.work_end   ?? doctor.work_end
-    if (start >= end) throw buildError('validation.shiftStartAfterEnd', 400)
+    if (start >= end) fail('validation.shiftStartAfterEnd', 400)
 }
 
 const ALLOWED_TABLES = ['doctors', 'patients', 'appointments']
 
 function assertTable(table) {
-    if (!ALLOWED_TABLES.includes(table)) {
-        const err = new Error('Invalid table')
-        err.status = 400
-        throw err
-    }
+    if (!ALLOWED_TABLES.includes(table)) fail('errors.INVALID_TABLE', 400)
 }
 
 function getStats() {
@@ -105,11 +86,7 @@ function getRecord(table, id) {
         appointments: () => appointmentRepo.findById(id),
     }
     const record = getters[table]()
-    if (!record) {
-        const err = new Error('Not found')
-        err.status = 404
-        throw err
-    }
+    if (!record) fail('errors.NOT_FOUND', 404)
     return record
 }
 
@@ -126,11 +103,11 @@ function updateRecord(table, id, body) {
     const execute = db.transaction(() => {
         if (table === 'doctors') {
             const doctor = doctorRepo.findById(id)
-            if (!doctor) fail('Doctor not found', 404)
+            if (!doctor) fail('errors.DOCTOR_NOT_FOUND', 404)
 
             if (data.specialization !== undefined
                 && doctorRepo.findSpecializationId(data.specialization) === null) {
-                fail('Unknown specialization', 400)
+                fail('errors.UNKNOWN_SPECIALIZATION', 400)
             }
 
             if (data.email) assertEmailFree(data.email, doctor.user_id)
@@ -153,7 +130,7 @@ function updateRecord(table, id, body) {
 
         if (table === 'patients') {
             const patient = adminRepo.getPatientRecord(id)
-            if (!patient) fail('Patient not found', 404)
+            if (!patient) fail('errors.PATIENT_NOT_FOUND', 404)
 
             if (data.email) assertEmailFree(data.email, patient.user_id)
 
@@ -171,11 +148,7 @@ function updateRecord(table, id, body) {
 
         if (table === 'appointments') {
             const current = appointmentRepo.findById(id)
-            if (!current) {
-                const err = new Error('Appointment not found')
-                err.status = 404
-                throw err
-            }
+            if (!current) fail('errors.APPOINTMENT_NOT_FOUND', 404)
 
             const movingSlot   = data.appointment_date !== undefined
                 || data.appointment_time !== undefined
@@ -196,7 +169,7 @@ function updateRecord(table, id, body) {
                 const conflict = appointmentRepo.findConflict(
                     current.doctor_id, newDate, newTime, id
                 )
-                if (conflict) throw buildError('errors.SLOT_TAKEN', 409)
+                if (conflict) fail('errors.SLOT_TAKEN', 409)
             }
 
             appointmentRepo.update(id, data)
@@ -211,11 +184,7 @@ function deleteRecord(table, id) {
 
     if (table === 'doctors') {
         const doctor = doctorRepo.findUserId(id)
-        if (!doctor) {
-            const err = new Error('Doctor not found')
-            err.status = 404
-            throw err
-        }
+        if (!doctor) fail('errors.DOCTOR_NOT_FOUND', 404)
 
         const execute = db.transaction(() => {
             appointmentRepo.cancelScheduledByDoctor(id)
@@ -228,17 +197,13 @@ function deleteRecord(table, id) {
 
     if (table === 'patients') {
         const patient = adminRepo.getPatientRecord(id)
-        if (!patient) {
-            const err = new Error('Patient not found')
-            err.status = 404
-            throw err
-        }
+        if (!patient) fail('errors.PATIENT_NOT_FOUND', 404)
 
-        if (patient.role === 'admin') throw buildError('errors.ADMIN_DELETE_FORBIDDEN', 409)
+        if (patient.role === 'admin') fail('errors.ADMIN_DELETE_FORBIDDEN', 409)
 
         // Doctors also own a patients row (for their name), but deleting one here would skip
         // cancelling their schedule. They are removed through the doctors table instead.
-        if (patient.role !== 'patient') throw buildError('errors.PATIENT_NOT_FOUND', 404)
+        if (patient.role !== 'patient') fail('errors.PATIENT_NOT_FOUND', 404)
 
         const execute = db.transaction(() => {
             appointmentRepo.cancelScheduledByPatient(id)
@@ -251,11 +216,7 @@ function deleteRecord(table, id) {
 
     if (table === 'appointments') {
         const { changes } = appointmentRepo.remove(id)
-        if (changes === 0) {
-            const err = new Error('Appointment not found')
-            err.status = 404
-            throw err
-        }
+        if (changes === 0) fail('errors.APPOINTMENT_NOT_FOUND', 404)
         return
     }
 }

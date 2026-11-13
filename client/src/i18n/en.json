@@ -124,7 +124,8 @@
     "timeFormat": "Time format: HH:MM",
     "priceNegative": "Price cannot be negative",
     "shiftStartAfterEnd": "Shift start must be earlier than shift end",
-    "shiftGrid": "Shift must start and end on a {{minutes}} minute boundary"
+    "shiftGrid": "Shift must start and end on a {{minutes}} minute boundary",
+    "invalid": "Invalid value: {{field}}"
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -373,7 +374,12 @@
     "NOT_FOUND": "Record not found",
     "DATE_REQUIRED": "A date is required",
     "INVALID_TABLE": "Unknown table",
-    "UNKNOWN_SPECIALIZATION": "This specialization is currently unavailable"
+    "UNKNOWN_SPECIALIZATION": "This specialization is currently unavailable",
+    "ACCESS_TOKEN_REQUIRED": "Please sign in to continue",
+    "REFRESH_TOKEN_REQUIRED": "Your session has ended. Please sign in again",
+    "INVALID_REFRESH_TOKEN": "Your session has ended. Please sign in again",
+    "INVALID_OR_EXPIRED_TOKEN": "Your session has ended. Please sign in again",
+    "USER_NOT_FOUND": "This account no longer exists"
   },
   "datepicker": {
     "placeholder": "Pick a date",
