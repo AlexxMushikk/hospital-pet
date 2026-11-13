@@ -257,6 +257,45 @@ describe('PUT /api/admin/doctors/:id', () => {
         const res = await put({ work_start: '18:00', work_end: '09:00' })
 
         expect(res.status).toBe(400)
+        expect(res.body.code).toBe('validation.shiftStartAfterEnd')
+    })
+
+    describe('one shift bound at a time', () => {
+        const hours = () =>
+            db.prepare('SELECT work_start, work_end FROM doctors WHERE id = ?').get(doctor.doctor_id)
+
+        it('rejects an end that falls before the current start', async () => {
+            const res = await put({ work_end: '07:00' })
+
+            expect(res.status).toBe(400)
+            expect(res.body.code).toBe('validation.shiftStartAfterEnd')
+            expect(hours()).toEqual({ work_start: '08:00', work_end: '18:00' })
+        })
+
+        it('rejects a start that falls after the current end', async () => {
+            const res = await put({ work_start: '19:00' })
+
+            expect(res.status).toBe(400)
+            expect(hours()).toEqual({ work_start: '08:00', work_end: '18:00' })
+        })
+
+        it('accepts a start that still fits before the current end', async () => {
+            const res = await put({ work_start: '07:00' })
+
+            expect(res.status).toBe(200)
+            expect(hours()).toEqual({ work_start: '07:00', work_end: '18:00' })
+        })
+    })
+
+    it('rejects shift bounds off the 30 minute grid', async () => {
+        const start = await put({ work_start: '08:15' })
+        const end   = await put({ work_end: '17:45' })
+
+        expect(start.status).toBe(400)
+        expect(start.body.code).toBe('validation.shiftGrid')
+        expect(end.status).toBe(400)
+        expect(db.prepare('SELECT work_start, work_end FROM doctors WHERE id = ?').get(doctor.doctor_id))
+            .toEqual({ work_start: '08:00', work_end: '18:00' })
     })
 
     it('moves the doctor to another specialization', async () => {
