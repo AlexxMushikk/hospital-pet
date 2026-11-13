@@ -10,7 +10,7 @@ const { doctorQueryDto, updateDoctorDto, createDoctorDto } = require('../dto/doc
 const { SLOT_STEP_MINUTES, BCRYPT_ROUNDS } = require('../constants')
 
 const validate = require('../dto/validate')
-const { isPast } = require('./clinicTime')
+const { isPast, clinicNow } = require('./clinicTime')
 const { fail } = require('../errors')
 
 function calculateExperience(startDate) {
@@ -29,12 +29,20 @@ function calculateExperience(startDate) {
     return { years, months }
 }
 
+// Latest career start that still gives `years` full years of experience today,
+// e.g. 20 years on 2030-03-15 → 2010-03-15. Zero-padded, so it compares as a string.
+function careerStartCutoff(years) {
+    const today = clinicNow().slice(0, 10)
+    return `${String(Number(today.slice(0, 4)) - years).padStart(4, '0')}${today.slice(4)}`
+}
+
 function getDoctors(query) {
     const { page, limit, specialization, gender, name, minExperience, sort, minPrice, maxPrice, excludeDoctorId } = validate(doctorQueryDto, query)
     const offset = (page - 1) * limit
 
     const { doctors, total } = doctorRepo.findAll({
-        specialization, gender, name, minExperience, sort, minPrice, maxPrice, excludeDoctorId, limit, offset,
+        specialization, gender, name, sort, minPrice, maxPrice, excludeDoctorId, limit, offset,
+        careerStartedBy: minExperience ? careerStartCutoff(minExperience) : undefined,
     })
 
     return {
