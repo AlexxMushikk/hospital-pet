@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getDoctorSlots, createAppointment, getDoctor } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
-import { getTodayStr } from '../utils/date'
+import { getTodayStr, formatDate } from '../utils/date'
 import DatePicker from '../components/DatePicker'
 import { logger } from '../utils/logger'
-import { SLOT_STEP_MINUTES, VALIDATION, VALIDATION_MSG } from '../constants'
+import { SLOT_STEP_MINUTES, VALIDATION } from '../constants'
+import { apiErrorMessage } from '../utils/apiError'
 
 export default function Booking() {
     const navigate                         = useNavigate()
     const { user }                         = useAuth()
     const { modal, showModal, closeModal } = useModal()
+    const { t }                            = useTranslation()
 
     const [searchParams]              = useSearchParams()
     const doctorId                    = searchParams.get('doctorId')
-    const doctorName                  = searchParams.get('name') || 'Врач'
+    const doctorName                  = searchParams.get('name') || t('common.doctor')
 
     const [date,         setDate]         = useState(getTodayStr())
     const [slots,        setSlots]        = useState([])
@@ -61,11 +64,11 @@ export default function Booking() {
         e.preventDefault()
         if (!selectedTime) return
         if (symptoms.length > VALIDATION.SYMPTOMS_MAX) {
-            showModal('Ошибка', VALIDATION_MSG.SYMPTOMS_MAX)
+            showModal(t('common.error'), t('validation.symptomsMax', { count: VALIDATION.SYMPTOMS_MAX }))
             return
         }
         if (user.doctor_id && parseInt(user.doctor_id, 10) === parseInt(doctorId, 10)) {
-            showModal('Ошибка', 'Вы не можете записаться к себе.')
+            showModal(t('common.error'), t('booking.selfBookError'))
             return
         }
 
@@ -81,12 +84,12 @@ export default function Booking() {
 
             await createAppointment(payload)
             showModal(
-                'Запись подтверждена!',
-                `Вы записаны к ${doctorName} на ${date} в ${selectedTime}.`,
+                t('booking.confirmedTitle'),
+                t('booking.confirmedText', { doctor: doctorName, date: formatDate(date), time: selectedTime }),
                 () => navigate('/appointments')
             )
         } catch (err) {
-            showModal('Ошибка', err.response?.data?.error || 'Слот уже занят. Выберите другое время.')
+            showModal(t('common.error'), apiErrorMessage(err))
         } finally {
             setSubmitting(false)
         }
@@ -95,18 +98,18 @@ export default function Booking() {
     return (
         <div className="auth-container">
             <div className="auth-card auth-card--md">
-                <h2 className="booking-title">Запись к врачу</h2>
+                <h2 className="booking-title">{t('booking.title')}</h2>
 
                 <div className="booking-summary">
                     <p className="booking-to">
-                        Запись к: <strong>{decodeURIComponent(doctorName)}</strong>
+                        {t('booking.withDoctor')} <strong>{decodeURIComponent(doctorName)}</strong>
                     </p>
                     <p className="booking-patient">
-                        Пациент: {user?.full_name}
+                        {t('booking.patient')} {user?.full_name}
                     </p>
                     {doctorPrice && (
                         <p className="booking-price">
-                            Стоимость визита: {doctorPrice} PLN
+                            {t('booking.price', { price: doctorPrice })}
                         </p>
                     )}
                 </div>
@@ -114,7 +117,7 @@ export default function Booking() {
                 <form onSubmit={handleSubmit} className="booking-form">
 
                     <div className="form-group">
-                        <label>1. Выберите дату</label>
+                        <label>{t('booking.stepDate')}</label>
                         <DatePicker
                             value={date}
                             onChange={setDate}
@@ -124,21 +127,21 @@ export default function Booking() {
 
                     <div className="time-section">
                         <label className="time-label">
-                            2. Выберите время (слоты по {SLOT_STEP_MINUTES} минут)
+                            {t('booking.stepTime', { minutes: SLOT_STEP_MINUTES })}
                         </label>
 
                         {slotsLoading && (
-                            <p className="text-muted">Загрузка слотов...</p>
+                            <p className="text-muted">{t('booking.loadingSlots')}</p>
                         )}
 
                         {!slotsLoading && slotsError && (
                             <p className="text-danger">
-                                Не удалось загрузить слоты. Попробуйте обновить страницу.
+                                {t('booking.slotsError')}
                             </p>
                         )}
 
                         {!slotsLoading && !slotsError && slots.length === 0 && (
-                            <p className="text-muted">Нет доступных слотов на эту дату.</p>
+                            <p className="text-muted">{t('booking.noSlots')}</p>
                         )}
 
                         {!slotsLoading && !slotsError && slots.length > 0 && (
@@ -161,20 +164,20 @@ export default function Booking() {
                                     })}
                                 </div>
                                 <p className="slots-legend">
-                                    <span className="dot-available">●</span> Доступно |{' '}
-                                    <span className="dot-booked">●</span> Занято
+                                    <span className="dot-available">●</span> {t('booking.legendAvailable')} |{' '}
+                                    <span className="dot-booked">●</span> {t('booking.legendBooked')}
                                 </p>
                             </>
                         )}
                     </div>
 
                     <div className="form-group form-group--spaced">
-                        <label>3. Симптомы / Причина визита (необязательно)</label>
+                        <label>{t('booking.stepSymptoms')}</label>
                         <textarea
                             value={symptoms}
                             onChange={e => setSymptoms(e.target.value)}
                             maxLength={VALIDATION.SYMPTOMS_MAX}
-                            placeholder="Кратко опишите симптомы..."
+                            placeholder={t('booking.symptomsPlaceholder')}
                             className="appt-textarea"
                         />
                         <div className={`char-counter ${symptoms.length > 220 ? 'char-counter--warn' : ''}`}>
@@ -185,11 +188,11 @@ export default function Booking() {
                     <div className="form-actions form-actions--mt">
                         {selectedTime && (
                             <button type="submit" className="btn btn-solid w-full" disabled={submitting}>
-                                {submitting ? 'Отправка...' : `Подтвердить запись на ${selectedTime}`}
+                                {submitting ? t('booking.submitting') : t('booking.submit', { time: selectedTime })}
                             </button>
                         )}
                         <button type="button" className="btn btn-outline w-full" onClick={() => navigate(-1)}>
-                            Назад
+                            {t('common.back')}
                         </button>
                     </div>
 

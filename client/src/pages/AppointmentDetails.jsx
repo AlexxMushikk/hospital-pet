@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getAppointment, updateAppointment } from '../api/index'
 import Modal from '../components/Modal'
 import { useModal } from '../hooks/useModal'
 import { statusLabel, statusClass } from '../utils/status'
 import { formatDateTime } from '../utils/date'
-import { VALIDATION, VALIDATION_MSG } from '../constants'
+import { VALIDATION } from '../constants'
+import { apiErrorMessage } from '../utils/apiError'
 
 export default function AppointmentDetails() {
     const { id }   = useParams()
     const navigate = useNavigate()
     const { user, view } = useAuth()
     const { modal, showModal, closeModal } = useModal()
+    const { t } = useTranslation()
 
     const [app,          setApp]          = useState(null)
     const [symptoms,     setSymptoms]     = useState('')
@@ -30,25 +33,25 @@ export default function AppointmentDetails() {
                 setSymptoms(res.data.symptoms      || '')
                 setDoctorNotes(res.data.doctor_notes || '')
             } catch {
-                showModal('Ошибка', 'Не удалось загрузить данные визита.', () => navigate('/appointments'))
+                showModal(t('common.error'), t('appointmentDetails.loadError'), () => navigate('/appointments'))
             } finally {
                 setLoading(false)
             }
         }
         fetchAppointment()
-    }, [id, navigate, showModal])
+    }, [id, navigate, showModal, t])
 
     const handleFinish = async () => {
         if (!doctorNotes.trim()) {
-            showModal('Обязательное поле', 'Заполните медицинские заметки перед завершением визита.')
+            showModal(t('appointmentDetails.notesRequiredTitle'), t('appointmentDetails.notesRequiredText'))
             return
         }
         setSaving(true)
         try {
             await updateAppointment(id, { doctor_notes: doctorNotes, status: 'Completed' })
-            showModal('Готово', 'Визит отмечен как завершённый.', () => navigate('/doctor/schedule'))
-        } catch {
-            showModal('Ошибка', 'Не удалось завершить визит.')
+            showModal(t('common.done'), t('appointmentDetails.completedText'), () => navigate('/doctor/schedule'))
+        } catch (err) {
+            showModal(t('common.error'), apiErrorMessage(err, 'appointmentDetails.completeError'))
         } finally {
             setSaving(false)
         }
@@ -56,32 +59,32 @@ export default function AppointmentDetails() {
 
     const handleCancel = () => {
         showModal(
-            'Подтверждение',
-            'Вы уверены что хотите отменить этот визит?',
+            t('common.confirmation'),
+            t('appointmentDetails.cancelConfirmText'),
             async () => {
                 try {
                     await updateAppointment(id, { status: 'Cancelled' })
                     setApp(prev => ({ ...prev, status: 'Cancelled' }))
-                } catch {
-                    showModal('Ошибка', 'Не удалось отменить визит.')
+                } catch (err) {
+                    showModal(t('common.error'), apiErrorMessage(err, 'appointmentDetails.cancelError'))
                 }
             },
-            'Отмена',
+            t('common.cancel'),
             'danger'
         )
     }
 
     const handleSaveSymptoms = async () => {
         if (symptoms.length > VALIDATION.SYMPTOMS_MAX) {
-            showModal('Ошибка', VALIDATION_MSG.SYMPTOMS_MAX)
+            showModal(t('common.error'), t('validation.symptomsMax', { count: VALIDATION.SYMPTOMS_MAX }))
             return
         }
         setSaving(true)
         try {
             await updateAppointment(id, { symptoms })
-            showModal('Сохранено', 'Симптомы успешно обновлены.')
-        } catch {
-            showModal('Ошибка', 'Не удалось сохранить симптомы.')
+            showModal(t('common.saved'), t('appointmentDetails.symptomsSavedText'))
+        } catch (err) {
+            showModal(t('common.error'), apiErrorMessage(err, 'appointmentDetails.symptomsSaveError'))
         } finally {
             setSaving(false)
         }
@@ -89,16 +92,16 @@ export default function AppointmentDetails() {
 
     const handleSaveNotes = async () => {
         if (!doctorNotes.trim()) {
-            showModal('Ошибка', 'Заметки не могут быть пустыми.')
+            showModal(t('common.error'), t('appointmentDetails.notesEmpty'))
             return
         }
         setSaving(true)
         try {
             await updateAppointment(id, { doctor_notes: doctorNotes })
-            showModal('Сохранено', 'Медицинские заметки обновлены.')
+            showModal(t('common.saved'), t('appointmentDetails.notesSavedText'))
             setNotesEditing(false)
-        } catch {
-            showModal('Ошибка', 'Не удалось сохранить заметки.')
+        } catch (err) {
+            showModal(t('common.error'), apiErrorMessage(err, 'appointmentDetails.notesSaveError'))
         } finally {
             setSaving(false)
         }
@@ -129,10 +132,10 @@ export default function AppointmentDetails() {
                 <div className="appt-header">
                     <div>
                         <h2 className="doctor-name">
-                            {isDocView ? `Пациент: ${app.patient_name}` : app.doctor_name}
+                            {isDocView ? t('appointmentDetails.patientPrefix', { name: app.patient_name }) : app.doctor_name}
                         </h2>
                         <p className="appt-subtitle">
-                            {isDocView ? 'Медицинская карта' : app.doctor_spec}
+                            {isDocView ? t('appointmentDetails.medicalCard') : t(`spec.${app.doctor_spec}.label`, { defaultValue: app.doctor_spec })}
                         </p>
                         <p className="appt-datetime-lg">
                             {formatDateTime(app.appointment_date, app.appointment_time)}
@@ -144,12 +147,12 @@ export default function AppointmentDetails() {
                 <hr className="divider" />
 
                 <div className="form-group">
-                    <label className="label-bold">Симптомы / Причина визита</label>
+                    <label className="label-bold">{t('appointmentDetails.symptomsLabel')}</label>
                     <textarea
                         value={symptoms}
                         onChange={e => setSymptoms(e.target.value)}
                         maxLength={VALIDATION.SYMPTOMS_MAX}
-                        placeholder="Симптомы не указаны"
+                        placeholder={t('appointmentDetails.symptomsPlaceholder')}
                         disabled={isDocView || app.status !== 'Scheduled'}
                         className="appt-textarea"
                     />
@@ -161,12 +164,12 @@ export default function AppointmentDetails() {
                 </div>
 
                 <div className="form-group form-group--spaced">
-                    <label className="label-notes">Медицинские заметки врача</label>
+                    <label className="label-notes">{t('appointmentDetails.notesLabel')}</label>
                     <textarea
                         value={doctorNotes}
                         onChange={e => setDoctorNotes(e.target.value)}
                         disabled={!isDocView || (!notesEditing && app.status === 'Completed')}
-                        placeholder={isDocView ? 'Введите медицинские заметки...' : 'Заметки врача появятся после визита'}
+                        placeholder={isDocView ? t('appointmentDetails.notesPlaceholderDoctor') : t('appointmentDetails.notesPlaceholderPatient')}
                         className="appt-textarea appt-textarea--notes"
                     />
                 </div>
@@ -176,39 +179,39 @@ export default function AppointmentDetails() {
                     {isDocView && app.status === 'Scheduled' && (
                         <>
                             <button className="btn btn-solid" onClick={handleFinish} disabled={saving}>
-                                {saving ? '...' : 'Завершить визит'}
+                                {saving ? '...' : t('appointmentDetails.complete')}
                             </button>
-                            <button className="btn btn-outline" onClick={handleCancel}>Отменить визит</button>
-                            <button className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>Назад к расписанию</button>
+                            <button className="btn btn-outline" onClick={handleCancel}>{t('appointmentDetails.cancelVisit')}</button>
+                            <button className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>{t('appointmentDetails.backToSchedule')}</button>
                         </>
                     )}
 
                     {isDocView && app.status === 'Completed' && (
                         <>
                             {notesEditing
-                                ? <button className="btn btn-solid" onClick={handleSaveNotes} disabled={saving}>{saving ? '...' : 'Сохранить заметки'}</button>
-                                : <button className="btn btn-solid" onClick={() => setNotesEditing(true)}>Редактировать заметки</button>
+                                ? <button className="btn btn-solid" onClick={handleSaveNotes} disabled={saving}>{saving ? '...' : t('appointmentDetails.saveNotes')}</button>
+                                : <button className="btn btn-solid" onClick={() => setNotesEditing(true)}>{t('appointmentDetails.editNotes')}</button>
                             }
-                            <button className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>Назад к расписанию</button>
+                            <button className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>{t('appointmentDetails.backToSchedule')}</button>
                         </>
                     )}
 
                     {isDocView && app.status === 'Cancelled' && (
-                        <button className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>Назад</button>
+                        <button className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>{t('common.back')}</button>
                     )}
 
                     {!isDocView && app.status === 'Scheduled' && (
                         <>
                             <button className="btn btn-solid" onClick={handleSaveSymptoms} disabled={saving}>
-                                {saving ? '...' : 'Сохранить симптомы'}
+                                {saving ? '...' : t('appointmentDetails.saveSymptoms')}
                             </button>
-                            <button className="btn btn-outline" onClick={handleCancel}>Отменить визит</button>
-                            <button className="btn btn-outline" onClick={() => navigate('/appointments')}>Назад к списку</button>
+                            <button className="btn btn-outline" onClick={handleCancel}>{t('appointmentDetails.cancelVisit')}</button>
+                            <button className="btn btn-outline" onClick={() => navigate('/appointments')}>{t('appointmentDetails.backToList')}</button>
                         </>
                     )}
 
                     {!isDocView && app.status !== 'Scheduled' && (
-                        <button className="btn btn-outline w-full" onClick={() => navigate('/appointments')}>Назад к моим визитам</button>
+                        <button className="btn btn-outline w-full" onClick={() => navigate('/appointments')}>{t('appointmentDetails.backToMyAppointments')}</button>
                     )}
 
                 </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getPatientAppointments } from '../api/index'
 import { statusLabel, statusClass } from '../utils/status'
@@ -8,6 +9,7 @@ import { formatDate } from '../utils/date'
 export default function Appointments() {
     const { user }   = useAuth()
     const navigate   = useNavigate()
+    const { t }      = useTranslation()
 
     const [appointments, setAppointments] = useState([])
     const [loading,      setLoading]      = useState(true)
@@ -20,7 +22,7 @@ export default function Appointments() {
                 const res = await getPatientAppointments(user.patient_id)
                 setAppointments(res.data)
             } catch {
-                setError('Не удалось загрузить список визитов.')
+                setError('appointments.loadError')
             } finally {
                 setLoading(false)
             }
@@ -31,7 +33,7 @@ export default function Appointments() {
     if (loading) {
         return (
             <main className="container">
-                <section className="page-title"><h2>Мои визиты</h2></section>
+                <section className="page-title"><h2>{t('appointments.title')}</h2></section>
                 <div className="doctors-grid">
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="doctor-card">
@@ -50,18 +52,18 @@ export default function Appointments() {
     return (
         <main className="container">
             <section className="page-title">
-                <h2>Мои визиты</h2>
-                <p>История и предстоящие записи к врачам.</p>
+                <h2>{t('appointments.title')}</h2>
+                <p>{t('appointments.subtitle')}</p>
             </section>
 
             {error && (
-                <p className="text-error">{error}</p>
+                <p className="text-error">{t(error)}</p>
             )}
 
             {!error && appointments.length === 0 && (
                 <div className="empty-state">
-                    <p>У вас пока нет записей к врачам.</p>
-                    <Link to="/doctors" className="btn btn-solid">Записаться к врачу</Link>
+                    <p>{t('appointments.empty')}</p>
+                    <Link to="/doctors" className="btn btn-solid">{t('appointments.emptyCta')}</Link>
                 </div>
             )}
 
@@ -78,18 +80,18 @@ export default function Appointments() {
                                         {statusLabel(app.status)}
                                     </span>
                                     <span className="doctor-name appt-name">
-                                        {app.doctor_name || 'Врач'}
+                                        {app.doctor_name || t('common.doctor')}
                                     </span>
-                                    <span className="appt-spec">{app.doctor_spec}</span>
+                                    <span className="appt-spec">{t(`spec.${app.doctor_spec}.label`, { defaultValue: app.doctor_spec })}</span>
                                     <p className="appt-datetime">
-                                        {formatDate(app.appointment_date)} в {app.appointment_time}
+                                        {t('appointments.dateAt', { date: formatDate(app.appointment_date), time: app.appointment_time })}
                                     </p>
                                 </div>
                                 <button
                                     className="btn btn-solid btn-sm"
                                     onClick={() => navigate(`/appointments/${app.id}`)}
                                 >
-                                    Подробнее
+                                    {t('common.details')}
                                 </button>
                             </div>
                         </div>
