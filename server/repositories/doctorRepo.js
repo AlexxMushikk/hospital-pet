@@ -104,12 +104,19 @@ const create = (userId, { specialization, careerStartDate, price, gender }) =>
         VALUES (?, (SELECT id FROM specializations WHERE name = ?), ?, ?, ?)
     `).run(userId, specialization, careerStartDate, price, gender).lastInsertRowid
 
-const update = (id, { bio, education, languages, image_url }) => {
-    db.prepare(
-        `UPDATE doctors SET bio = ?, education = ?, image_url = ? WHERE id = ?`
-    ).run(bio, education, image_url, id)
+const update = db.transaction((id, fields) => {
+    const { languages, ...rest } = fields
+
+    const allowed = ['bio', 'education', 'image_url']
+    const keys    = allowed.filter(k => rest[k] !== undefined)
+
+    if (keys.length > 0) {
+        db.prepare(`UPDATE doctors SET ${keys.map(k => `${k} = ?`).join(', ')} WHERE id = ?`)
+            .run(...keys.map(k => rest[k]), id)
+    }
+
     if (languages !== undefined) setLanguages(id, languages)
-}
+})
 
 const updateByAdmin = db.transaction((id, fields) => {
     const { languages, specialization, ...rest } = fields

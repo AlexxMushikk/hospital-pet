@@ -208,6 +208,47 @@ describe('GET /api/doctors/:id/slots', () => {
     })
 })
 
+describe('PUT /api/doctors/:id', () => {
+    let doctor
+
+    beforeEach(() => {
+        doctor = createDoctor()
+        db.prepare(`UPDATE doctors SET bio = 'Old bio', education = 'Old edu', image_url = '/old.jpg' WHERE id = ?`)
+            .run(doctor.doctor_id)
+    })
+
+    const profile = () => db
+        .prepare('SELECT bio, education, image_url FROM doctors WHERE id = ?')
+        .get(doctor.doctor_id)
+
+    it('updates only the fields that were sent', async () => {
+        const res = await request(app)
+            .put(`/api/doctors/${doctor.doctor_id}`).set(authHeader(doctor))
+            .send({ bio: 'New bio' })
+
+        expect(res.status).toBe(200)
+        expect(profile()).toEqual({ bio: 'New bio', education: 'Old edu', image_url: '/old.jpg' })
+    })
+
+    it('keeps the profile intact when only languages change', async () => {
+        const res = await request(app)
+            .put(`/api/doctors/${doctor.doctor_id}`).set(authHeader(doctor))
+            .send({ languages: 'English' })
+
+        expect(res.status).toBe(200)
+        expect(profile()).toEqual({ bio: 'Old bio', education: 'Old edu', image_url: '/old.jpg' })
+    })
+
+    it('clears a field when an empty string is sent explicitly', async () => {
+        const res = await request(app)
+            .put(`/api/doctors/${doctor.doctor_id}`).set(authHeader(doctor))
+            .send({ education: '' })
+
+        expect(res.status).toBe(200)
+        expect(profile()).toEqual({ bio: 'Old bio', education: '', image_url: '/old.jpg' })
+    })
+})
+
 describe('POST /api/doctors', () => {
     const payload = {
         email:             'newdoc@test.com',
