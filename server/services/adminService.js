@@ -217,11 +217,11 @@ function deleteRecord(table, id) {
             throw err
         }
 
-        if (patient.role === 'admin') {
-            const err = new Error('Нельзя удалить системного администратора')
-            err.status = 409
-            throw err
-        }
+        if (patient.role === 'admin') throw buildError('errors.ADMIN_DELETE_FORBIDDEN', 409)
+
+        // Doctors also own a patients row (for their name), but deleting one here would skip
+        // cancelling their schedule. They are removed through the doctors table instead.
+        if (patient.role !== 'patient') throw buildError('errors.PATIENT_NOT_FOUND', 404)
 
         const execute = db.transaction(() => {
             appointmentRepo.cancelScheduledByPatient(id)

@@ -86,6 +86,7 @@ describe('admin routes', () => {
         const res = await request(app).delete(`/api/admin/patients/${admin.patient_id}`).set(authHeader(admin))
 
         expect(res.status).toBe(409)
+        expect(res.body.code).toBe('errors.ADMIN_DELETE_FORBIDDEN')
     })
 })
 
