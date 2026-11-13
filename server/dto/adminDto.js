@@ -27,15 +27,9 @@ const updateDoctorByAdminDto = z.object({
 }).refine(
     data => Object.keys(data).length > 0,
     { message: 'Укажите хотя бы одно поле для обновления' }
-).refine(
-    data => {
-        if (data.work_start && data.work_end) {
-            return data.work_start < data.work_end
-        }
-        return true
-    },
-    { message: 'Начало смены должно быть раньше конца', path: ['work_end'] }
 )
+// Shift bounds are checked in adminService against the doctor's current hours,
+// because either bound may arrive on its own.
 
 const updatePatientByAdminDto = z.object({
     full_name: nameField.optional(),

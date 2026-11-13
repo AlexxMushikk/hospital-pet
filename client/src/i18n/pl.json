@@ -135,7 +135,8 @@
     "dateInvalid": "Taka data nie istnieje",
     "timeFormat": "Format godziny: GG:MM",
     "priceNegative": "Cena nie może być ujemna",
-    "shiftStartAfterEnd": "Początek zmiany musi być wcześniejszy niż koniec"
+    "shiftStartAfterEnd": "Początek zmiany musi być wcześniejszy niż koniec",
+    "shiftGrid": "Zmiana musi zaczynać się i kończyć co {{minutes}} minut"
   },
   "auth": {
     "loginTitle": "Witamy ponownie",

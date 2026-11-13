@@ -6,6 +6,7 @@ const userRepo        = require('../repositories/userRepo')
 const refreshTokenRepo = require('../repositories/refreshTokenRepo')
 const { db } = require('../db/database')
 const { buildError } = require('../errors')
+const { SLOT_STEP_MINUTES } = require('../constants')
 const { assertSlotExists, assertNotInPast } = require('./appointmentService')
 const {
     paginationDto,
@@ -33,6 +34,20 @@ function fail(message, status) {
 function assertEmailFree(email, userId) {
     const owner = userRepo.findIdByEmail(email)
     if (owner !== null && owner !== userId) fail('Email already exists', 400)
+}
+
+function assertValidShift(doctor, data) {
+    if (data.work_start === undefined && data.work_end === undefined) return
+
+    for (const time of [data.work_start, data.work_end]) {
+        if (time !== undefined && Number(time.slice(3)) % SLOT_STEP_MINUTES !== 0) {
+            throw buildError('validation.shiftGrid', 400, { minutes: SLOT_STEP_MINUTES })
+        }
+    }
+
+    const start = data.work_start ?? doctor.work_start
+    const end   = data.work_end   ?? doctor.work_end
+    if (start >= end) throw buildError('validation.shiftStartAfterEnd', 400)
 }
 
 const ALLOWED_TABLES = ['doctors', 'patients', 'appointments']
@@ -119,6 +134,8 @@ function updateRecord(table, id, body) {
             }
 
             if (data.email) assertEmailFree(data.email, doctor.user_id)
+
+            assertValidShift(doctor, data)
 
             doctorRepo.updateByAdmin(id, data)
 

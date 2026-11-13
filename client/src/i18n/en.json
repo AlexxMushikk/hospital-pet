@@ -123,7 +123,8 @@
     "dateInvalid": "This date does not exist",
     "timeFormat": "Time format: HH:MM",
     "priceNegative": "Price cannot be negative",
-    "shiftStartAfterEnd": "Shift start must be earlier than shift end"
+    "shiftStartAfterEnd": "Shift start must be earlier than shift end",
+    "shiftGrid": "Shift must start and end on a {{minutes}} minute boundary"
   },
   "auth": {
     "loginTitle": "Welcome back",
