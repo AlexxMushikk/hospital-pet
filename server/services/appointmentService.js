@@ -4,6 +4,7 @@ const { createAppointmentDto, updateAppointmentDto } = require('../dto/appointme
 const validate = require('../dto/validate')
 const { fail } = require('../errors')
 const { SLOT_STEP_MINUTES } = require('../constants')
+const { isPast } = require('./clinicTime')
 
 function assertSlotExists(doctorId, time) {
     const doctor = doctorRepo.getWorkHours(doctorId)
@@ -19,10 +20,9 @@ function assertSlotExists(doctorId, time) {
     }
 }
 
+// Date and time are already validated by the DTO, so only the clinic clock matters here.
 function assertNotInPast(date, time) {
-    const scheduled = new Date(`${date}T${time}:00`)
-    if (Number.isNaN(scheduled.getTime())) fail('errors.INVALID_DATE_TIME', 400)
-    if (scheduled.getTime() < Date.now()) fail('errors.PAST_DATE', 400)
+    if (isPast(date, time)) fail('errors.PAST_DATE', 400)
 }
 
 function createAppointment(body, user) {

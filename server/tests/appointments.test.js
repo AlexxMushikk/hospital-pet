@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import request from 'supertest'
 
 import createApp from '../app.js'
@@ -242,6 +242,63 @@ describe('POST /api/appointments — slot and role rules', () => {
         })
 
         expect(res.status).toBe(404)
+    })
+})
+
+describe('clinic time zone', () => {
+    // 09:30 UTC on 1 January is 10:30 in Warsaw (UTC+1 in winter).
+    const NOW_UTC = '2030-01-01T09:30:00Z'
+
+    beforeEach(() => {
+        vi.useFakeTimers({ toFake: ['Date'] })
+        vi.setSystemTime(new Date(NOW_UTC))
+    })
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
+    it('runs the suite on a UTC clock, like the production host', () => {
+        expect(new Date().getTimezoneOffset()).toBe(0)
+    })
+
+    it('rejects a slot that already passed on the clinic clock', async () => {
+        const res = await book(patient, { doctor_id: doctor.doctor_id, appointment_date: '2030-01-01', appointment_time: '10:00' })
+
+        expect(res.status).toBe(400)
+        expect(res.body.code).toBe('errors.PAST_DATE')
+    })
+
+    it('accepts a later slot the same day', async () => {
+        const res = await book(patient, { doctor_id: doctor.doctor_id, appointment_date: '2030-01-01', appointment_time: '11:00' })
+
+        expect(res.status).toBe(201)
+    })
+
+    it('uses summer time when it applies', async () => {
+        // 08:30 UTC on 1 July is 10:30 in Warsaw (UTC+2).
+        vi.setSystemTime(new Date('2030-07-01T08:30:00Z'))
+
+        const res = await book(patient, { doctor_id: doctor.doctor_id, appointment_date: '2030-07-01', appointment_time: '10:00' })
+
+        expect(res.status).toBe(400)
+    })
+
+    it('marks the passed slots of today as unavailable to patients', async () => {
+        const res = await request(app)
+            .get(`/api/doctors/${doctor.doctor_id}/slots`).query({ date: '2030-01-01' }).set(authHeader(patient))
+
+        const status = Object.fromEntries(res.body.slots.map(s => [s.time, s.status]))
+        expect(status['10:00']).toBe('Past')
+        expect(status['10:30']).toBe('Free')
+        expect(status['11:30']).toBe('Free')
+    })
+
+    it('leaves the doctor schedule untouched', async () => {
+        const res = await request(app)
+            .get(`/api/doctors/${doctor.doctor_id}/slots`).query({ date: '2030-01-01' }).set(authHeader(doctor))
+
+        expect(res.body.slots.every(s => s.status === 'Free')).toBe(true)
     })
 })
 
