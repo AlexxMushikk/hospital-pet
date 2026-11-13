@@ -50,11 +50,15 @@
 
 .admin-section { padding: 20px 0; }
 
+/* Fixed layout: column widths do not depend on how long the translated headers are. */
 .admin-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    table-layout: fixed;
 }
+
+.admin-table .col-id { width: 80px; }
 
 .admin-table th {
     background-color: var(--color-bg-subtle);

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import LanguageSwitcher from '../language-switcher/LanguageSwitcher'
 import ThemeSwitcher from '../theme-switcher/ThemeSwitcher'
+import StableText from '../stable-text/StableText'
 import '../../styles/buttons.css'
 import './Navbar.css'
 
@@ -58,25 +59,25 @@ export default function Navbar() {
                                             className={`view-btn ${view === 'patient' ? 'active' : ''}`}
                                             onClick={() => switchView('patient', navigate)}
                                         >
-                                            {t('nav.viewPatient')}
+                                            <StableText k="nav.viewPatient" />
                                         </button>
                                         <button
                                             className={`view-btn ${view === 'doctor' ? 'active' : ''}`}
                                             onClick={() => switchView('doctor', navigate)}
                                         >
-                                            {t('nav.viewDoctor')}
+                                            <StableText k="nav.viewDoctor" />
                                         </button>
                                     </div>
                                 )}
                                 <span><strong>{user.full_name}</strong></span>
                                 <button className="btn btn-outline btn-sm" onClick={logout}>
-                                    {t('nav.logout')}
+                                    <StableText k="nav.logout" />
                                 </button>
                             </>
                         ) : (
                             <>
-                                <NavLink to="/login" className="btn btn-outline btn-sm">{t('nav.login')}</NavLink>
-                                <NavLink to="/register" className="btn btn-solid btn-sm">{t('nav.register')}</NavLink>
+                                <NavLink to="/login" className="btn btn-outline btn-sm"><StableText k="nav.login" /></NavLink>
+                                <NavLink to="/register" className="btn btn-solid btn-sm"><StableText k="nav.register" /></NavLink>
                             </>
                         )}
                     </div>

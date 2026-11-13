@@ -1,8 +1,10 @@
 .hero { padding: 80px 0; background: linear-gradient(to bottom, var(--color-page), var(--color-primary-light)); }
 .hero-grid { display: flex; align-items: center; gap: 50px; }
+/* Fixed shares: a longer translation reflows the text instead of pushing the logo around. */
+.hero-text  { flex: 1 1 0; min-width: 0; }
 .hero-text h2 { font-size: 48px; line-height: 1.2; margin-bottom: 20px; color: var(--color-primary); }
-.hero-text p  { font-size: 18px; color: var(--color-text-muted); margin-bottom: 30px; }
-.hero-image { flex: 1; display: flex; justify-content: center; }
+.hero-text p  { font-size: 18px; color: var(--color-text-muted); margin-bottom: 30px; min-height: 3.2em; }
+.hero-image { flex: 0 0 40%; display: flex; justify-content: center; }
 .features { padding: 60px 0; }
 
 .feature-card {
@@ -27,6 +29,7 @@
 @media (max-width: 900px) {
     .hero-grid { grid-template-columns: 1fr; flex-direction: column; }
     .hero-text h2 { font-size: 32px; }
+    .hero-image { flex-basis: auto; }
 }
 
 .hero-accent      { color: var(--color-text); }
@@ -41,7 +44,8 @@
 .spec-link        { text-decoration: none; color: inherit; }
 .feature-card--link { cursor: pointer; height: 100%; }
 .feature-icon     { font-size: 48px; margin-bottom: 15px; }
-.feature-desc     { color: var(--color-text-muted); margin-top: 10px; font-size: 14px; line-height: 1.6; }
+/* Room for two lines in every language keeps the cards the same height. */
+.feature-desc     { color: var(--color-text-muted); margin-top: 10px; font-size: 14px; line-height: 1.6; min-height: 3.2em; }
 .feature-cta      { margin-top: 15px; color: var(--color-primary); font-weight: 600; font-size: 14px; }
 .cta-section      { padding: 60px 0; background: var(--color-bg-subtle); }
 .cta-title        { font-size: 32px; margin-bottom: 15px; }

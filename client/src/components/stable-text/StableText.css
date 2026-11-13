@@ -1,0 +1,10 @@
+.stable-text {
+    display: inline-grid;
+    justify-items: center;
+    white-space: nowrap;
+}
+
+/* Every translation shares one cell; the widest one sets the width. */
+.stable-text > * { grid-area: 1 / 1; }
+
+.stable-text__ghost { visibility: hidden; }

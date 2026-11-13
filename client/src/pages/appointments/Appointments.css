@@ -2,3 +2,6 @@
 .appt-name        { display: block; margin-top: 5px; }
 .appt-spec        { color: var(--color-text-muted); font-size: 14px; }
 .appt-datetime    { margin-top: 5px; font-weight: bold; color: var(--color-primary); }
+
+/* Natural width: stretched to the date line, the button was a different size in every card. */
+.doctor-info > .btn { align-self: flex-start; }

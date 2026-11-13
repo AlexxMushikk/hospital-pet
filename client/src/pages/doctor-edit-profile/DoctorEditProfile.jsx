@@ -6,6 +6,7 @@ import { getDoctor, updateDoctor } from '../../api/index'
 import Modal from '../../components/modal/Modal'
 import { useModal } from '../../hooks/useModal'
 import { apiErrorMessage } from '../../utils/apiError'
+import StableText from '../../components/stable-text/StableText'
 import '../../styles/buttons.css'
 import '../../styles/forms.css'
 import '../../styles/layout.css'
@@ -132,7 +133,7 @@ export default function DoctorEditProfile() {
                     <div className="form-actions form-actions--end">
                         <button type="button" className="btn btn-outline" onClick={() => navigate('/doctor/schedule')}>{t('common.cancel')}</button>
                         <button type="submit" className="btn btn-solid" disabled={saving}>
-                            {saving ? t('common.saving') : t('doctorSettings.submit')}
+                            {saving ? <StableText k="common.saving" /> : <StableText k="doctorSettings.submit" />}
                         </button>
                     </div>
                 </form>
