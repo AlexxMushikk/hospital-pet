@@ -94,6 +94,7 @@ const findAll = ({ limit, offset }) =>
                  JOIN patients p  ON a.patient_id = p.id
                  JOIN doctors d   ON a.doctor_id = d.id
                  JOIN patients pd ON d.user_id = pd.user_id
+        ORDER BY a.scheduled_at DESC, a.id DESC
         LIMIT ? OFFSET ?
     `).all(limit, offset)
 
