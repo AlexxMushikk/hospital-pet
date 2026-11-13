@@ -300,6 +300,51 @@ describe('PATCH /api/appointments/:id', () => {
         expect(row).toMatchObject({ status: 'Completed', doctor_notes: 'Prescribed rest' })
     })
 
+    describe('doctor notes', () => {
+        const row = () =>
+            db.prepare('SELECT status, doctor_notes FROM appointments WHERE id = ?').get(appointmentId)
+
+        it('refuses to complete a visit without notes', async () => {
+            const res = await patch(doctor, { status: 'Completed' })
+
+            expect(res.status).toBe(400)
+            expect(res.body.code).toBe('errors.NOTES_REQUIRED')
+            expect(row().status).toBe('Scheduled')
+        })
+
+        it('refuses notes made only of whitespace', async () => {
+            const res = await patch(doctor, { status: 'Completed', doctor_notes: '   ' })
+
+            expect(res.status).toBe(400)
+            expect(row().status).toBe('Scheduled')
+        })
+
+        it('completes a visit whose notes were saved earlier', async () => {
+            await patch(doctor, { doctor_notes: 'No complaints confirmed, nothing prescribed' })
+
+            const res = await patch(doctor, { status: 'Completed' })
+
+            expect(res.status).toBe(200)
+            expect(row().status).toBe('Completed')
+        })
+
+        it('refuses to wipe the notes of a completed visit', async () => {
+            db.prepare(`UPDATE appointments SET status = 'Completed', doctor_notes = 'Rest' WHERE id = ?`)
+                .run(appointmentId)
+
+            const res = await patch(doctor, { doctor_notes: '' })
+
+            expect(res.status).toBe(400)
+            expect(row().doctor_notes).toBe('Rest')
+        })
+
+        it('lets the doctor keep a scheduled visit without notes for now', async () => {
+            const res = await patch(doctor, { doctor_notes: '' })
+
+            expect(res.status).toBe(200)
+        })
+    })
+
     it('rejects an update that only names fields the role may not touch', async () => {
         const res = await patch(doctor, { symptoms: 'Doctor rewriting the complaint' })
 

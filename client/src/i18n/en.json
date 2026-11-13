@@ -363,6 +363,7 @@
     "STATUS_CHANGE_FORBIDDEN": "Your role cannot change the status this way",
     "INVALID_STATUS_TRANSITION": "Only a scheduled visit can change its status",
     "APPOINTMENT_CLOSED": "This visit is closed and can no longer be edited",
+    "NOTES_REQUIRED": "Add medical notes before completing the visit",
     "NO_EDITABLE_FIELDS": "There are no fields you can change",
     "ADMIN_DELETE_FORBIDDEN": "The system administrator cannot be deleted",
     "APPOINTMENT_NOT_FOUND": "Appointment not found",
