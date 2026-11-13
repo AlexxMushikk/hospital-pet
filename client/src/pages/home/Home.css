@@ -34,7 +34,7 @@
 
 .hero-accent      { color: var(--color-text); }
 .hero-actions     { display: flex; gap: 15px; flex-wrap: wrap; }
-.stats-band       { background: var(--color-primary); padding: 40px 0; }
+.stats-band       { background: var(--color-primary-fill); padding: 40px 0; }
 .stats-band-grid  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: center; }
 .stats-band-num   { font-size: 36px; font-weight: 800; color: var(--color-on-primary); }
 .stats-band-label { font-size: 14px; color: var(--color-on-primary-muted); margin-top: 5px; }

@@ -46,7 +46,7 @@
 }
 
 .radio-container:hover input ~ .checkmark { border-color: var(--color-primary); background-color: var(--color-primary-light); }
-.radio-container input:checked ~ .checkmark { background-color: var(--color-primary); border-color: var(--color-primary); }
+.radio-container input:checked ~ .checkmark { background-color: var(--color-primary-fill); border-color: var(--color-primary-fill); }
 .checkmark:after { content: ""; position: absolute; display: none; }
 .radio-container input:checked ~ .checkmark:after { display: block; }
 

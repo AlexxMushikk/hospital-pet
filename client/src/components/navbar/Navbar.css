@@ -1,5 +1,5 @@
 .main-header {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-fill);
     color: var(--color-on-primary);
     padding: 20px 0;
     text-align: left;

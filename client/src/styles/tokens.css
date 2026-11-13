@@ -6,6 +6,8 @@
     color-scheme: light;
 
     --color-primary:         #dc2626;
+    /* Large areas painted in the brand color (header, solid buttons, banners). */
+    --color-primary-fill:    #dc2626;
     --color-primary-rgb:     220, 38, 38;
     /* Primary used as text or a thin line, where it needs extra contrast. */
     --color-primary-dark:    #991b1b;
@@ -49,14 +51,17 @@
 :root[data-theme="dark"] {
     color-scheme: dark;
 
-    --color-primary:         #ef4444;
-    --color-primary-rgb:     239, 68, 68;
-    --color-primary-dark:    #fca5a5;
-    --color-primary-deep:    #b91c1c;
-    --color-primary-hover:   #dc2626;
-    --color-primary-pressed: #991b1b;
-    --color-primary-light:   rgba(239, 68, 68, 0.12);
-    --color-primary-soft:    rgba(239, 68, 68, 0.22);
+    /* Muted reds: a saturated red glares on a dark page. Text keeps 5.3:1 against the page,
+       white text keeps 5.9:1 against the fill (WCAG AA needs 4.5:1). */
+    --color-primary:         #d96666;
+    --color-primary-fill:    #b23b3b;
+    --color-primary-rgb:     217, 102, 102;
+    --color-primary-dark:    #f0a8a8;
+    --color-primary-deep:    #8c2f2f;
+    --color-primary-hover:   #c24545;
+    --color-primary-pressed: #8c2f2f;
+    --color-primary-light:   rgba(217, 102, 102, 0.12);
+    --color-primary-soft:    rgba(217, 102, 102, 0.2);
 
     --color-on-primary:       #ffffff;
     --color-on-primary-muted: rgba(255, 255, 255, 0.8);
