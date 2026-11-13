@@ -44,6 +44,10 @@
     "pl": "PL",
     "switcherLabel": "Interface language"
   },
+  "theme": {
+    "switchToDark": "Switch to dark theme",
+    "switchToLight": "Switch to light theme"
+  },
   "nav": {
     "home": "Home",
     "doctors": "Doctors",

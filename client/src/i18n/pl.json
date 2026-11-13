@@ -44,6 +44,10 @@
     "pl": "PL",
     "switcherLabel": "Język interfejsu"
   },
+  "theme": {
+    "switchToDark": "Włącz ciemny motyw",
+    "switchToLight": "Włącz jasny motyw"
+  },
   "nav": {
     "home": "Strona główna",
     "doctors": "Lekarze",

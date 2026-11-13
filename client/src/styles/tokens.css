@@ -1,8 +1,16 @@
-/* Design tokens. Components never use raw colors: a theme only has to redefine these. */
-:root {
+/* Design tokens. Components never use raw colors: a theme only has to redefine these.
+   The theme is set as <html data-theme="light|dark"> by the inline script in index.html,
+   before the first paint, so the page never flashes the wrong theme. */
+:root,
+:root[data-theme="light"] {
+    color-scheme: light;
+
     --color-primary:         #dc2626;
     --color-primary-rgb:     220, 38, 38;
+    /* Primary used as text or a thin line, where it needs extra contrast. */
     --color-primary-dark:    #991b1b;
+    /* Primary used as a deeper fill (button hover, avatar gradient). */
+    --color-primary-deep:    #991b1b;
     --color-primary-hover:   #b91c1c;
     --color-primary-pressed: #7f1d1d;
     --color-primary-light:   #fef2f2;
@@ -35,5 +43,46 @@
     --color-info-soft: #f0f7ff;
 
     --color-overlay: rgba(0, 0, 0, 0.6);
+    --shadow-rgb:    0, 0, 0;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-primary:         #ef4444;
+    --color-primary-rgb:     239, 68, 68;
+    --color-primary-dark:    #fca5a5;
+    --color-primary-deep:    #b91c1c;
+    --color-primary-hover:   #dc2626;
+    --color-primary-pressed: #991b1b;
+    --color-primary-light:   rgba(239, 68, 68, 0.12);
+    --color-primary-soft:    rgba(239, 68, 68, 0.22);
+
+    --color-on-primary:       #ffffff;
+    --color-on-primary-muted: rgba(255, 255, 255, 0.8);
+
+    --color-page:      #111318;
+    --color-surface:   #1a1d24;
+    --color-bg:        #252a33;
+    --color-bg-subtle: #1f232b;
+
+    --color-border:       #2f3540;
+    --color-input-border: #3d4451;
+
+    --color-text:           #e5e7eb;
+    --color-heading:        #f9fafb;
+    --color-text-secondary: #c7ccd4;
+    --color-text-muted:     #9ca3af;
+    --color-text-light:     #6b7280;
+
+    --color-success:        #34d399;
+    --color-success-strong: #22c55e;
+    --color-success-soft:   rgba(34, 197, 94, 0.16);
+    --color-success-text:   #86efac;
+
+    --color-info:      #60a5fa;
+    --color-info-soft: rgba(96, 165, 250, 0.12);
+
+    --color-overlay: rgba(0, 0, 0, 0.7);
     --shadow-rgb:    0, 0, 0;
 }

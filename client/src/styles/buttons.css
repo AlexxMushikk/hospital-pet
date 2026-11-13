@@ -24,7 +24,7 @@
     color: var(--color-on-primary);
 }
 
-.btn-solid:hover { background-color: var(--color-primary-dark); }
+.btn-solid:hover { background-color: var(--color-primary-deep); }
 .btn-lg { padding: 15px 30px; font-size: 16px; }
 .btn-sm { padding: 6px 14px; font-size: 14px; white-space: nowrap; }
 .w-full { width: 100%; }

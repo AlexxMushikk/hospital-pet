@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import LanguageSwitcher from '../language-switcher/LanguageSwitcher'
+import ThemeSwitcher from '../theme-switcher/ThemeSwitcher'
 import '../../styles/buttons.css'
 import './Navbar.css'
 
@@ -47,6 +48,7 @@ export default function Navbar() {
                     </ul>
 
                     <div className="nav-actions">
+                        <ThemeSwitcher />
                         <LanguageSwitcher />
                         {user ? (
                             <>
