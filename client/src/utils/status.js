@@ -1,11 +1,7 @@
-// Single source of truth for appointment statuses:
-// a new status only needs to be added here.
+import i18n from '../i18n'
 
-const STATUS_LABELS = {
-    Scheduled: 'Запланирован',
-    Completed: 'Завершён',
-    Cancelled: 'Отменён',
-}
+// Appointment status badges. A new status needs a class here and a label
+// under "status" in every i18n catalog.
 
 const STATUS_CLASSES = {
     Scheduled: 'status-badge status-scheduled',
@@ -14,7 +10,7 @@ const STATUS_CLASSES = {
 }
 
 export const statusLabel = (status) =>
-    STATUS_LABELS[status] || status
+    i18n.t(`status.${status}`, { defaultValue: status })
 
 export const statusClass = (status) =>
     STATUS_CLASSES[status] || 'status-badge status-scheduled'

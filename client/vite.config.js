@@ -15,5 +15,7 @@ export default defineConfig({
         environment: 'jsdom',
         include: ['src/**/*.test.{js,jsx}'],
         restoreMocks: true,
+        // West of Greenwich, where date-only strings parsed as UTC land on the previous day.
+        env: { TZ: 'America/New_York' },
     },
 })

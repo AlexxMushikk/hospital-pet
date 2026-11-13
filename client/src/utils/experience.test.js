@@ -1,44 +1,50 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 
+import i18n from '../i18n'
 import { formatExperience, formatExperienceShort } from './experience'
 
-describe('formatExperience', () => {
+afterEach(async () => {
+    await i18n.changeLanguage('en')
+})
+
+describe('formatExperience in English', () => {
     it.each([
-        [{ years: 1,  months: 0 }, '1 год'],
-        [{ years: 3,  months: 0 }, '3 года'],
-        [{ years: 5,  months: 0 }, '5 лет'],
-        [{ years: 11, months: 0 }, '11 лет'],
-        [{ years: 14, months: 0 }, '14 лет'],
-        [{ years: 21, months: 0 }, '21 год'],
-        [{ years: 22, months: 0 }, '22 года'],
-    ])('declines years: %o → %s', (experience, expected) => {
+        [{ years: 1,  months: 0 }, '1 year'],
+        [{ years: 5,  months: 0 }, '5 years'],
+        [{ years: 2,  months: 1 }, '2 years 1 month'],
+        [{ years: 0,  months: 3 }, '3 months'],
+        [{ years: 0,  months: 0 }, 'less than a month'],
+    ])('%o → %s', (experience, expected) => {
         expect(formatExperience(experience)).toBe(expected)
     })
+})
 
-    it('joins years and months', () => {
-        expect(formatExperience({ years: 2, months: 1 })).toBe('2 года 1 месяц')
-        expect(formatExperience({ years: 1, months: 5 })).toBe('1 год 5 месяцев')
-    })
-
-    it('shows only months for a doctor in the first year', () => {
-        expect(formatExperience({ years: 0, months: 3 })).toBe('3 месяца')
-    })
-
-    it('says "less than a month" for a brand-new doctor', () => {
-        expect(formatExperience({ years: 0, months: 0 })).toBe('менее месяца')
-    })
-
-    it('returns null when the server sent no experience', () => {
-        expect(formatExperience(null)).toBeNull()
+describe('formatExperience in Polish', () => {
+    it.each([
+        [{ years: 1,  months: 0 }, '1 rok'],
+        [{ years: 3,  months: 0 }, '3 lata'],
+        [{ years: 5,  months: 0 }, '5 lat'],
+        [{ years: 12, months: 0 }, '12 lat'],
+        [{ years: 22, months: 0 }, '22 lata'],
+        [{ years: 2,  months: 5 }, '2 lata 5 miesięcy'],
+        [{ years: 0,  months: 0 }, 'mniej niż miesiąc'],
+    ])('%o → %s', async (experience, expected) => {
+        await i18n.changeLanguage('pl')
+        expect(formatExperience(experience)).toBe(expected)
     })
 })
 
 describe('formatExperienceShort', () => {
     it('shows whole years only', () => {
-        expect(formatExperienceShort({ years: 12, months: 7 })).toBe('12 лет')
+        expect(formatExperienceShort({ years: 12, months: 7 })).toBe('12 years')
     })
 
     it('says "less than a year" in the first year', () => {
-        expect(formatExperienceShort({ years: 0, months: 11 })).toBe('менее года')
+        expect(formatExperienceShort({ years: 0, months: 11 })).toBe('less than a year')
+    })
+
+    it('returns null when the server sent no experience', () => {
+        expect(formatExperience(null)).toBeNull()
+        expect(formatExperienceShort(null)).toBeNull()
     })
 })

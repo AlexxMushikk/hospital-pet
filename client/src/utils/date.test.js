@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach, vi } from 'vitest'
 
+import i18n from '../i18n'
 import { getTodayStr, formatDate, formatDateTime } from './date'
 
 describe('getTodayStr', () => {
@@ -29,5 +30,24 @@ describe('formatDate', () => {
 describe('formatDateTime', () => {
     it('falls back to the raw values when the pair cannot be parsed', () => {
         expect(formatDateTime('nonsense', '99:99')).toBe('nonsense | 99:99')
+    })
+})
+
+describe('formatting follows the interface language', () => {
+    afterEach(async () => {
+        await i18n.changeLanguage('en')
+    })
+
+    it('writes the month in English', () => {
+        expect(formatDate('2030-03-05')).toBe('March 5, 2030')
+    })
+
+    it('writes the month in Polish', async () => {
+        await i18n.changeLanguage('pl')
+        expect(formatDate('2030-03-05')).toBe('5 marca 2030')
+    })
+
+    it('keeps the calendar day of a date-only value', () => {
+        expect(formatDate('2030-01-01')).toContain('January 1')
     })
 })
