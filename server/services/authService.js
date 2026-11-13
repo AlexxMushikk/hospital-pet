@@ -41,6 +41,9 @@ async function login(body) {
         fail('errors.INVALID_CREDENTIALS', 401)
     }
 
+    // Housekeeping on a rare, cheap path: expired tokens can no longer be used or replayed.
+    refreshTokenRepo.pruneExpired()
+
     const { password: _, ...safe } = user
     return issueSession(safe)
 }

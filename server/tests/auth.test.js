@@ -168,6 +168,24 @@ describe('POST /api/login', () => {
         expect(res.body.user).toMatchObject({ role: 'doctor', doctor_id: doctor.doctor_id })
     })
 
+    it('clears expired refresh tokens but keeps live revoked ones for reuse detection', async () => {
+        const patient = createPatient()
+        const insert  = db.prepare(`
+            INSERT INTO refresh_tokens (user_id, token_hash, expires_at, revoked) VALUES (?, ?, datetime('now', ?), ?)
+        `)
+        insert.run(patient.id, 'a'.repeat(64), '-1 day', 0)
+        insert.run(patient.id, 'b'.repeat(64), '-1 day', 1)
+        insert.run(patient.id, 'c'.repeat(64), '+1 day', 1)
+
+        await request(app).post('/api/login').send({ email: patient.email, password: patient.password })
+
+        const hashes = db.prepare('SELECT token_hash FROM refresh_tokens').all().map(r => r.token_hash)
+        expect(hashes).not.toContain('a'.repeat(64))
+        expect(hashes).not.toContain('b'.repeat(64))
+        expect(hashes).toContain('c'.repeat(64))
+        expect(hashes).toHaveLength(2)
+    })
+
     it('rejects a wrong password with 401', async () => {
         const patient = createPatient()
 
