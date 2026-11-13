@@ -16,6 +16,14 @@ textarea {
     transition: none;
 }
 
+/* Without these, browsers paint fields in their own system grey in the dark theme. */
+input,
+textarea,
+select {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+}
+
 .container {
     width: 90%;
     max-width: 1200px;
