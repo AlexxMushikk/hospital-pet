@@ -14,17 +14,17 @@ export default function RecordFormShell({ title, onSubmit, submitting, error, ch
                 <h2>{title}</h2>
             </section>
 
-            <div className="auth-card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <div className="auth-card record-card">
                 <form className="record-form" onSubmit={onSubmit}>
                     {children}
 
                     {error && (
-                        <div style={{ color: '#dc2626', marginTop: '15px', fontSize: '14px' }}>
+                        <div className="record-error">
                             {error}
                         </div>
                     )}
 
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                    <div className="record-actions">
                         <button
                             type="button"
                             className="btn btn-outline w-full"

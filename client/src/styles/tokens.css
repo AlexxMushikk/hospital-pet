@@ -1,16 +1,39 @@
+/* Design tokens. Components never use raw colors: a theme only has to redefine these. */
 :root {
-    --color-primary:      #dc2626;
-    --color-primary-dark: #991b1b;
-    --color-primary-light:#fef2f2;
+    --color-primary:         #dc2626;
+    --color-primary-rgb:     220, 38, 38;
+    --color-primary-dark:    #991b1b;
+    --color-primary-hover:   #b91c1c;
+    --color-primary-pressed: #7f1d1d;
+    --color-primary-light:   #fef2f2;
+    --color-primary-soft:    #fee2e2;
 
+    /* Text and icons drawn on top of the primary color. */
+    --color-on-primary:       #ffffff;
+    --color-on-primary-muted: rgba(255, 255, 255, 0.8);
+
+    --color-page:      #ffffff;
+    --color-surface:   #ffffff;
     --color-bg:        #f3f4f6;
     --color-bg-subtle: #f9fafb;
-    --color-border:    #e5e7eb;
 
+    --color-border:       #e5e7eb;
+    --color-input-border: #dddddd;
+
+    --color-text:           #333333;
     --color-heading:        #111827;
     --color-text-secondary: #4b5563;
-    --color-text-muted:  #6b7280;
-    --color-text-light:  #9ca3af;
-    --color-success:     #10b981;
-    --color-info: #3b82f6;
+    --color-text-muted:     #6b7280;
+    --color-text-light:     #9ca3af;
+
+    --color-success:        #10b981;
+    --color-success-strong: #16a34a;
+    --color-success-soft:   #dcfce7;
+    --color-success-text:   #166534;
+
+    --color-info:      #3b82f6;
+    --color-info-soft: #f0f7ff;
+
+    --color-overlay: rgba(0, 0, 0, 0.6);
+    --shadow-rgb:    0, 0, 0;
 }

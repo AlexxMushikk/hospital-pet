@@ -106,14 +106,14 @@ export default function DoctorRecordForm({ id }) {
             <label>{t('adminRecords.visitPrice')}</label>
             <input type="number" min="0" value={form.price} onChange={onChange('price')} />
 
-            <div style={{ display: 'flex', gap: '10px' }}>
-                <div style={{ flex: 1 }}>
+            <div className="record-row">
+                <div className="record-col">
                     <label>{t('adminRecords.shiftStart')}</label>
                     <select value={form.work_start} onChange={onChange('work_start')}>
                         {TIME_OPTIONS.map(time => <option key={time} value={time}>{time}</option>)}
                     </select>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className="record-col">
                     <label>{t('adminRecords.shiftEnd')}</label>
                     <select value={form.work_end} onChange={onChange('work_end')}>
                         {TIME_OPTIONS.map(time => <option key={time} value={time}>{time}</option>)}

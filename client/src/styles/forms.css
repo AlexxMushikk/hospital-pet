@@ -18,7 +18,7 @@
 .form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-input-border);
     border-radius: 6px;
     font-size: 15px;
 }
@@ -34,7 +34,7 @@
 .sidebar-search-input {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-input-border);
     border-radius: 6px;
     font-size: 14px;
     transition: 0.3s;
@@ -43,11 +43,11 @@
 .sidebar-search-input:focus {
     border-color: var(--color-primary);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
-.appt-textarea         { width: 100%; min-height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; resize: vertical; font-size: 14px; }
-.char-counter          { text-align: right; font-size: 11px; color: #999; }
+.appt-textarea         { width: 100%; min-height: 80px; padding: 10px; border: 1px solid var(--color-input-border); border-radius: 6px; resize: vertical; font-size: 14px; }
+.char-counter          { text-align: right; font-size: 11px; color: var(--color-text-light); }
 .char-counter--warn    { color: var(--color-primary); }
 .form-group--spaced    { margin-top: 25px; }
 .form-grid-2       { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }

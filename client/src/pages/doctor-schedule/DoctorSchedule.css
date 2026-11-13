@@ -6,9 +6,9 @@
 }
 
 .schedule-card {
-    background: white;
+    background: var(--color-surface);
     border-radius: 16px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(var(--shadow-rgb), 0.1);
     overflow: hidden;
     margin-bottom: 20px;
 }
@@ -16,7 +16,7 @@
 .schedule-controls {
     background: var(--color-bg-subtle);
     padding: 15px 25px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -35,7 +35,7 @@
     align-items: center;
     height: 90px;
     padding: 0 30px;
-    background: white;
+    background: var(--color-surface);
     border: 1px solid var(--color-bg);
     border-radius: 12px;
     margin-bottom: 15px;
@@ -48,7 +48,7 @@
 .slot-item:hover {
     background-color: var(--color-bg-subtle);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(var(--shadow-rgb), 0.05);
 }
 
 .slot-time {
@@ -67,7 +67,7 @@
     align-items: flex-start;
 }
 
-.slot-item.empty    { background-color: #fafafa; color: #9ca3af; border-style: dashed; }
+.slot-item.empty    { background-color: var(--color-bg-subtle); color: var(--color-text-light); border-style: dashed; }
 .slot-item.occupied { border-left: 6px solid var(--color-primary); }
 
 @media (max-width: 900px) {

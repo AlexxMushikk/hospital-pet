@@ -48,9 +48,9 @@ export default function AppointmentRecordForm({ id }) {
             submitting={submitting}
             error={error}
         >
-            <div style={{ background: '#f3f4f6', padding: '10px', borderRadius: '6px', marginBottom: '15px' }}>
-                <p style={{ margin: 0 }}><strong>{t('common.patient')}:</strong> {record?.patient_name}</p>
-                <p style={{ margin: '5px 0 0' }}><strong>{t('common.doctor')}:</strong> {record?.doctor_name}</p>
+            <div className="record-summary">
+                <p><strong>{t('common.patient')}:</strong> {record?.patient_name}</p>
+                <p><strong>{t('common.doctor')}:</strong> {record?.doctor_name}</p>
             </div>
 
             <label>{t('common.date')}</label>

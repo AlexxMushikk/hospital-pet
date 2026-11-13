@@ -6,8 +6,8 @@
 }
 
 body {
-    background-color: #ffffff;
-    color: #333;
+    background-color: var(--color-page);
+    color: var(--color-text);
     line-height: 1.6;
 }
 
