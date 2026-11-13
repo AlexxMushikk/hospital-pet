@@ -5,6 +5,8 @@ const patientRepo     = require('../repositories/patientRepo')
 const userRepo        = require('../repositories/userRepo')
 const refreshTokenRepo = require('../repositories/refreshTokenRepo')
 const { db } = require('../db/database')
+const { buildError } = require('../errors')
+const { assertSlotExists, assertNotInPast } = require('./appointmentService')
 const {
     paginationDto,
     updateDoctorByAdminDto,
@@ -159,19 +161,23 @@ function updateRecord(table, id, body) {
             const movingSlot   = data.appointment_date !== undefined
                 || data.appointment_time !== undefined
             const finalStatus  = data.status ?? current.status
+            const reactivating = current.status === 'Cancelled' && finalStatus !== 'Cancelled'
 
-            if (movingSlot && finalStatus !== 'Cancelled') {
-                const newDate = data.appointment_date ?? current.appointment_date
-                const newTime = data.appointment_time ?? current.appointment_time
+            const newDate = data.appointment_date ?? current.appointment_date
+            const newTime = data.appointment_time ?? current.appointment_time
 
+            if (movingSlot) assertSlotExists(current.doctor_id, newTime)
+
+            // Completed visits may be corrected retroactively; a scheduled one must stay in the future.
+            if (finalStatus === 'Scheduled' && (movingSlot || current.status !== 'Scheduled')) {
+                assertNotInPast(newDate, newTime)
+            }
+
+            if ((movingSlot || reactivating) && finalStatus !== 'Cancelled') {
                 const conflict = appointmentRepo.findConflict(
                     current.doctor_id, newDate, newTime, id
                 )
-                if (conflict) {
-                    const err = new Error('Этот слот уже занят другим визитом')
-                    err.status = 409
-                    throw err
-                }
+                if (conflict) throw buildError('errors.SLOT_TAKEN', 409)
             }
 
             appointmentRepo.update(id, data)

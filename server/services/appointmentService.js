@@ -163,4 +163,7 @@ function updateAppointment(id, body, requester) {
     appointmentRepo.update(id, fields)
 }
 
-module.exports = { createAppointment, getPatientAppointments, getAppointment, updateAppointment }
+module.exports = {
+    createAppointment, getPatientAppointments, getAppointment, updateAppointment,
+    assertSlotExists, assertNotInPast,
+}
