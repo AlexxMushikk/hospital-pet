@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useModal } from '../../hooks/useModal'
 import Modal from '../../components/Modal'
@@ -10,6 +11,7 @@ import { getTodayStr } from '../../utils/date'
 export default function CreateDoctor() {
     const navigate = useNavigate()
     const { modal, showModal, closeModal } = useModal()
+    const { t } = useTranslation()
 
     const [saving, setSaving] = useState(false)
 
@@ -159,7 +161,7 @@ export default function CreateDoctor() {
                             >
                                 <option value="">— Выберите специализацию —</option>
                                 {SPECIALIZATIONS.map(s => (
-                                    <option key={s.value} value={s.value}>{s.label}</option>
+                                    <option key={s.value} value={s.value}>{t(`spec.${s.value}.label`)}</option>
                                 ))}
                             </select>
                         </div>

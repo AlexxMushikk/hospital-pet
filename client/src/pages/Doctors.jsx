@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getDoctors, getDoctorPriceRange } from '../api/index'
 import DoctorCard from '../components/DoctorCard'
@@ -103,6 +104,7 @@ function PriceRangeSlider({ min = 0, max = 1000, currentMin, currentMax, onChang
 export default function Doctors() {
     const navigate = useNavigate()
     const { user } = useAuth()
+    const { t } = useTranslation()
     const doctorId = user?.doctor_id ?? null
     const { modal, showModal, closeModal } = useModal()
 
@@ -184,7 +186,7 @@ export default function Doctors() {
                     setTotalPages(pages)
                 }
             } catch {
-                if (!cancelled) setError('Не удалось загрузить список врачей')
+                if (!cancelled) setError('doctors.loadError')
             } finally {
                 if (!cancelled) setLoading(false)
             }
@@ -197,8 +199,8 @@ export default function Doctors() {
     const handleBookClick = (doctor) => {
         if (!user) {
             showModal(
-                'Требуется авторизация',
-                'Войдите в систему чтобы записаться к врачу.',
+                t('auth.authRequiredTitle'),
+                t('auth.authRequiredText'),
                 () => navigate('/login')
             )
         } else {
@@ -211,8 +213,8 @@ export default function Doctors() {
     return (
         <main className="container">
             <section className="page-title page-title--left">
-                <h2>Наши специалисты</h2>
-                <p>Найдите нужного врача для вашего случая.</p>
+                <h2>{t('doctors.title')}</h2>
+                <p>{t('doctors.subtitle')}</p>
             </section>
 
             <div className="doctors-layout">
@@ -220,10 +222,10 @@ export default function Doctors() {
                 <aside className="doctors-sidebar">
 
                     <div className="sidebar-block">
-                        <label className="filter-title">🔍 Поиск по имени</label>
+                        <label className="filter-title">{t('doctors.searchLabel')}</label>
                         <input
                             type="text"
-                            placeholder="Например: Dr. House..."
+                            placeholder={t('doctors.searchPlaceholder')}
                             className="sidebar-search-input"
                             value={filters.name}
                             onChange={e => handleFilterChange('name', e.target.value)}
@@ -231,22 +233,22 @@ export default function Doctors() {
                     </div>
 
                     <div className="sidebar-block">
-                        <label className="filter-title">Сортировка</label>
+                        <label className="filter-title">{t('doctors.sortLabel')}</label>
                         <select
                             className="sidebar-search-input"
                             value={filters.sort}
                             onChange={e => handleFilterChange('sort', e.target.value)}
                         >
-                            <option value="name_asc">По имени (А–Я)</option>
-                            <option value="price_asc">Цена ↑</option>
-                            <option value="price_desc">Цена ↓</option>
-                            <option value="exp_desc">Опыт ↓</option>
+                            <option value="name_asc">{t('doctors.sortNameAsc')}</option>
+                            <option value="price_asc">{t('doctors.sortPriceAsc')}</option>
+                            <option value="price_desc">{t('doctors.sortPriceDesc')}</option>
+                            <option value="exp_desc">{t('doctors.sortExpDesc')}</option>
                         </select>
                     </div>
 
                     {priceRange.max > priceRange.min && (
                         <div className="sidebar-block">
-                            <span className="filter-title">Цена визита (PLN)</span>
+                            <span className="filter-title">{t('doctors.priceFilter')}</span>
                             <PriceRangeSlider
                                 key={`${priceRange.min}-${priceRange.max}-${filters.minPrice}-${filters.maxPrice}`}
                                 min={priceRange.min}
@@ -259,15 +261,15 @@ export default function Doctors() {
                     )}
 
                     <div className="sidebar-block">
-                        <span className="filter-title">Специализация</span>
+                        <span className="filter-title">{t('common.specialization')}</span>
                         <div className="filter-radio-group">
-                            <RadioOption name="filterSpecialty" value="" label="Все специализации" filterKey="specialization" {...radioProps} />
+                            <RadioOption name="filterSpecialty" value="" label={t('doctors.allSpecializations')} filterKey="specialization" {...radioProps} />
                             {SPECIALIZATIONS.map(spec => (
                                 <RadioOption
                                     key={spec.value}
                                     name="filterSpecialty"
                                     value={spec.value}
-                                    label={spec.label}
+                                    label={t(`spec.${spec.value}.label`)}
                                     filterKey="specialization"
                                     {...radioProps}
                                 />
@@ -276,20 +278,20 @@ export default function Doctors() {
                     </div>
 
                     <div className="sidebar-block">
-                        <span className="filter-title">Пол</span>
+                        <span className="filter-title">{t('common.gender')}</span>
                         <div className="filter-radio-group">
-                            <RadioOption name="filterGender" value=""       label="Любой"   filterKey="gender" {...radioProps} />
-                            <RadioOption name="filterGender" value="Male"   label="Мужской" filterKey="gender" {...radioProps} />
-                            <RadioOption name="filterGender" value="Female" label="Женский" filterKey="gender" {...radioProps} />
+                            <RadioOption name="filterGender" value=""       label={t('gender.any')} filterKey="gender" {...radioProps} />
+                            <RadioOption name="filterGender" value="Male"   label={t('gender.Male')} filterKey="gender" {...radioProps} />
+                            <RadioOption name="filterGender" value="Female" label={t('gender.Female')} filterKey="gender" {...radioProps} />
                         </div>
                     </div>
 
                     <div className="sidebar-block">
-                        <span className="filter-title">Опыт работы</span>
+                        <span className="filter-title">{t('doctors.experienceFilter')}</span>
                         <div className="filter-radio-group">
-                            <RadioOption name="filterExperience" value="0"  label="Любой опыт" filterKey="experience" {...radioProps} />
-                            <RadioOption name="filterExperience" value="5"  label="5+ лет"      filterKey="experience" {...radioProps} />
-                            <RadioOption name="filterExperience" value="10" label="10+ лет"     filterKey="experience" {...radioProps} />
+                            <RadioOption name="filterExperience" value="0"  label={t('doctors.experienceAny')} filterKey="experience" {...radioProps} />
+                            <RadioOption name="filterExperience" value="5"  label={t('doctors.experience5')} filterKey="experience" {...radioProps} />
+                            <RadioOption name="filterExperience" value="10" label={t('doctors.experience10')} filterKey="experience" {...radioProps} />
                         </div>
                     </div>
 
@@ -312,12 +314,12 @@ export default function Doctors() {
                     )}
 
                     {error && (
-                        <p className="text-error">{error}</p>
+                        <p className="text-error">{t(error)}</p>
                     )}
 
                     {!loading && !error && doctors.length === 0 && (
                         <div className="empty-state">
-                            Специалисты не найдены. Попробуйте изменить фильтры.
+                            {t('doctors.empty')}
                         </div>
                     )}
 

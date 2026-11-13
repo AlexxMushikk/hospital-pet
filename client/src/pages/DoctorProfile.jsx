@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getDoctor } from '../api/index'
 import Modal from '../components/Modal'
@@ -11,6 +12,7 @@ export default function DoctorProfile() {
     const { id }   = useParams()
     const navigate = useNavigate()
     const { user } = useAuth()
+    const { t } = useTranslation()
     const { modal, showModal, closeModal } = useModal()
 
     const [doctor,  setDoctor]  = useState(null)
@@ -22,19 +24,19 @@ export default function DoctorProfile() {
                 const res = await getDoctor(id)
                 setDoctor(res.data)
             } catch {
-                showModal('Ошибка', 'Не удалось загрузить профиль врача.', () => navigate('/doctors'))
+                showModal(t('common.error'), t('doctorProfile.loadError'), () => navigate('/doctors'))
             } finally {
                 setLoading(false)
             }
         }
         fetchDoctor()
-    }, [id, showModal, navigate])
+    }, [id, showModal, navigate, t])
 
     const handleBookClick = () => {
         if (!user) {
             showModal(
-                'Требуется авторизация',
-                'Войдите в систему чтобы записаться к врачу.',
+                t('auth.authRequiredTitle'),
+                t('auth.authRequiredText'),
                 () => navigate('/login')
             )
         } else {
@@ -65,14 +67,14 @@ export default function DoctorProfile() {
                     </div>
 
                     <h2 className="profile-name">{doctor.name}</h2>
-                    <p className="profile-spec">{doctor.specialization}</p>
+                    <p className="profile-spec">{t(`spec.${doctor.specialization}.label`, { defaultValue: doctor.specialization })}</p>
                     <div className="price-tag">{doctor.price} PLN</div>
 
                     <button
                         className="btn btn-solid w-full profile-book-btn"
                         onClick={handleBookClick}
                     >
-                        Записаться
+                        {t('doctorProfile.book')}
                     </button>
 
                     {/* navigate(-1) goes back in browser history, so /doctors filters are preserved */}
@@ -80,49 +82,49 @@ export default function DoctorProfile() {
                         className="btn btn-outline w-full"
                         onClick={() => navigate(-1)}
                     >
-                        ← Назад
+                        ← {t('common.back')}
                     </button>
                 </aside>
 
                 <section className="profile-main">
                     {doctor.bio && (
                         <div className="info-section">
-                            <h3>О враче</h3>
+                            <h3>{t('doctorProfile.about')}</h3>
                             <p>{doctor.bio}</p>
                         </div>
                     )}
 
                     <div className="info-section">
-                        <h3>Образование и опыт</h3>
+                        <h3>{t('doctorProfile.educationAndExperience')}</h3>
                         <ul className="plain-list">
                             <li>
-                                Образование:{' '}
+                                {t('doctorProfile.education')}{' '}
                                 {doctor.education
                                     ? doctor.education
-                                    : <span className="text-placeholder">не указано</span>
+                                    : <span className="text-placeholder">{t('common.notSpecified')}</span>
                                 }
                             </li>
                             <li>
-                                Опыт:{' '}
+                                {t('doctorProfile.experience')}{' '}
                                 {formatExperience(doctor.experience)
-                                    ?? <span className="text-placeholder">не указан</span>
+                                    ?? <span className="text-placeholder">{t('common.notSpecified')}</span>
                                 }
                             </li>
                         </ul>
                     </div>
 
                     <div className="info-section">
-                        <h3>Дополнительная информация</h3>
+                        <h3>{t('doctorProfile.additionalInfo')}</h3>
                         <p>
-                            <strong>Языки:</strong>{' '}
+                            <strong>{t('doctorProfile.languages')}</strong>{' '}
                             {doctor.languages
                                 ? doctor.languages
-                                : <span className="text-placeholder">не указано</span>
+                                : <span className="text-placeholder">{t('common.notSpecified')}</span>
                             }
                         </p>
-                        <p><strong>Рабочие часы:</strong> {doctor.work_start} — {doctor.work_end}</p>
+                        <p><strong>{t('doctorProfile.workingHours')}</strong> {doctor.work_start} — {doctor.work_end}</p>
                         <p>
-                            <strong>Стоимость визита:</strong>{' '}
+                            <strong>{t('doctorProfile.visitPrice')}</strong>{' '}
                             <span className="price-inline">{doctor.price} PLN</span>
                         </p>
                     </div>
