@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { getAdminRecord, updateAdminRecord } from '../api/index'
+import { apiErrorMessage } from '../utils/apiError'
 
 export default function useRecordForm({ table, id, initialForm, mapRecord, buildPayload, validate }) {
+    const { t } = useTranslation()
     const navigate = useNavigate()
 
     const [loading, setLoading] = useState(true)
@@ -17,7 +20,7 @@ export default function useRecordForm({ table, id, initialForm, mapRecord, build
                 setRecord(res.data)
                 setForm(mapRecord(res.data))
             })
-            .catch(err => setError(err.response?.data?.error || 'Не удалось загрузить запись'))
+            .catch(err => setError(apiErrorMessage(err, 'adminRecords.loadError')))
             .finally(() => setLoading(false))
     }, [table, id, mapRecord])
 
@@ -34,8 +37,9 @@ export default function useRecordForm({ table, id, initialForm, mapRecord, build
         setError('')
 
         if (validate) {
-            const msg = validate(form)
-            if (msg) { setError(msg); return }
+            // Validators return a catalog key, the same codes the server uses.
+            const key = validate(form)
+            if (key) { setError(t(key)); return }
         }
 
         setSubmitting(true)
@@ -43,7 +47,7 @@ export default function useRecordForm({ table, id, initialForm, mapRecord, build
             await updateAdminRecord(table, id, buildPayload ? buildPayload(form) : form)
             navigate('/admin/database')
         } catch (err) {
-            setError(err.response?.data?.error || 'Не удалось сохранить')
+            setError(apiErrorMessage(err, 'adminRecords.saveError'))
         } finally {
             setSubmitting(false)
         }

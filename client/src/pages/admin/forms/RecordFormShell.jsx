@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function RecordFormShell({ title, onSubmit, submitting, error, children }) {
+    const { t } = useTranslation()
     const navigate = useNavigate()
 
     return (
@@ -25,14 +27,14 @@ export default function RecordFormShell({ title, onSubmit, submitting, error, ch
                             className="btn btn-outline w-full"
                             onClick={() => navigate('/admin/database')}
                         >
-                            Отмена
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
                             className="btn btn-solid w-full"
                             disabled={submitting}
                         >
-                            {submitting ? 'Сохранение...' : 'Сохранить'}
+                            {submitting ? t('common.saving') : t('common.save')}
                         </button>
                     </div>
                 </form>

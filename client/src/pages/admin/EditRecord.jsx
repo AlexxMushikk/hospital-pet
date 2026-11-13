@@ -1,9 +1,11 @@
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import DoctorRecordForm from './forms/DoctorRecordForm'
 import PatientRecordForm from './forms/PatientRecordForm'
 import AppointmentRecordForm from './forms/AppointmentRecordForm'
 
 export default function EditRecord() {
+    const { t } = useTranslation()
     const { table, id } = useParams()
 
     if (table === 'doctors')      return <DoctorRecordForm id={id} />
@@ -12,7 +14,7 @@ export default function EditRecord() {
 
     return (
         <main className="container">
-            <p>Неизвестный тип записи</p>
+            <p>{t('adminRecords.unknownType')}</p>
         </main>
     )
 }

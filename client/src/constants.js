@@ -17,13 +17,6 @@ export const VALIDATION = {
     SYMPTOMS_MAX: 250,
 }
 
-export const VALIDATION_MSG = {
-    NAME_MIN:     `Имя минимум ${VALIDATION.NAME_MIN} символа`,
-    PASSWORD_MIN: `Пароль минимум ${VALIDATION.PASSWORD_MIN} символа`,
-    EMAIL:        'Введите корректный email',
-    SYMPTOMS_MAX: `Описание симптомов слишком длинное (макс. ${VALIDATION.SYMPTOMS_MAX} символов)`,
-}
-
 export const SLOT_STEP_MINUTES = 30
 
 export const TIME_OPTIONS = (() => {
