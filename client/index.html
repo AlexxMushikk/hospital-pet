@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>City Care Hospital</title>
+    <script>
+      // Picks the theme before the first paint, so a dark page never flashes white.
+      // Same rules as src/theme/theme.js: a saved choice wins, otherwise the system decides.
+      (function () {
+        var theme = null
+        try { theme = localStorage.getItem('hospital_theme') } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        }
+        document.documentElement.setAttribute('data-theme', theme)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
