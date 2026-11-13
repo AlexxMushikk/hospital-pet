@@ -29,7 +29,15 @@ const remove = (id) =>
     db.prepare(`DELETE FROM users WHERE id = ?`).run(id)
 
 const findIdByEmail = (email) =>
-    db.prepare(`SELECT id FROM users WHERE email = ?`).get(email)?.id ?? null
+    db.prepare(`SELECT id FROM users WHERE email = ? AND deleted_at IS NULL`).get(email)?.id ?? null
+
+// A deleted account keeps its row for history but gives its email back,
+// so the address can be registered again (email is UNIQUE across all rows).
+const releaseDeletedEmail = (email) =>
+    db.prepare(`
+        UPDATE users SET email = 'deleted-' || id || '-' || email
+        WHERE email = ? AND deleted_at IS NOT NULL
+    `).run(email)
 
 const updateEmail = (id, email) =>
     db.prepare(`UPDATE users SET email = ? WHERE id = ?`).run(email, id)
@@ -38,5 +46,5 @@ const softDelete = (id) =>
     db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(id)
 
 module.exports = {
-    findByEmail, findIdByEmail, findById, create, remove, updateEmail, softDelete,
+    findByEmail, findIdByEmail, findById, create, remove, updateEmail, softDelete, releaseDeletedEmail,
 }

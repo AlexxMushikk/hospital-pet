@@ -382,6 +382,17 @@ describe('PUT /api/admin/patients/:id', () => {
         expect(res.status).toBe(400)
     })
 
+    it('may take over the email of a deleted account', async () => {
+        const old = createPatient({ email: 'released@test.com' })
+        db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(old.id)
+
+        const res = await put({ email: 'released@test.com' })
+
+        expect(res.status).toBe(200)
+        expect(db.prepare('SELECT email FROM users WHERE id = ?').get(patient.id).email)
+            .toBe('released@test.com')
+    })
+
     it('rejects a name that is too short', async () => {
         const res = await put({ full_name: 'X' })
 

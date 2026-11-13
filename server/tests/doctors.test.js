@@ -318,6 +318,18 @@ describe('POST /api/doctors', () => {
         expect(db.prepare('SELECT COUNT(*) AS n FROM doctors').get().n).toBe(0)
     })
 
+    it('reuses the email of a deleted account', async () => {
+        const admin = createAdmin()
+        createSpecialization('Surgery')
+        const old = createPatient({ email: payload.email })
+        db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(old.id)
+
+        const res = await request(app).post('/api/doctors').set(authHeader(admin)).send(payload)
+
+        expect(res.status).toBe(201)
+        expect(db.prepare(`SELECT role FROM users WHERE email = ?`).get(payload.email).role).toBe('doctor')
+    })
+
     it('rejects an unknown specialization', async () => {
         const admin = createAdmin()
 

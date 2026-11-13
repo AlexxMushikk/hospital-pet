@@ -147,6 +147,7 @@ async function createDoctor(body) {
     const hash   = await bcrypt.hash(data.password, BCRYPT_ROUNDS)
 
     const createAll = db.transaction(() => {
+        userRepo.releaseDeletedEmail(data.email)
         const userId   = userRepo.create(data.email, hash, 'doctor')
         patientRepo.create(userId, data.full_name)
         const doctorId = doctorRepo.create(userId, {

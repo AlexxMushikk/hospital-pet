@@ -56,6 +56,7 @@ async function register(body) {
     const hash = await bcrypt.hash(password, BCRYPT_ROUNDS)
 
     const createAll = db.transaction(() => {
+        userRepo.releaseDeletedEmail(email)
         const userId = userRepo.create(email, hash, 'patient')
         patientRepo.create(userId, full_name)
     })
