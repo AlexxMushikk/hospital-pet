@@ -2,6 +2,7 @@ const appointmentRepo = require('../repositories/appointmentRepo')
 const doctorRepo      = require('../repositories/doctorRepo')
 const { createAppointmentDto, updateAppointmentDto } = require('../dto/appointmentDto')
 const { SLOT_STEP_MINUTES } = require('../constants')
+const { buildError } = require('../errors')
 
 function validate(dto, data) {
     const result = dto.safeParse(data)
@@ -101,6 +102,21 @@ function getAppointment(id, requester) {
     return app
 }
 
+function assertTransitionAllowed(currentStatus, fields) {
+    const isOpen = currentStatus === 'Scheduled'
+
+    if (fields.status !== undefined && !isOpen) {
+        throw buildError('errors.INVALID_STATUS_TRANSITION', 409)
+    }
+    if (fields.symptoms !== undefined && !isOpen) {
+        throw buildError('errors.APPOINTMENT_CLOSED', 409)
+    }
+    // Notes stay editable after completion, but a cancelled visit never took place.
+    if (fields.doctor_notes !== undefined && currentStatus === 'Cancelled') {
+        throw buildError('errors.APPOINTMENT_CLOSED', 409)
+    }
+}
+
 function updateAppointment(id, body, requester) {
     const data = validate(updateAppointmentDto, body)
     const app  = appointmentRepo.findById(id)
@@ -140,6 +156,9 @@ function updateAppointment(id, body, requester) {
         err.status = 400
         throw err
     }
+
+    // Admins keep full control; patients and doctors may only act on an open visit.
+    if (!isAdmin) assertTransitionAllowed(app.status, fields)
 
     appointmentRepo.update(id, fields)
 }

@@ -15,6 +15,8 @@ const MESSAGES = {
     'errors.ACCESS_DENIED':           'Access denied',
     'errors.PATIENTS_ONLY':           'Only patients can book appointments',
     'errors.STATUS_CHANGE_FORBIDDEN': 'Status change is not allowed for your role',
+    'errors.INVALID_STATUS_TRANSITION': 'Only a scheduled visit can change its status',
+    'errors.APPOINTMENT_CLOSED':      'This visit is closed and can no longer be edited',
     'errors.ADMIN_DELETE_FORBIDDEN':  'The system administrator cannot be deleted',
 
     // --- booking ---
