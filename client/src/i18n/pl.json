@@ -377,6 +377,7 @@
     "STATUS_CHANGE_FORBIDDEN": "Twoja rola nie pozwala na taką zmianę statusu",
     "INVALID_STATUS_TRANSITION": "Status można zmienić tylko dla zaplanowanej wizyty",
     "APPOINTMENT_CLOSED": "Ta wizyta jest zamknięta i nie można jej już edytować",
+    "NOTES_REQUIRED": "Przed zakończeniem wizyty uzupełnij notatki medyczne",
     "NO_EDITABLE_FIELDS": "Brak pól, które możesz zmienić",
     "ADMIN_DELETE_FORBIDDEN": "Nie można usunąć administratora systemu",
     "APPOINTMENT_NOT_FOUND": "Nie znaleziono wizyty",

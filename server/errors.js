@@ -17,6 +17,7 @@ const MESSAGES = {
     'errors.STATUS_CHANGE_FORBIDDEN': 'Status change is not allowed for your role',
     'errors.INVALID_STATUS_TRANSITION': 'Only a scheduled visit can change its status',
     'errors.APPOINTMENT_CLOSED':      'This visit is closed and can no longer be edited',
+    'errors.NOTES_REQUIRED':          'A completed visit must have doctor notes',
     'errors.ADMIN_DELETE_FORBIDDEN':  'The system administrator cannot be deleted',
 
     // --- booking ---

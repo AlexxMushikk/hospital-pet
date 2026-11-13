@@ -117,6 +117,17 @@ function assertTransitionAllowed(currentStatus, fields) {
     }
 }
 
+// A completed visit must always carry the doctor's notes, even if nothing was prescribed.
+function assertNotesKept(app, fields) {
+    const finalStatus = fields.status ?? app.status
+    if (finalStatus !== 'Completed') return
+
+    const finalNotes = fields.doctor_notes ?? app.doctor_notes
+    if (!finalNotes || !finalNotes.trim()) {
+        throw buildError('errors.NOTES_REQUIRED', 400)
+    }
+}
+
 function updateAppointment(id, body, requester) {
     const data = validate(updateAppointmentDto, body)
     const app  = appointmentRepo.findById(id)
@@ -159,6 +170,8 @@ function updateAppointment(id, body, requester) {
 
     // Admins keep full control; patients and doctors may only act on an open visit.
     if (!isAdmin) assertTransitionAllowed(app.status, fields)
+
+    assertNotesKept(app, fields)
 
     appointmentRepo.update(id, fields)
 }
