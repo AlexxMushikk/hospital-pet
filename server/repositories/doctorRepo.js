@@ -29,7 +29,7 @@ const setLanguages = db.transaction((doctorId, languages) => {
     }
 })
 
-const findAll = ({ specialization, gender, name, minExperience, minPrice, maxPrice, excludeDoctorId, sort, limit, offset }) => {
+const findAll = ({ specialization, gender, name, careerStartedBy, minPrice, maxPrice, excludeDoctorId, sort, limit, offset }) => {
     const conditions = ['u.deleted_at IS NULL']
     const params     = []
 
@@ -39,9 +39,9 @@ const findAll = ({ specialization, gender, name, minExperience, minPrice, maxPri
 
     if (excludeDoctorId) { conditions.push('d.id != ?'); params.push(excludeDoctorId) }
 
-    if (minExperience) {
-        conditions.push(`(strftime('%Y', 'now') - strftime('%Y', d.career_start_date)) >= ?`)
-        params.push(minExperience)
+    if (careerStartedBy) {
+        conditions.push('d.career_start_date <= ?')
+        params.push(careerStartedBy)
     }
 
     if (minPrice !== undefined) { conditions.push('d.price >= ?'); params.push(minPrice) }

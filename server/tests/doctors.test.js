@@ -102,6 +102,22 @@ describe('GET /api/doctors', () => {
         expect(res.body.totalCount).toBe(1)
     })
 
+    it('counts experience in full years, not by calendar year numbers', async () => {
+        createDoctor({ email: 'almost@test.com', fullName: 'Almost Twenty', careerStart: '2010-06-01' })
+        createDoctor({ email: 'exactly@test.com', fullName: 'Exactly Twenty', careerStart: '2010-03-15' })
+        vi.useFakeTimers({ toFake: ['Date'] })
+        vi.setSystemTime(new Date('2030-03-15T12:00:00Z'))
+
+        try {
+            const res = await request(app).get('/api/doctors').query({ minExperience: 20 })
+
+            // 19 years 9 months is not 20 years yet; the anniversary day itself counts.
+            expect(res.body.doctors.map(d => d.name)).toEqual(['Exactly Twenty'])
+        } finally {
+            vi.useRealTimers()
+        }
+    })
+
     it('excludes one doctor from the list', async () => {
         const list = await request(app).get('/api/doctors')
         const skip = list.body.doctors[0].id
