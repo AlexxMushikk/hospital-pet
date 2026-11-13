@@ -21,7 +21,7 @@ const doctorQueryDto = z.object({
 })
 
 const updateDoctorDto = z.object({
-    bio:       z.string().max(BIO_MAX_LENGTH, `Bio максимум ${BIO_MAX_LENGTH} символов`).optional(),
+    bio:       z.string().max(BIO_MAX_LENGTH, 'validation.bioMax').optional(),
     education: z.string().optional(),
     languages: z.string().optional(),
     image_url: z.string().optional(),
@@ -34,7 +34,7 @@ const createDoctorDto = z.object({
     specialization:    specializationField,
     gender:            z.enum(['Male', 'Female', 'Not Specified']).default('Not Specified'),
     career_start_date: dateField,
-    price:             z.coerce.number().int().min(0).default(200),
+    price:             z.coerce.number().int().min(0, 'validation.priceNegative').default(200),
 })
 
 module.exports = { doctorQueryDto, updateDoctorDto, createDoctorDto }

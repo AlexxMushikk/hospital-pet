@@ -14,10 +14,10 @@ function validate(dto, data) {
 
     const issue = result.error.issues[0]
 
+    // Zod's own messages (missing field, wrong type, unknown enum value) have no catalog key;
+    // name the field instead, so the client still gets a translatable code.
     if (!CATALOG_KEY.test(issue.message)) {
-        const err = new Error(issue.message)
-        err.status = 400
-        throw err
+        throw buildError('validation.invalid', 400, { field: issue.path.join('.') || 'body' })
     }
 
     throw buildError(issue.message, 400, paramsFromIssue(issue))

@@ -9,15 +9,8 @@ const { doctorQueryDto, updateDoctorDto, createDoctorDto } = require('../dto/doc
 
 const { SLOT_STEP_MINUTES, BCRYPT_ROUNDS } = require('../constants')
 
-function validate(dto, data) {
-    const result = dto.safeParse(data)
-    if (!result.success) {
-        const err = new Error(result.error.issues[0].message)
-        err.status = 400
-        throw err
-    }
-    return result.data
-}
+const validate = require('../dto/validate')
+const { fail } = require('../errors')
 
 function calculateExperience(startDate) {
     if (!startDate) return null
@@ -56,11 +49,7 @@ function getDoctors(query) {
 
 function getDoctorById(id) {
     const doctor = doctorRepo.findById(id)
-    if (!doctor) {
-        const err = new Error('Doctor not found')
-        err.status = 404
-        throw err
-    }
+    if (!doctor) fail('errors.DOCTOR_NOT_FOUND', 404)
     return {
         ...doctor,
         experience: calculateExperience(doctor.career_start_date),
@@ -68,18 +57,10 @@ function getDoctorById(id) {
 }
 
 function getSlots(doctorId, date, requester) {
-    if (!date) {
-        const err = new Error('Date parameter is required')
-        err.status = 400
-        throw err
-    }
+    if (!date) fail('errors.DATE_REQUIRED', 400)
 
     const doctor = doctorRepo.getWorkHours(doctorId)
-    if (!doctor) {
-        const err = new Error('Doctor not found')
-        err.status = 404
-        throw err
-    }
+    if (!doctor) fail('errors.DOCTOR_NOT_FOUND', 404)
 
     const appointments = appointmentRepo.findByDoctor(doctorId, date)
 
@@ -111,19 +92,11 @@ function getSlots(doctorId, date, requester) {
 function updateDoctor(id, body, requester) {
     const data = validate(updateDoctorDto, body)
     const doctor = doctorRepo.findById(id)
-    if (!doctor) {
-        const err = new Error('Doctor not found')
-        err.status = 404
-        throw err
-    }
+    if (!doctor) fail('errors.DOCTOR_NOT_FOUND', 404)
 
     const isAdmin = requester.role === 'admin'
     const isOwner = requester.doctor_id === doctor.id
-    if (!isAdmin && !isOwner) {
-        const err = new Error('Forbidden')
-        err.status = 403
-        throw err
-    }
+    if (!isAdmin && !isOwner) fail('errors.FORBIDDEN', 403)
 
     doctorRepo.update(id, data)
 }
@@ -132,16 +105,10 @@ async function createDoctor(body) {
     const data = validate(createDoctorDto, body)
 
     const existing = userRepo.findByEmail(data.email)
-    if (existing) {
-        const err = new Error('Email already exists')
-        err.status = 400
-        throw err
-    }
+    if (existing) fail('errors.EMAIL_EXISTS', 400)
 
     if (doctorRepo.findSpecializationId(data.specialization) === null) {
-        const err = new Error('Unknown specialization')
-        err.status = 400
-        throw err
+        fail('errors.UNKNOWN_SPECIALIZATION', 400)
     }
 
     const hash   = await bcrypt.hash(data.password, BCRYPT_ROUNDS)

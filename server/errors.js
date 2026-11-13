@@ -53,6 +53,7 @@ const MESSAGES = {
     'validation.priceNegative':       'Price cannot be negative',
     'validation.shiftStartAfterEnd':  'Shift start must be earlier than shift end',
     'validation.shiftGrid':           'Shift must start and end on a {{minutes}} minute boundary',
+    'validation.invalid':             'Invalid value: {{field}}',
 }
 
 function interpolate(template, params) {

@@ -1,50 +1,35 @@
 const appointmentRepo = require('../repositories/appointmentRepo')
 const doctorRepo      = require('../repositories/doctorRepo')
 const { createAppointmentDto, updateAppointmentDto } = require('../dto/appointmentDto')
+const validate = require('../dto/validate')
+const { fail } = require('../errors')
 const { SLOT_STEP_MINUTES } = require('../constants')
-const { buildError } = require('../errors')
-
-function validate(dto, data) {
-    const result = dto.safeParse(data)
-    if (!result.success) {
-        const err = new Error(result.error.issues[0].message)
-        err.status = 400
-        throw err
-    }
-    return result.data
-}
-
-function fail(message, status) {
-    const err = new Error(message)
-    err.status = status
-    throw err
-}
 
 function assertSlotExists(doctorId, time) {
     const doctor = doctorRepo.getWorkHours(doctorId)
-    if (!doctor) fail('Doctor not found', 404)
+    if (!doctor) fail('errors.DOCTOR_NOT_FOUND', 404)
 
     if (time < doctor.work_start || time >= doctor.work_end) {
-        fail('Time is outside the doctor working hours', 400)
+        fail('errors.OUTSIDE_WORKING_HOURS', 400)
     }
 
     const minutes = Number(time.slice(3))
     if (minutes % SLOT_STEP_MINUTES !== 0) {
-        fail(`Appointments start every ${SLOT_STEP_MINUTES} minutes`, 400)
+        fail('errors.SLOT_STEP', 400, { minutes: SLOT_STEP_MINUTES })
     }
 }
 
 function assertNotInPast(date, time) {
     const scheduled = new Date(`${date}T${time}:00`)
-    if (Number.isNaN(scheduled.getTime())) fail('Invalid date or time', 400)
-    if (scheduled.getTime() < Date.now()) fail('Cannot book a slot in the past', 400)
+    if (Number.isNaN(scheduled.getTime())) fail('errors.INVALID_DATE_TIME', 400)
+    if (scheduled.getTime() < Date.now()) fail('errors.PAST_DATE', 400)
 }
 
 function createAppointment(body, user) {
     const data = validate(createAppointmentDto, body)
 
     if (user.role !== 'patient' || !user.patient_id) {
-        fail('Only patients can book appointments', 403)
+        fail('errors.PATIENTS_ONLY', 403)
     }
 
     data.patient_id = user.patient_id
@@ -55,7 +40,7 @@ function createAppointment(body, user) {
     const conflict = appointmentRepo.findConflict(
         data.doctor_id, data.appointment_date, data.appointment_time
     )
-    if (conflict) fail('This slot is already booked', 409)
+    if (conflict) fail('errors.SLOT_TAKEN', 409)
 
     const id = appointmentRepo.create(data)
     return { id }
@@ -66,11 +51,7 @@ function getPatientAppointments(patientId, requester) {
     const isOwner = requester.patient_id === Number(patientId)
     const isDoctor = requester.role === 'doctor' && requester.doctor_id != null
 
-    if (!isAdmin && !isOwner && !isDoctor) {
-        const err = new Error('Forbidden')
-        err.status = 403
-        throw err
-    }
+    if (!isAdmin && !isOwner && !isDoctor) fail('errors.FORBIDDEN', 403)
 
     const all = appointmentRepo.findByPatient(patientId)
 
@@ -81,39 +62,36 @@ function getPatientAppointments(patientId, requester) {
     return all
 }
 
-function getAppointment(id, requester) {
+// Loads a visit and checks that the requester is its patient, its doctor or an admin.
+function loadOwnAppointment(id, requester) {
     const app = appointmentRepo.findById(id)
-    if (!app) {
-        const err = new Error('Appointment not found')
-        err.status = 404
-        throw err
-    }
+    if (!app) fail('errors.APPOINTMENT_NOT_FOUND', 404)
 
     const isAdmin   = requester.role === 'admin'
     const isPatient = requester.patient_id === app.patient_id
     const isDoctor  = requester.doctor_id  === app.doctor_id
 
-    if (!isAdmin && !isPatient && !isDoctor) {
-        const err = new Error('Forbidden')
-        err.status = 403
-        throw err
-    }
+    if (!isAdmin && !isPatient && !isDoctor) fail('errors.FORBIDDEN', 403)
 
-    return app
+    return { app, isAdmin, isDoctor }
+}
+
+function getAppointment(id, requester) {
+    return loadOwnAppointment(id, requester).app
 }
 
 function assertTransitionAllowed(currentStatus, fields) {
     const isOpen = currentStatus === 'Scheduled'
 
     if (fields.status !== undefined && !isOpen) {
-        throw buildError('errors.INVALID_STATUS_TRANSITION', 409)
+        fail('errors.INVALID_STATUS_TRANSITION', 409)
     }
     if (fields.symptoms !== undefined && !isOpen) {
-        throw buildError('errors.APPOINTMENT_CLOSED', 409)
+        fail('errors.APPOINTMENT_CLOSED', 409)
     }
     // Notes stay editable after completion, but a cancelled visit never took place.
     if (fields.doctor_notes !== undefined && currentStatus === 'Cancelled') {
-        throw buildError('errors.APPOINTMENT_CLOSED', 409)
+        fail('errors.APPOINTMENT_CLOSED', 409)
     }
 }
 
@@ -123,29 +101,12 @@ function assertNotesKept(app, fields) {
     if (finalStatus !== 'Completed') return
 
     const finalNotes = fields.doctor_notes ?? app.doctor_notes
-    if (!finalNotes || !finalNotes.trim()) {
-        throw buildError('errors.NOTES_REQUIRED', 400)
-    }
+    if (!finalNotes || !finalNotes.trim()) fail('errors.NOTES_REQUIRED', 400)
 }
 
 function updateAppointment(id, body, requester) {
     const data = validate(updateAppointmentDto, body)
-    const app  = appointmentRepo.findById(id)
-    if (!app) {
-        const err = new Error('Appointment not found')
-        err.status = 404
-        throw err
-    }
-
-    const isAdmin   = requester.role === 'admin'
-    const isPatient = requester.patient_id === app.patient_id
-    const isDoctor  = requester.doctor_id  === app.doctor_id
-
-    if (!isAdmin && !isPatient && !isDoctor) {
-        const err = new Error('Forbidden')
-        err.status = 403
-        throw err
-    }
+    const { app, isAdmin, isDoctor } = loadOwnAppointment(id, requester)
 
     const canManage     = isDoctor || isAdmin
     const allowedFields = canManage ? ['doctor_notes', 'status'] : ['symptoms', 'status']
@@ -157,16 +118,10 @@ function updateAppointment(id, body, requester) {
     }
 
     if (fields.status !== undefined && !allowedStatus.includes(fields.status)) {
-        const err = new Error('Недопустимая смена статуса для вашей роли')
-        err.status = 403
-        throw err
+        fail('errors.STATUS_CHANGE_FORBIDDEN', 403)
     }
 
-    if (Object.keys(fields).length === 0) {
-        const err = new Error('Нет полей, доступных для изменения')
-        err.status = 400
-        throw err
-    }
+    if (Object.keys(fields).length === 0) fail('errors.NO_EDITABLE_FIELDS', 400)
 
     // Admins keep full control; patients and doctors may only act on an open visit.
     if (!isAdmin) assertTransitionAllowed(app.status, fields)

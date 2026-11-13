@@ -2,9 +2,9 @@ const { z } = require('zod')
 
 const { PASSWORD_MIN_LENGTH, NAME_MIN_LENGTH } = require('../constants')
 
-const emailField          = z.string().email('Введите корректный email')
-const passwordField       = z.string().min(PASSWORD_MIN_LENGTH, `Пароль минимум ${PASSWORD_MIN_LENGTH} символа`)
-const nameField           = z.string().min(NAME_MIN_LENGTH, `Имя минимум ${NAME_MIN_LENGTH} символа`)
+const emailField          = z.string().email('validation.email')
+const passwordField       = z.string().min(PASSWORD_MIN_LENGTH, 'validation.passwordMin')
+const nameField           = z.string().min(NAME_MIN_LENGTH, 'validation.nameMin')
 
 const isRealDate = (value) => {
     const [year, month, day] = value.split('-').map(Number)
@@ -16,10 +16,10 @@ const isRealDate = (value) => {
 }
 
 const dateField           = z.string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Формат даты: YYYY-MM-DD')
-    .refine(isRealDate, 'Такой даты не существует')
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'validation.dateFormat')
+    .refine(isRealDate, 'validation.dateInvalid')
 
-const timeField           = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Формат времени: HH:MM')
+const timeField           = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'validation.timeFormat')
 
 const specializationField = z.enum([
     'Cardiology', 'Neurology', 'Diagnostics',
