@@ -644,6 +644,19 @@ describe('DELETE /api/admin/patients/:id', () => {
 
         expect(res.status).toBe(404)
     })
+
+    it('does not delete a doctor through the patients table', async () => {
+        const doctor  = createDoctor()
+        const patient = createPatient()
+        const id      = createAppointment({ doctorId: doctor.doctor_id, patientId: patient.patient_id })
+
+        const res = await request(app).delete(`/api/admin/patients/${doctor.patient_id}`).set(asAdmin())
+
+        expect(res.status).toBe(404)
+        expect(res.body.code).toBe('errors.PATIENT_NOT_FOUND')
+        expect(db.prepare('SELECT deleted_at FROM users WHERE id = ?').get(doctor.id).deleted_at).toBeNull()
+        expect(db.prepare('SELECT status FROM appointments WHERE id = ?').get(id).status).toBe('Scheduled')
+    })
 })
 
 describe('DELETE /api/admin/appointments/:id', () => {
