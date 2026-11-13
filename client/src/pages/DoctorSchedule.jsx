@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { getDoctorSlots } from '../api/index'
 import { statusLabel, statusClass } from '../utils/status'
@@ -13,6 +14,7 @@ const PAGE_SIZE = 4
 export default function DoctorSchedule() {
     const navigate = useNavigate()
     const { user } = useAuth()
+    const { t } = useTranslation()
     const doctorId = user?.doctor_id
 
     const [date,       setDate]       = useState(getTodayStr())
@@ -56,20 +58,20 @@ export default function DoctorSchedule() {
     return (
         <main className="container">
             <section className="page-title page-title--left">
-                <h2>Расписание на день</h2>
-                <p>Управление записями пациентов</p>
+                <h2>{t('schedule.title')}</h2>
+                <p>{t('schedule.subtitle')}</p>
             </section>
 
             <div className="dashboard-header">
-                <StatCard variant="compact" label="Всего слотов" value={total} />
-                <StatCard variant="compact" accent="active" label="Занято" value={booked} />
-                <StatCard variant="compact" label="Свободно" value={free} />
+                <StatCard variant="compact" label={t('schedule.totalSlots')} value={total} />
+                <StatCard variant="compact" accent="active" label={t('schedule.booked')} value={booked} />
+                <StatCard variant="compact" label={t('schedule.free')} value={free} />
             </div>
 
             <div className="schedule-card">
                 <div className="schedule-controls">
                     <div className="schedule-day">
-                        <label>🗓 День:</label>
+                        <label>{t('schedule.dayLabel')}</label>
                         <DatePicker
                             className="datepicker--compact"
                             value={date}
@@ -80,18 +82,18 @@ export default function DoctorSchedule() {
                         className="btn btn-solid btn-sm"
                         onClick={() => setRefreshKey(k => k + 1)}
                     >
-                        🔄 Обновить
+                        {t('schedule.refresh')}
                     </button>
                 </div>
 
                 <ul className="slots-list">
                     {loading && (
-                        <li className="slot-item empty">Загрузка расписания...</li>
+                        <li className="slot-item empty">{t('schedule.loading')}</li>
                     )}
 
                     {!loading && pageSlots.length === 0 && (
                         <li className="slot-item empty">
-                            <div className="slot-info">Нет слотов на этот день.</div>
+                            <div className="slot-info">{t('schedule.noSlots')}</div>
                         </li>
                     )}
 
@@ -99,14 +101,14 @@ export default function DoctorSchedule() {
                         slot.status === 'Free' ? (
                             <li key={slot.time} className="slot-item empty">
                                 <div className="slot-time">🕒 {slot.time}</div>
-                                <div className="slot-info">Свободно для записи</div>
+                                <div className="slot-info">{t('schedule.freeSlot')}</div>
                             </li>
                         ) : (
                             <li key={slot.time} className="slot-item occupied">
                                 <div className="slot-time">🕒 {slot.time}</div>
                                 <div className="slot-info">
                                     <strong className="slot-patient">
-                                        👤 {slot.patient_name || 'Пациент'}
+                                        👤 {slot.patient_name || t('common.patient')}
                                     </strong>
                                     <span
                                         className={`${statusClass(slot.status)} slot-status`}
@@ -118,7 +120,7 @@ export default function DoctorSchedule() {
                                     className="btn btn-solid btn-sm"
                                     onClick={() => navigate(`/appointments/${slot.appointment_id}`)}
                                 >
-                                    Управление
+                                    {t('schedule.manage')}
                                 </button>
                             </li>
                         )
