@@ -129,6 +129,7 @@ function updateRecord(table, id, body) {
                 })
             }
             if (data.email) {
+                userRepo.releaseDeletedEmail(data.email)
                 userRepo.updateEmail(doctor.user_id, data.email)
             }
         }
@@ -146,6 +147,7 @@ function updateRecord(table, id, body) {
                 })
             }
             if (data.email) {
+                userRepo.releaseDeletedEmail(data.email)
                 userRepo.updateEmail(patient.user_id, data.email)
             }
         }

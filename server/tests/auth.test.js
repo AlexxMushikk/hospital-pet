@@ -66,6 +66,40 @@ describe('POST /api/register', () => {
         expect(res.body.user.patient_id).toEqual(expect.any(Number))
     })
 
+    describe('email of a deleted account', () => {
+        let old
+
+        beforeEach(() => {
+            old = createPatient({ email: 'back@test.com', fullName: 'Old Account' })
+            db.prepare(`UPDATE users SET deleted_at = datetime('now') WHERE id = ?`).run(old.id)
+        })
+
+        it('can be registered again as a fresh account', async () => {
+            const res = await request(app)
+                .post('/api/register')
+                .send({ email: 'back@test.com', password: 'newpass1', full_name: 'Returning Patient' })
+
+            expect(res.status).toBe(201)
+
+            const login = await request(app)
+                .post('/api/login')
+                .send({ email: 'back@test.com', password: 'newpass1' })
+            expect(login.status).toBe(200)
+            expect(login.body.user.id).not.toBe(old.id)
+            expect(login.body.user.full_name).toBe('Returning Patient')
+        })
+
+        it('leaves the old account deleted, under a released address', async () => {
+            await request(app)
+                .post('/api/register')
+                .send({ email: 'back@test.com', password: 'newpass1', full_name: 'Returning Patient' })
+
+            const row = db.prepare('SELECT email, deleted_at FROM users WHERE id = ?').get(old.id)
+            expect(row.deleted_at).not.toBeNull()
+            expect(row.email).toBe(`deleted-${old.id}-back@test.com`)
+        })
+    })
+
     it('ignores a role sent by the client', async () => {
         const res = await request(app)
             .post('/api/register')
