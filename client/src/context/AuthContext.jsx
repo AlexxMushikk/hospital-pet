@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
         try {
             await axios.post('/api/logout', {}, { withCredentials: true })
         } catch {
-            // Ошибка при логауте не критична — токен и так протухнет.
+            // Logout errors are non-critical: the token expires anyway.
         }
         setUser(null)
         setToken(null)

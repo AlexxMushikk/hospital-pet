@@ -1,6 +1,6 @@
 const { db } = require('../db/database')
 
-// Языки врача в виде строки "English, Polish" (для совместимости API).
+// Doctor languages as a string like "English, Polish" (kept for API compatibility).
 const getLanguagesStr = (doctorId) => {
     const row = db.prepare(`
         SELECT GROUP_CONCAT(l.name, ', ') as languages

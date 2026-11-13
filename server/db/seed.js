@@ -6,7 +6,6 @@ function h(password) {
     return bcrypt.hashSync(password, SALT_ROUNDS)
 }
 
-// Дата YYYY-MM-DD со сдвигом в днях от сегодня (по локальному времени).
 function dateFromToday(offsetDays) {
     const d = new Date()
     d.setDate(d.getDate() + offsetDays)
@@ -16,12 +15,10 @@ function dateFromToday(offsetDays) {
     return `${y}-${m}-${day}`
 }
 
-// Собирает scheduled_at в формате 'YYYY-MM-DD HH:MM:SS'.
 function scheduledAt(dateStr, timeStr) {
     return `${dateStr} ${timeStr}:00`
 }
 
-// Детерминированный набор языков врача по индексу.
 function langsFor(i) {
     const langs = ['English']
     if (i % 2 === 0) langs.push('Polish')
@@ -34,7 +31,7 @@ function seedDatabase(db) {
 
     const seed = db.transaction(() => {
 
-        // Очищаем в правильном порядке — сначала зависимые
+        // Delete in dependency order: child tables first
         db.prepare('DELETE FROM appointments').run()
         db.prepare('DELETE FROM doctor_languages').run()
         db.prepare('DELETE FROM doctors').run()
@@ -153,7 +150,6 @@ function seedDatabase(db) {
         const cuddyId   = docIds['cuddy@med.com']
         const allDocIds = Object.values(docIds)
 
-        // Записи к Dr. Cuddy на ближайшие дни (Scheduled)
         const slots = ['09:00', '10:30', '14:00', '15:30']
         for (let dayOffset = 1; dayOffset <= 4; dayOffset++) {
             const date = dateFromToday(dayOffset)
@@ -167,8 +163,7 @@ function seedDatabase(db) {
             }
         }
 
-        // Тестовый пациент — записи с разными статусами
-        // Completed/Cancelled — в прошлом, Scheduled — в будущем
+        // Test patient: Completed/Cancelled in the past, Scheduled in the future
         const statuses = ['Scheduled', 'Completed', 'Cancelled']
         for (let i = 0; i < 9; i++) {
             const status = statuses[Math.floor(i / 3)]
@@ -177,7 +172,6 @@ function seedDatabase(db) {
             insertApp.run(allDocIds[i % 15], testPatientId, scheduledAt(date, '12:00'), status)
         }
 
-        // Завершённые записи для статистики дохода (в прошлом)
         for (let i = 0; i < 20; i++) {
             const date = dateFromToday(-(30 + i))
             insertApp.run(

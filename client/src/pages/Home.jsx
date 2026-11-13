@@ -51,7 +51,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* ── СТАТИСТИКА ── */}
             {stats && (
                 <div className="stats-band">
                     <div className="container">
@@ -85,7 +84,6 @@ export default function Home() {
                 </div>
             )}
 
-            {/* ── СПЕЦИАЛИЗАЦИИ ── */}
             <section className="features section-pad-top">
                 <div className="container">
                     <div className="page-title page-title--mb">

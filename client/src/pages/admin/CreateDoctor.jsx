@@ -31,7 +31,6 @@ export default function CreateDoctor() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        // Клиентская валидация
         if (!form.full_name || form.full_name.length < VALIDATION.NAME_MIN) {
             showModal('Ошибка', VALIDATION_MSG.NAME_MIN)
             return
@@ -90,7 +89,6 @@ export default function CreateDoctor() {
             <div className="form-narrow">
                 <form onSubmit={handleSubmit}>
 
-                    {/* ── ЛИЧНЫЕ ДАННЫЕ ── */}
                     <div className="info-section">
                         <h3>Личные данные</h3>
 
@@ -147,7 +145,6 @@ export default function CreateDoctor() {
                         </div>
                     </div>
 
-                    {/* ── ПРОФЕССИОНАЛЬНЫЕ ДАННЫЕ ── */}
                     <div className="info-section">
                         <h3>Профессиональные данные</h3>
 
@@ -189,7 +186,6 @@ export default function CreateDoctor() {
                         </div>
                     </div>
 
-                    {/* ── ИНФО ── */}
                     <div className="doctor-notes-box doctor-notes-box--mb">
                         <p className="notes-text">
                             <strong>После создания</strong> врач сможет войти в систему и заполнить

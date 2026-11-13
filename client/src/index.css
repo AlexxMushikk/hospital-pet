@@ -508,7 +508,6 @@ main.container {
     margin-bottom: 20px;
 }
 
-/* Карточки статистики: базовый вид + варианты (large / compact) + акценты */
 .stat-card {
     background: white;
     border-radius: 12px;
@@ -518,7 +517,6 @@ main.container {
 .stat-card__label { display: block; }
 .stat-card__value { display: block; }
 
-/* Крупная — админ-дашборд */
 .stat-card--large {
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
@@ -542,7 +540,6 @@ main.container {
 }
 .stat-card--revenue { border-top-color: #16a34a; }
 
-/* Компактная — расписание врача */
 .stat-card--compact {
     padding: 15px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -961,7 +958,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .modal-message { margin: 15px 0 25px; color: var(--color-text-secondary); }
 .modal-actions { display: flex; gap: 10px; }
 
-/* DoctorAvatar (инициалы + фото, размеры вариантами) */
 .doctor-avatar {
     width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
@@ -984,12 +980,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 10px; border-radius: 6px; overflow: auto;
 }
 
-/* состояния списков (общие) */
 .text-error    { color: var(--color-primary); text-align: center; padding: 40px; }
 .empty-state   { color: var(--color-text-muted); text-align: center; padding: 40px; }
 .empty-state p { margin-bottom: 20px; }
 
-/* скелетоны карточек */
 .skeleton-info     { flex: 1; }
 .skeleton-text--sm { width: 60%; }
 
@@ -1035,7 +1029,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .text-placeholder   { color: var(--color-text-light); }
 .price-inline       { color: var(--color-primary); font-weight: 700; }
 
-/* переиспользуемый текст */
 .text-muted  { color: var(--color-text-muted); }
 .text-danger { color: var(--color-primary); }
 
@@ -1087,7 +1080,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* Stats (admin) */
 .skeleton--stat { height: 160px; border-radius: 12px; }
 
-/* общее для админ-страниц */
 .page-title--row { display: flex; justify-content: space-between; align-items: center; }
 
 /* Database */

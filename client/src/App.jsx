@@ -53,27 +53,22 @@ function AppRoutes() {
     return (
         <DoctorViewGuard>
             <Routes>
-                {/* Публичные маршруты */}
                 <Route path="/"          element={<Home />} />
                 <Route path="/doctors"   element={<Doctors />} />
                 <Route path="/doctors/:id" element={<DoctorProfile />} />
 
-                {/* Перенаправление залогиненных со страниц auth */}
                 <Route path="/login"    element={user ? <Navigate to={landingFor(user)} replace /> : <Login />} />
                 <Route path="/register" element={user ? <Navigate to={landingFor(user)} replace /> : <Register />} />
 
-                {/* Защищённые — только для залогиненных (любая роль) */}
                 <Route path="/booking"      element={<ProtectedRoute><Booking /></ProtectedRoute>} />
                 <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
                 <Route path="/appointments/:id" element={<ProtectedRoute><AppointmentDetails /></ProtectedRoute>}/>
 
-                {/* Защищённые — только для врачей */}
                 <Route path="/doctor/schedule"
                        element={<ProtectedRoute role="doctor"><DoctorSchedule /></ProtectedRoute>} />
                 <Route path="/doctor/profile"
                        element={<ProtectedRoute role="doctor"><DoctorEditProfile /></ProtectedRoute>} />
 
-                {/* Защищённые — только для admin */}
                 <Route path="/admin"          element={<Navigate to="/admin/stats" replace />} />
                 <Route path="/admin/stats"
                        element={<ProtectedRoute role="admin"><AdminStats /></ProtectedRoute>} />

@@ -75,8 +75,7 @@ export default function DoctorProfile() {
                         Записаться
                     </button>
 
-                    {/* navigate(-1) возвращает на предыдущую страницу браузера —
-                        фильтры на /doctors сохраняются потому что это та же страница в истории */}
+                    {/* navigate(-1) goes back in browser history, so /doctors filters are preserved */}
                     <button
                         className="btn btn-outline w-full"
                         onClick={() => navigate(-1)}
