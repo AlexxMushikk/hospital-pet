@@ -35,9 +35,11 @@
     width: 0;
 }
 
+/* Centred on the first line of the label, whatever its line height. */
 .checkmark {
     position: absolute;
-    top: 2px; left: 0;
+    top: 0.8em; left: 0;
+    transform: translateY(-50%);
     height: 18px; width: 18px;
     background-color: var(--color-surface);
     border: 2px solid var(--color-input-border);
@@ -50,8 +52,10 @@
 .checkmark:after { content: ""; position: absolute; display: none; }
 .radio-container input:checked ~ .checkmark:after { display: block; }
 
+/* Centred inside the border: fixed offsets ignored the 2px border and sat low-right. */
 .radio-container .checkmark:after {
-    top: 5px; left: 5px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
     width: 8px; height: 8px;
     border-radius: 50%;
     background: var(--color-on-primary);
