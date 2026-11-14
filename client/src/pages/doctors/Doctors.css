@@ -24,7 +24,8 @@
     font-size: 14px;
     color: var(--color-text-secondary);
     user-select: none;
-    transition: 0.3s;
+    /* The whole row is the tap target; the grey/blue flash over it looked like a glitch. */
+    -webkit-tap-highlight-color: transparent;
 }
 
 .radio-container input {
@@ -44,10 +45,17 @@
     background-color: var(--color-surface);
     border: 2px solid var(--color-input-border);
     border-radius: 50%;
-    transition: 0.2s;
+    /* Only the hover tint fades; selecting shows at once, a fade there read as lag. */
+    transition: border-color 0.15s;
 }
 
-.radio-container:hover input ~ .checkmark { border-color: var(--color-primary); background-color: var(--color-primary-light); }
+/* Touch screens keep :hover on the last tapped row, which left a red ring on an unselected option. */
+@media (hover: hover) {
+    .radio-container:hover input ~ .checkmark { border-color: var(--color-primary); background-color: var(--color-primary-light); }
+}
+
+/* The real input is invisible, so keyboard focus is drawn on the circle. */
+.radio-container input:focus-visible ~ .checkmark { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 .radio-container input:checked ~ .checkmark { background-color: var(--color-primary-fill); border-color: var(--color-primary-fill); }
 .checkmark:after { content: ""; position: absolute; display: none; }
 .radio-container input:checked ~ .checkmark:after { display: block; }
