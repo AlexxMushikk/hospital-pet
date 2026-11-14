@@ -1,5 +1,7 @@
 # City Care Hospital
 
+[![CI](https://github.com/AlexxMushikk/hospital-pet/actions/workflows/ci.yml/badge.svg)](https://github.com/AlexxMushikk/hospital-pet/actions/workflows/ci.yml)
+
 A full-stack hospital management application: patients browse doctors and book
 appointments, doctors run their schedule, and an administrator manages the
 records behind both.
@@ -43,9 +45,9 @@ demo is temporary.
 
 ## Stack
 
-**Frontend** — React 19, Vite 8, React Router 7, axios
-**Backend** — Node.js, Express 5, SQLite (better-sqlite3), Zod, JWT, bcrypt, Pino
-**Testing** — Vitest, Supertest
+**Frontend** — React 19, Vite 8, React Router 7, axios, react-i18next, lucide-react
+**Backend** — Node.js, Express 5, SQLite (better-sqlite3), Zod, JWT, bcrypt, Pino, helmet, express-rate-limit
+**Testing** — Vitest, Supertest, jsdom, GitHub Actions
 
 No UI framework: the layout and components are hand-written CSS.
 
@@ -70,6 +72,11 @@ No UI framework: the layout and components are hand-written CSS.
 - Create a doctor account
 - Soft-delete a doctor or a patient: their scheduled visits are cancelled and their sessions revoked in one transaction
 
+### Everywhere
+- English and Polish interface, switchable at any time and remembered on the device; server errors arrive as codes and are shown in the current language
+- Light and dark theme, following the system setting until the user picks one
+- Layouts that work down to phone width
+
 ---
 
 ## Architecture
@@ -91,6 +98,11 @@ every use, and replaying a used token revokes the whole session — a reuse mean
 the cookie leaked. On the client, concurrent 401s share a single refresh request
 and are replayed once it resolves.
 
+**Brute-force protection.** Failed logins are counted per IP and email — ten in
+fifteen minutes, then `429` — so a password cannot be guessed endlessly, while
+one user's typos never lock out another. Sign-ups are limited per IP, and helmet
+sets the standard security headers.
+
 **Authorisation.** Enforced in the service layer, never in the UI alone. A
 patient cannot read another patient's visit, a doctor only sees the visits that
 belong to them, and the client never receives a patient name it is not entitled
@@ -108,23 +120,28 @@ rejecting 2030-02-31.
 
 ## Testing
 
-178 tests, all green.
+Over 300 tests. GitHub Actions runs the server suite and the client lint, tests
+and production build on every push.
 
 ```bash
 npm test                    # both suites
-npm test --prefix server    # 161 tests
-npm test --prefix client    #  17 tests
+npm test --prefix server
+npm test --prefix client
 ```
 
 **Server (integration).** Every endpoint is driven through the real Express
 stack with Supertest, against a throwaway in-memory SQLite database built from
 the production schema. Registration and login, refresh rotation and reuse
 detection, booking rules and slot conflicts, ownership checks across all three
-roles, admin record management.
+roles, admin record management, rate limiting — and a check that every server
+error code has a translation in both client languages.
 
-**Client (unit).** The axios layer: token attachment, the single-flight refresh,
-the queue of requests waiting on it, and the redirect when a session is
-genuinely gone.
+**Client (unit and component).** The axios layer: token attachment, the
+single-flight refresh, the queue of requests waiting on it, and the redirect
+when a session is genuinely gone. The auth context, the login page and the
+navbar rendered into jsdom. Date, initials and experience helpers, theme and
+language detection, and a translation check that fails when the code uses a
+key missing from the catalogs or English and Polish drift apart.
 
 Writing the suite surfaced fourteen defects that manual clicking had not,
 among them a booking endpoint that accepted dates in the past and slots outside
@@ -213,8 +230,7 @@ server/
 
 ---
 
-## In progress
+## Roadmap
 
-- Internationalisation (English and Polish) with react-i18next
-- Continuous integration running both test suites on every push
-- Dark theme, rate limiting, toast notifications
+- Migrating the codebase to TypeScript (under way on the `typescript-migration` branch)
+- PostgreSQL instead of SQLite, with the interface language and theme stored per user
