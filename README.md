@@ -20,7 +20,24 @@ inactivity, so the first request may take up to a minute to wake it. The
 database is recreated and reseeded on every restart — anything changed in the
 demo is temporary.
 
-![Doctor catalogue](docs/screenshot.png)
+![Doctor catalogue](docs/screenshots/catalogue.png)
+
+<details>
+<summary><b>More screenshots</b></summary>
+
+| | |
+|---|---|
+| **Booking a visit** — free and taken slots from the doctor's live schedule | **Doctor's day** — booked slots and who booked them |
+| ![Booking](docs/screenshots/booking.png) | ![Doctor schedule](docs/screenshots/doctor-schedule.png) |
+| **Admin dashboard** — counters and recent activity | **Dark theme** |
+| ![Admin statistics](docs/screenshots/admin-stats.png) | ![Dark theme](docs/screenshots/catalogue-dark.png) |
+
+<p align="center">
+  <b>On a phone</b><br>
+  <img src="docs/screenshots/mobile-booking.png" alt="Booking on a phone" width="300">
+</p>
+
+</details>
 
 ---
 
