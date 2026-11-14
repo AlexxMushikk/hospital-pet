@@ -3,6 +3,7 @@
     background: var(--color-bg-subtle);
     border-top: 1px solid var(--color-border);
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 20px;
@@ -14,3 +15,7 @@
 
 /* Arrow icons sit centred in the page buttons. */
 .pagination--bare .btn { display: inline-flex; align-items: center; justify-content: center; }
+
+@media (max-width: 600px) {
+    .pagination-container { gap: 8px; padding: 12px 0; }
+}

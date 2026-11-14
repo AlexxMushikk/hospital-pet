@@ -52,3 +52,13 @@
 .cta-title        { font-size: 32px; margin-bottom: 15px; }
 .cta-text         { color: var(--color-text-muted); margin-bottom: 30px; font-size: 18px; }
 .cta-actions      { display: flex; gap: 15px; justify-content: center; }
+
+@media (max-width: 600px) {
+    .hero            { padding: 40px 0; }
+    .hero-grid       { gap: 30px; }
+    .stats-band      { padding: 28px 0; }
+    .stats-band-num  { font-size: 28px; }
+    .cta-section     { padding: 40px 0; }
+    .cta-title       { font-size: 26px; }
+    .cta-actions     { flex-wrap: wrap; }
+}

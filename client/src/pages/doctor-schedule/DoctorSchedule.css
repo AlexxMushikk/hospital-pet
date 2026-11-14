@@ -79,3 +79,9 @@
 .slot-status  { margin: 0; padding: 2px 8px; font-size: 10px; }
 .schedule-day { display: flex; align-items: center; gap: 12px; }
 .schedule-day label { font-weight: 600; white-space: nowrap; }
+
+@media (max-width: 600px) {
+    .schedule-controls { flex-wrap: wrap; gap: 12px; padding: 15px; }
+    .schedule-day      { flex-wrap: wrap; }
+    .slots-list        { padding: 12px; }
+}

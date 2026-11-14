@@ -52,3 +52,7 @@
 .form-group--spaced    { margin-top: 25px; }
 .form-grid-2       { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .form-actions--end { flex-direction: row; justify-content: flex-end; gap: 15px; }
+
+@media (max-width: 600px) {
+    .form-grid-2 { grid-template-columns: 1fr; }
+}

@@ -21,6 +21,7 @@
 }
 
 .doctor-info {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -28,3 +29,9 @@
 }
 
 .doctor-name { font-weight: bold; font-size: 20px; }
+
+@media (max-width: 600px) {
+    .doctor-card      { padding: 16px; gap: 14px; }
+    .doctor-photo-box { width: 84px; height: 110px; }
+    .doctor-info      { height: auto; gap: 10px; }
+}
