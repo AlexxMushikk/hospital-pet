@@ -9,6 +9,7 @@ const MESSAGES = {
     'errors.INVALID_REFRESH_TOKEN':   'Invalid refresh token',
     'errors.INVALID_OR_EXPIRED_TOKEN':'Invalid or expired token',
     'errors.USER_NOT_FOUND':          'User not found',
+    'errors.TOO_MANY_ATTEMPTS':       'Too many attempts, try again in {{minutes}} minutes',
 
     // --- access ---
     'errors.FORBIDDEN':               'Forbidden',

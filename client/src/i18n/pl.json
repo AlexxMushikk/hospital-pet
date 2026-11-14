@@ -397,7 +397,8 @@
     "REFRESH_TOKEN_REQUIRED": "Sesja wygasła. Zaloguj się ponownie",
     "INVALID_REFRESH_TOKEN": "Sesja wygasła. Zaloguj się ponownie",
     "INVALID_OR_EXPIRED_TOKEN": "Sesja wygasła. Zaloguj się ponownie",
-    "USER_NOT_FOUND": "To konto już nie istnieje"
+    "USER_NOT_FOUND": "To konto już nie istnieje",
+    "TOO_MANY_ATTEMPTS": "Zbyt wiele prób. Spróbuj ponownie za {{minutes}} min"
   },
   "datepicker": {
     "placeholder": "Wybierz datę",

@@ -2,9 +2,11 @@ const express      = require('express')
 const cors         = require('cors')
 const cookieParser = require('cookie-parser')
 const pinoHttp     = require('pino-http')
+const helmet       = require('helmet')
 
 const logger = require('./services/logger')
 const { buildError } = require('./errors')
+const { createAuthLimiters, DEFAULT_LIMITS } = require('./middleware/rateLimit')
 
 const authRouter         = require('./routes/auth')
 const doctorsRouter      = require('./routes/doctors')
@@ -12,8 +14,18 @@ const appointmentsRouter = require('./routes/appointments')
 const adminRouter        = require('./routes/admin')
 const statsRouter        = require('./routes/stats')
 
-function createApp() {
+// TRUST_PROXY: how many proxies sit in front of the app (e.g. 1), so req.ip is the client's.
+function trustProxySetting(value) {
+    if (!value) return false
+    return /^\d+$/.test(value) ? Number(value) : value
+}
+
+// authLimits: the brute-force limits on login and sign-up, or false to switch them off.
+function createApp({ authLimits = DEFAULT_LIMITS } = {}) {
     const app = express()
+
+    app.set('trust proxy', trustProxySetting(process.env.TRUST_PROXY))
+    app.use(helmet())
 
     app.use(pinoHttp({
         logger,
@@ -43,6 +55,12 @@ function createApp() {
 
     app.use(express.json())
     app.use(cookieParser())
+
+    if (authLimits) {
+        const limiters = createAuthLimiters(authLimits)
+        app.post('/api/login',    limiters.login)
+        app.post('/api/register', limiters.register)
+    }
 
     app.use('/api', authRouter)
     app.use('/api/doctors', doctorsRouter)

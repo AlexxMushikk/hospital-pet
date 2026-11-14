@@ -383,7 +383,8 @@
     "REFRESH_TOKEN_REQUIRED": "Your session has ended. Please sign in again",
     "INVALID_REFRESH_TOKEN": "Your session has ended. Please sign in again",
     "INVALID_OR_EXPIRED_TOKEN": "Your session has ended. Please sign in again",
-    "USER_NOT_FOUND": "This account no longer exists"
+    "USER_NOT_FOUND": "This account no longer exists",
+    "TOO_MANY_ATTEMPTS": "Too many attempts. Please try again in {{minutes}} minutes"
   },
   "datepicker": {
     "placeholder": "Pick a date",
