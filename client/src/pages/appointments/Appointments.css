@@ -1,4 +1,4 @@
-.appointment-icon { font-size: 24px; }
+.appointment-icon { color: var(--color-primary); }
 .appt-name        { display: block; margin-top: 5px; }
 .appt-spec        { color: var(--color-text-muted); font-size: 14px; }
 .appt-datetime    { margin-top: 5px; font-weight: bold; color: var(--color-primary); }

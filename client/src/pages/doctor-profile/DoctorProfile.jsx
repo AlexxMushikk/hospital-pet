@@ -7,6 +7,7 @@ import Modal from '../../components/modal/Modal'
 import { useModal } from '../../hooks/useModal'
 import { formatExperience } from '../../utils/experience'
 import DoctorAvatar from '../../components/doctor-avatar/DoctorAvatar'
+import { ArrowLeft } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import '../../styles/skeleton.css'
@@ -86,7 +87,10 @@ export default function DoctorProfile() {
                         className="btn btn-outline w-full"
                         onClick={() => navigate(-1)}
                     >
-                        ← {t('common.back')}
+                        <span className="with-icon">
+                            <ArrowLeft size={16} aria-hidden="true" />
+                            {t('common.back')}
+                        </span>
                     </button>
                 </aside>
 

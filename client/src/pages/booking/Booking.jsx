@@ -168,8 +168,8 @@ export default function Booking() {
                                     })}
                                 </div>
                                 <p className="slots-legend">
-                                    <span className="dot-available">●</span> {t('booking.legendAvailable')} |{' '}
-                                    <span className="dot-booked">●</span> {t('booking.legendBooked')}
+                                    <span className="legend-dot legend-dot--available" aria-hidden="true" /> {t('booking.legendAvailable')} |{' '}
+                                    <span className="legend-dot legend-dot--booked" aria-hidden="true" /> {t('booking.legendBooked')}
                                 </p>
                             </>
                         )}

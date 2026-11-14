@@ -9,7 +9,7 @@ import '../../../styles/skeleton.css'
 import './Stats.css'
 
 export default function AdminStats() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const [stats,    setStats]    = useState(null)
     const [activity, setActivity] = useState([])
     const [loading,  setLoading]  = useState(true)
@@ -58,41 +58,43 @@ export default function AdminStats() {
                     variant="large"
                     accent="revenue"
                     label={t('adminStats.totalRevenue')}
-                    value={`${new Intl.NumberFormat('pl-PL').format(stats?.totalRevenue || 0)} PLN`}
+                    value={`${new Intl.NumberFormat(i18n.resolvedLanguage).format(stats?.totalRevenue || 0)} PLN`}
                 />
             </div>
 
             <div className="info-section">
                 <h3>{t('adminStats.recentActivity')}</h3>
-                <table className="admin-table">
-                    <thead>
-                    <tr>
-                        <th>{t('common.date')}</th>
-                        <th>{t('common.patient')}</th>
-                        <th>{t('common.doctor')}</th>
-                        <th>{t('common.status')}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {activity.length === 0 && (
+                <div className="table-scroll">
+                    <table className="admin-table">
+                        <thead>
                         <tr>
-                            <td colSpan={4} className="text-center">{t('adminStats.noData')}</td>
+                            <th>{t('common.date')}</th>
+                            <th>{t('common.patient')}</th>
+                            <th>{t('common.doctor')}</th>
+                            <th>{t('common.status')}</th>
                         </tr>
-                    )}
-                    {activity.map((act) => (
-                        <tr key={act.id}>
-                            <td>{act.date || '---'}</td>
-                            <td>{act.patient_name || t('common.unknown')}</td>
-                            <td>{act.doctor_name  || t('common.unknown')}</td>
-                            <td>
-                                    <span className={statusClass(act.status)}>
-                                        {statusLabel(act.status)}
-                                    </span>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {activity.length === 0 && (
+                            <tr>
+                                <td colSpan={4} className="text-center">{t('adminStats.noData')}</td>
+                            </tr>
+                        )}
+                        {activity.map((act) => (
+                            <tr key={act.id}>
+                                <td>{act.date || '---'}</td>
+                                <td>{act.patient_name || t('common.unknown')}</td>
+                                <td>{act.doctor_name  || t('common.unknown')}</td>
+                                <td>
+                                        <span className={statusClass(act.status)}>
+                                            {statusLabel(act.status)}
+                                        </span>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     )

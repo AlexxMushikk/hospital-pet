@@ -6,6 +6,7 @@ import { getPublicStats } from '../../api/index'
 import { logger } from '../../utils/logger'
 import { SPECIALIZATIONS } from '../../constants'
 import StableText from '../../components/stable-text/StableText'
+import { Cross, ArrowRight } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import './Home.css'
@@ -51,7 +52,9 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="hero-image">
-                        <div className="hospital-logo-placeholder">+</div>
+                        <div className="hospital-logo-placeholder">
+                            <Cross size={150} strokeWidth={1.5} aria-hidden="true" />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -106,13 +109,14 @@ export default function Home() {
                                 className="spec-link"
                             >
                                 <div className="feature-card feature-card--link">
-                                    <div className="feature-icon">{spec.icon}</div>
+                                    <div className="feature-icon"><spec.icon size={44} strokeWidth={1.75} aria-hidden="true" /></div>
                                     <h3>{t(`spec.${spec.value}.label`)}</h3>
                                     <p className="feature-desc">
                                         {t(`spec.${spec.value}.desc`)}
                                     </p>
                                     <div className="feature-cta">
                                         {t('home.findSpecialist')}
+                                        <ArrowRight size={16} aria-hidden="true" />
                                     </div>
                                 </div>
                             </Link>

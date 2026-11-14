@@ -9,6 +9,7 @@ import { statusLabel, statusClass } from '../../utils/status'
 import { formatDateTime } from '../../utils/date'
 import { VALIDATION } from '../../constants'
 import { apiErrorMessage } from '../../utils/apiError'
+import { Cross } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/forms.css'
 import '../../styles/layout.css'
@@ -147,7 +148,9 @@ export default function AppointmentDetails() {
                             {formatDateTime(app.appointment_date, app.appointment_time)}
                         </p>
                     </div>
-                    <div className="hospital-logo-placeholder hospital-logo-placeholder--sm">+</div>
+                    <div className="hospital-logo-placeholder hospital-logo-placeholder--sm">
+                        <Cross size={30} strokeWidth={1.75} aria-hidden="true" />
+                    </div>
                 </div>
 
                 <hr className="divider" />

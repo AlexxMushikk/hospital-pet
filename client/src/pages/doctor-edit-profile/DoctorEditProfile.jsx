@@ -7,6 +7,7 @@ import Modal from '../../components/modal/Modal'
 import { useModal } from '../../hooks/useModal'
 import { apiErrorMessage } from '../../utils/apiError'
 import StableText from '../../components/stable-text/StableText'
+import { CalendarClock, Clock, Hourglass, UserRound } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/forms.css'
 import '../../styles/layout.css'
@@ -78,21 +79,21 @@ export default function DoctorEditProfile() {
 
                     <div className="info-section">
                         <h3 className="section-heading">
-                            <span className="text-danger">🗓</span>
+                            <CalendarClock className="text-danger" size={22} aria-hidden="true" />
                             {t('doctorSettings.workingHours')}
                         </h3>
                         <div className="form-grid-2 form-grid-2--mt">
                             <div className="form-group">
                                 <span className="field-label-sm">{t('doctorSettings.shiftStart')}</span>
                                 <div className="static-time-display">
-                                    <span className="icon">🕒</span>
+                                    <Clock className="icon" size={20} aria-hidden="true" />
                                     <span>{doctor.work_start || '--:--'}</span>
                                 </div>
                             </div>
                             <div className="form-group">
                                 <span className="field-label-sm">{t('doctorSettings.shiftEnd')}</span>
                                 <div className="static-time-display">
-                                    <span className="icon">⌛</span>
+                                    <Hourglass className="icon" size={20} aria-hidden="true" />
                                     <span>{doctor.work_end || '--:--'}</span>
                                 </div>
                             </div>
@@ -102,7 +103,10 @@ export default function DoctorEditProfile() {
                     <hr className="form-divider" />
 
                     <div className="info-section">
-                        <h3>{t('doctorSettings.publicInfo')}</h3>
+                        <h3 className="section-heading">
+                            <UserRound className="text-danger" size={22} aria-hidden="true" />
+                            {t('doctorSettings.publicInfo')}
+                        </h3>
                         <div className="form-grid-2">
                             <div className="form-group">
                                 <label>{t('common.photoUrl')}</label>

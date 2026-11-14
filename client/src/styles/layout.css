@@ -1,7 +1,7 @@
 .hospital-logo-placeholder {
     width: 300px;
     height: 300px;
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-fill);
     color: var(--color-on-primary);
     font-size: 150px;
     display: flex;
@@ -86,4 +86,17 @@
 
 .page-title--left    { text-align: left; padding-bottom: 20px; }
 .page-title--left h2 { font-weight: 800; }
-.page-title--row { display: flex; justify-content: space-between; align-items: center; }
+.page-title--row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; text-align: left; }
+
+/* Wide tables scroll inside their box instead of stretching the page. */
+.table-scroll { overflow-x: auto; }
+
+@media (max-width: 600px) {
+    .auth-container { padding: 20px 0; min-height: auto; }
+    .auth-card      { padding: 24px 20px; border-radius: 12px; }
+    .page-title     { padding: 20px 0 15px; }
+    .page-title h2  { font-size: 26px; }
+    .hospital-logo-placeholder { width: 180px; height: 180px; }
+    .hospital-logo-placeholder svg { width: 96px; height: 96px; }
+    .admin-table    { min-width: 520px; }
+}

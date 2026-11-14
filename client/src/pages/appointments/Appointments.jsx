@@ -6,6 +6,7 @@ import { getPatientAppointments } from '../../api/index'
 import { statusLabel, statusClass } from '../../utils/status'
 import { formatDate } from '../../utils/date'
 import StableText from '../../components/stable-text/StableText'
+import { CalendarDays } from 'lucide-react'
 import '../../styles/buttons.css'
 import '../../styles/layout.css'
 import '../../styles/cards.css'
@@ -78,7 +79,7 @@ export default function Appointments() {
                     {appointments.map(app => (
                         <div key={app.id} className="doctor-card">
                             <div className="doctor-photo-box">
-                                <span className="appointment-icon">📅</span>
+                                <CalendarDays className="appointment-icon" size={32} strokeWidth={1.75} aria-hidden="true" />
                             </div>
                             <div className="doctor-info">
                                 <div>

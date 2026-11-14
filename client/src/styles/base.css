@@ -42,3 +42,6 @@ main.container {
 .text-muted  { color: var(--color-text-muted); }
 .text-danger { color: var(--color-primary); }
 .text-center { text-align: center; }
+
+/* An icon next to its text, vertically centred. */
+.with-icon { display: inline-flex; align-items: center; gap: 6px; }

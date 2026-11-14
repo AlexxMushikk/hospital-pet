@@ -1,5 +1,5 @@
 .error-boundary-card      { text-align: center; }
-.error-boundary__icon     { font-size: 3rem; margin: 0 0 10px; }
+.error-boundary__icon     { display: block; margin: 0 auto 10px; color: var(--color-primary); }
 .error-boundary__text     { color: var(--color-text-muted); margin: 10px 0 25px; }
 .error-boundary__actions  { display: flex; gap: 10px; justify-content: center; }
 

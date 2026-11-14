@@ -173,20 +173,20 @@
     "statCompleted": "Zakończonych wizyt",
     "specializationsTitle": "Nasze specjalizacje",
     "specializationsSubtitle": "Wykwalifikowana pomoc we wszystkich dziedzinach medycyny",
-    "findSpecialist": "Znajdź specjalistę →",
+    "findSpecialist": "Znajdź specjalistę",
     "ctaTitle": "Gotowy na wizytę?",
     "ctaText": "Załóż konto i umów się do lekarza w kilka minut"
   },
   "doctors": {
     "title": "Nasi specjaliści",
     "subtitle": "Znajdź lekarza odpowiedniego dla Twojego przypadku.",
-    "searchLabel": "🔍 Szukaj po nazwisku",
+    "searchLabel": "Szukaj po nazwisku",
     "searchPlaceholder": "Na przykład: Dr. House...",
     "sortLabel": "Sortowanie",
     "sortNameAsc": "Po nazwisku (A–Z)",
-    "sortPriceAsc": "Cena ↑",
-    "sortPriceDesc": "Cena ↓",
-    "sortExpDesc": "Doświadczenie ↓",
+    "sortPriceAsc": "Cena: od najniższej",
+    "sortPriceDesc": "Cena: od najwyższej",
+    "sortExpDesc": "Najbardziej doświadczeni",
     "priceFilter": "Cena wizyty (PLN)",
     "allSpecializations": "Wszystkie specjalizacje",
     "experienceFilter": "Doświadczenie zawodowe",
@@ -276,8 +276,8 @@
     "totalSlots": "Wszystkich slotów",
     "booked": "Zajętych",
     "free": "Wolnych",
-    "dayLabel": "🗓 Dzień:",
-    "refresh": "🔄 Odśwież",
+    "dayLabel": "Dzień:",
+    "refresh": "Odśwież",
     "loading": "Ładowanie grafiku...",
     "noSlots": "Brak slotów w tym dniu.",
     "freeSlot": "Wolny termin",
@@ -289,7 +289,7 @@
     "workingHours": "Godziny pracy (zarządza administrator)",
     "shiftStart": "Początek zmiany",
     "shiftEnd": "Koniec zmiany",
-    "publicInfo": "👤 Informacje publiczne",
+    "publicInfo": "Informacje publiczne",
     "priceReadonly": "Cena wizyty (tylko do odczytu)",
     "priceValue": "{{price}} PLN (zarządza administrator)",
     "educationLabel": "Wykształcenie i kwalifikacje",
@@ -342,7 +342,7 @@
     "careerStartRequired": "Data rozpoczęcia kariery *",
     "priceRequired": "Cena wizyty (PLN) *",
     "infoTitle": "Po utworzeniu",
-    "infoText": "lekarz może się zalogować i samodzielnie uzupełnić profil: zdjęcie, biografię, wykształcenie, języki. Domyślne godziny pracy to 08:00–18:00, można je zmienić w sekcji „Baza danych → Edytuj”.",
+    "infoText": "lekarz może się zalogować i samodzielnie uzupełnić profil: zdjęcie, biografię, wykształcenie, języki. Domyślne godziny pracy to 08:00–18:00, można je zmienić w sekcji „Baza danych” przyciskiem „Edytuj”.",
     "submit": "Utwórz lekarza",
     "submitting": "Tworzenie...",
     "errSpecialization": "Wybierz specjalizację.",
@@ -413,5 +413,9 @@
   },
   "notFound": {
     "text": "Nie znaleziono strony"
+  },
+  "pagination": {
+    "prev": "Poprzednia strona",
+    "next": "Następna strona"
   }
 }

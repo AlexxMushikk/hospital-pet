@@ -1,4 +1,6 @@
+import { getInitials } from '../../utils/initials'
 import './DoctorAvatar.css'
+
 export default function DoctorAvatar({ name, imageUrl, size = 28 }) {
     const large = size >= 40
 
@@ -12,12 +14,7 @@ export default function DoctorAvatar({ name, imageUrl, size = 28 }) {
         )
     }
 
-    const initials = (name || '?')
-        .split(' ')
-        .slice(0, 2)
-        .map(w => w[0] || '')
-        .join('')
-        .toUpperCase() || '?'
+    const initials = getInitials(name)
 
     return (
         <div className={large ? 'doctor-avatar doctor-avatar--lg' : 'doctor-avatar'}>

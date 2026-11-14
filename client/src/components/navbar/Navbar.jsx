@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import LanguageSwitcher from '../language-switcher/LanguageSwitcher'
 import ThemeSwitcher from '../theme-switcher/ThemeSwitcher'
 import StableText from '../stable-text/StableText'
+import { Hospital } from 'lucide-react'
 import '../../styles/buttons.css'
 import './Navbar.css'
 
@@ -19,7 +20,10 @@ export default function Navbar() {
         <header>
             <div className="main-header">
                 <div className="container">
-                    <h1>🏥 City Care Hospital</h1>
+                    <h1 className="brand">
+                        <Hospital className="brand__icon" size={30} strokeWidth={2} aria-hidden="true" />
+                        City Care Hospital
+                    </h1>
                 </div>
             </div>
 

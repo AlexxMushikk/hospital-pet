@@ -10,6 +10,7 @@ import { useModal } from '../../hooks/useModal'
 import { Range, getTrackBackground } from 'react-range'
 import { logger } from '../../utils/logger'
 import { DOCTORS_PER_PAGE, SPECIALIZATIONS } from '../../constants'
+import { Search } from 'lucide-react'
 import '../../styles/forms.css'
 import '../../styles/layout.css'
 import '../../styles/cards.css'
@@ -227,7 +228,10 @@ export default function Doctors() {
                 <aside className="doctors-sidebar">
 
                     <div className="sidebar-block">
-                        <label className="filter-title">{t('doctors.searchLabel')}</label>
+                        <label className="filter-title filter-title--icon">
+                            <Search size={16} aria-hidden="true" />
+                            {t('doctors.searchLabel')}
+                        </label>
                         <input
                             type="text"
                             placeholder={t('doctors.searchPlaceholder')}

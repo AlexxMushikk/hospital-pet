@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import '../../styles/buttons.css'
 import './Pagination.css'
 const SIBLINGS = 1
@@ -26,6 +28,7 @@ function getPageItems(current, total) {
 }
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
+    const { t } = useTranslation()
     if (totalPages <= 1) return null
 
     return (
@@ -34,8 +37,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
                 className="btn btn-outline btn-sm"
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
+                aria-label={t('pagination.prev')}
             >
-                ←
+                <ChevronLeft size={16} aria-hidden="true" />
             </button>
 
             {getPageItems(currentPage, totalPages).map(item =>
@@ -56,8 +60,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
                 className="btn btn-outline btn-sm"
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
+                aria-label={t('pagination.next')}
             >
-                →
+                <ChevronRight size={16} aria-hidden="true" />
             </button>
         </div>
     )

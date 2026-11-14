@@ -1,5 +1,5 @@
 .main-header {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary-fill);
     color: var(--color-on-primary);
     padding: 20px 0;
     text-align: left;
@@ -10,23 +10,32 @@
     letter-spacing: 1px;
 }
 
+.brand       { display: flex; align-items: center; gap: 12px; }
+.brand__icon { flex-shrink: 0; }
+
 .navbar {
     background-color: var(--color-surface);
     border-bottom: 2px solid var(--color-bg);
     padding: 10px 0;
 }
 
+/* Links and actions wrap onto two rows only when one row is too narrow. */
 .flex-nav {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 12px 20px;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
-    gap: 25px;
+    flex-wrap: wrap;
+    gap: 6px 25px;
 }
+
+.nav-links li { white-space: nowrap; }
 
 .nav-links a {
     text-decoration: none;
@@ -56,6 +65,19 @@
 
 .nav-actions {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     align-items: center;
-    gap: 15px;
+    gap: 10px 15px;
+    margin-left: auto;
+}
+
+/* The gap already spaces the switchers. */
+.nav-actions .view-switcher { margin-right: 0; }
+
+@media (max-width: 600px) {
+    .main-header    { padding: 14px 0; }
+    .main-header h1 { font-size: 22px; letter-spacing: 0.5px; }
+    .nav-links      { gap: 6px 18px; }
+    .nav-actions    { gap: 8px 10px; }
 }
