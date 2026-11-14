@@ -9,7 +9,7 @@ import '../../../styles/skeleton.css'
 import './Stats.css'
 
 export default function AdminStats() {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const [stats,    setStats]    = useState(null)
     const [activity, setActivity] = useState([])
     const [loading,  setLoading]  = useState(true)
@@ -58,7 +58,7 @@ export default function AdminStats() {
                     variant="large"
                     accent="revenue"
                     label={t('adminStats.totalRevenue')}
-                    value={`${new Intl.NumberFormat('pl-PL').format(stats?.totalRevenue || 0)} PLN`}
+                    value={`${new Intl.NumberFormat(i18n.resolvedLanguage).format(stats?.totalRevenue || 0)} PLN`}
                 />
             </div>
 
