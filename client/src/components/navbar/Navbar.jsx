@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import LanguageSwitcher from '../language-switcher/LanguageSwitcher'
 import ThemeSwitcher from '../theme-switcher/ThemeSwitcher'
 import StableText from '../stable-text/StableText'
-import { Hospital } from 'lucide-react'
+import { Hospital, LogOut, UserRound } from 'lucide-react'
 import '../../styles/buttons.css'
 import './Navbar.css'
 
@@ -19,11 +19,17 @@ export default function Navbar() {
     return (
         <header>
             <div className="main-header">
-                <div className="container">
+                <div className="container main-header__bar">
                     <h1 className="brand">
                         <Hospital className="brand__icon" size={30} strokeWidth={2} aria-hidden="true" />
                         City Care Hospital
                     </h1>
+                    {user && (
+                        <span className="header-user">
+                            <UserRound size={18} aria-hidden="true" />
+                            {user.full_name}
+                        </span>
+                    )}
                 </div>
             </div>
 
@@ -73,9 +79,14 @@ export default function Navbar() {
                                         </button>
                                     </div>
                                 )}
-                                <span><strong>{user.full_name}</strong></span>
-                                <button className="btn btn-outline btn-sm" onClick={logout}>
-                                    <StableText k="nav.logout" />
+                                <button
+                                    className="btn btn-outline btn-sm nav-logout"
+                                    onClick={logout}
+                                    aria-label={t('nav.logout')}
+                                    title={t('nav.logout')}
+                                >
+                                    <LogOut size={16} aria-hidden="true" />
+                                    <span className="nav-logout__label"><StableText k="nav.logout" /></span>
                                 </button>
                             </>
                         ) : (

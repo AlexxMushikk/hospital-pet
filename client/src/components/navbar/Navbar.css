@@ -13,6 +13,25 @@
 .brand       { display: flex; align-items: center; gap: 12px; }
 .brand__icon { flex-shrink: 0; }
 
+/* Brand on the left, the signed-in user on the right: the name lives here so the
+   navbar below has room for its links and controls on one row. */
+.main-header__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px 20px;
+}
+
+.header-user {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 600;
+    opacity: 0.92;
+}
+
 .navbar {
     background-color: var(--color-surface);
     border-bottom: 2px solid var(--color-bg);
@@ -75,9 +94,22 @@
 /* The gap already spaces the switchers. */
 .nav-actions .view-switcher { margin-right: 0; }
 
+.nav-logout { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Too narrow for one row: links on the first row, controls on a full second row,
+   switchers on the left and the logout button on the right, instead of wrapping wherever. */
+@media (max-width: 700px) {
+    .flex-nav    { gap: 10px; }
+    .nav-actions { flex-basis: 100%; justify-content: flex-start; margin-left: 0; gap: 8px 10px; }
+    .nav-actions > :last-child { margin-left: auto; }
+    .nav-logout  { padding: 7px 10px; }
+    .nav-logout__label { display: none; }
+}
+
 @media (max-width: 600px) {
-    .main-header    { padding: 14px 0; }
-    .main-header h1 { font-size: 22px; letter-spacing: 0.5px; }
-    .nav-links      { gap: 6px 18px; }
-    .nav-actions    { gap: 8px 10px; }
+    .main-header       { padding: 14px 0; }
+    .main-header h1    { font-size: 22px; letter-spacing: 0.5px; }
+    .main-header__bar  { flex-direction: column; align-items: flex-start; }
+    .header-user       { font-size: 14px; }
+    .nav-links         { gap: 6px 18px; }
 }
