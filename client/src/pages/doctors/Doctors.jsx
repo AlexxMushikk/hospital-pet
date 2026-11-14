@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import { getDoctors, getDoctorPriceRange } from '../../api/index'
@@ -7,6 +7,7 @@ import DoctorCard from '../../components/doctor-card/DoctorCard'
 import Pagination from '../../components/pagination/Pagination'
 import Modal from '../../components/modal/Modal'
 import { useModal } from '../../hooks/useModal'
+import { useInstantSearchParams } from '../../hooks/useInstantSearchParams'
 import { Range, getTrackBackground } from 'react-range'
 import { logger } from '../../utils/logger'
 import { DOCTORS_PER_PAGE, SPECIALIZATIONS } from '../../constants'
@@ -114,7 +115,7 @@ export default function Doctors() {
     const doctorId = user?.doctor_id ?? null
     const { modal, showModal, closeModal } = useModal()
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams, updateSearchParams] = useInstantSearchParams()
 
     const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 })
 
@@ -133,16 +134,13 @@ export default function Doctors() {
             .catch(err => logger.error('Doctors.priceRange', err))
     }, [])
 
-    const handleFilterChange = (field, value) => {
-        const next = new URLSearchParams(searchParams.toString())
+    const handleFilterChange = (field, value) => updateSearchParams(next => {
         if (value) next.set(field, value)
         else next.delete(field)
         next.set('page', '1')
-        setSearchParams(next)
-    }
+    })
 
-    const handlePriceChange = (min, max) => {
-        const next = new URLSearchParams(searchParams.toString())
+    const handlePriceChange = (min, max) => updateSearchParams(next => {
         // Full range selected: drop the params so the URL stays clean
         if (min === priceRange.min && max === priceRange.max) {
             next.delete('minPrice')
@@ -152,13 +150,10 @@ export default function Doctors() {
             next.set('maxPrice', String(max))
         }
         next.set('page', '1')
-        setSearchParams(next)
-    }
+    })
 
     const handlePageChange = (page) => {
-        const next = new URLSearchParams(searchParams.toString())
-        next.set('page', String(page))
-        setSearchParams(next)
+        updateSearchParams(next => next.set('page', String(page)))
         window.scrollTo(0, 0)
     }
 
